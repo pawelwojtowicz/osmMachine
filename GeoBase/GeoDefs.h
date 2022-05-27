@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
 
-constexpr double PI = atan(1.0)*4;
-#define DEG2RAD(deg) deg*( PI/180 )
+#define DEG2RAD(deg) deg*( M_PI/180 )
+
+constexpr double s_earthRadiusKM = 6378.1370;

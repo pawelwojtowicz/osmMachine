@@ -11,7 +11,7 @@ public:
   virtual ~CGeoPoint();
   
   inline const double getLon() const { return m_lon; };
-  inline const double getLat() const { return m_lat; }
+  inline const double getLat() const { return m_lat; };
   
   CGeoPoint( const CGeoPoint& geoPoint ) = default;
   CGeoPoint& operator=( const CGeoPoint& geoPoint ) = default;
