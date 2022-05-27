@@ -10,7 +10,7 @@ CGeoPoint::CGeoPoint()
 {
 }
 
-CGeoPoint::CGeoPoint(const double& lon, const double& lat)
+CGeoPoint::CGeoPoint( const double& lat, const double& lon )
 : m_valid(true)
 , m_lon(lon)
 , m_lat(lat)

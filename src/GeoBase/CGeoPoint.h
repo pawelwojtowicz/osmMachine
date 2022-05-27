@@ -8,7 +8,7 @@ class CGeoPoint
 {
 public:
   CGeoPoint();
-  CGeoPoint( const double& lon, const double& lat);
+  CGeoPoint( const double& lat, const double& lon);
   virtual ~CGeoPoint();
   
   inline const double getLon() const { return m_lon; };

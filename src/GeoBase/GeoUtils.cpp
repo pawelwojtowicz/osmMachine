@@ -35,7 +35,7 @@ bool GeoUtils::ProjectPoint2Shape( const CGeoPoint& point, const CGeoPoint& shap
     double projectionLon( shapeBegin.getLon() + u * ( shapeEnd.getLon() - shapeBegin.getLon() ) );
     double projectionLat( shapeBegin.getLat() + u * ( shapeEnd.getLat() - shapeBegin.getLat() ) );
 
-    projection = CGeoPoint( projectionLon, projectionLat  );
+    projection = CGeoPoint( projectionLat, projectionLon  );
     distance = Point2PointDistance( point , projection );
   }
   else

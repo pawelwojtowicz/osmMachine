@@ -9,7 +9,7 @@ TEST( CGeoPoint, DefaultConstructor)
 
 TEST( CGeoPoint, Construction ) 
 {
-    osmMachine::CGeoPoint p1( 100,150);
+    osmMachine::CGeoPoint p1( 150, 100 );
     ASSERT_EQ( p1.isValid(), true);
     ASSERT_EQ( p1.getLon(), 100);
     ASSERT_EQ( p1.getLat(), 150);
