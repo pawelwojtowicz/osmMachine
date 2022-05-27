@@ -1,0 +1,9 @@
+add_library( GeoBase SHARED 
+  GeoDefs.h
+  CGeoPoint.cpp
+  CGeoPoint.h
+  GeoUtils.cpp
+  GeoUtils.h
+)
+
+target_link_libraries( GeoBase PUBLIC )
