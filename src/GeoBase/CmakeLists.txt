@@ -4,6 +4,8 @@ add_library( GeoBase SHARED
   CGeoPoint.h
   GeoUtils.cpp
   GeoUtils.h
+  CTileUtils.cpp
+  CTileUtils.h
 )
 
 target_link_libraries( GeoBase PUBLIC )
