@@ -9,10 +9,10 @@ int CTileUtils::gpsLon2TileX(double lon, int z)
    return (int)(floor((lon + 180.0) / 360.0 * pow(2.0, z)));
 }
  
-int CTileUtils::gpslat2TileY(double lat, int z)
+int CTileUtils::gpsLat2TileY(double lat, int z)
 {
-   return (int)(floor((1.0 - log( tan(lat * M_PI/180.0) + 1.0 / cos(lat * M_PI/180.0)) / M_PI) / 2.0 * pow(2.0, z)));
-}
+   double latrad = lat * M_PI/180.0;
+	return (int)(floor((1.0 - asinh(tan(latrad)) / M_PI) / 2.0 * (1 << z))); }
  
 double CTileUtilsTileX2gpsLon(int x, int z)
 {

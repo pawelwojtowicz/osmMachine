@@ -7,4 +7,4 @@ add_library( osmCore SHARED
   CWaySegment.h
 )
 
-target_link_libraries( osmCore PUBLIC GeoBase)
+target_link_libraries( osmCore PUBLIC GeoBase )
