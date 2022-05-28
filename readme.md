@@ -1,5 +1,11 @@
 # osmMachine 
   C++ library for handling the geo location powered by the osm data.
+
+## Input data
+  Open Streep Maps can be downloaded from: https://www.openstreetmap.org ( with some restrictions )
+
+  and without the data size restrictions from: https://download.geofabrik.de/ 
+
 ## Environment preparation
 ### src
   gtest installation:

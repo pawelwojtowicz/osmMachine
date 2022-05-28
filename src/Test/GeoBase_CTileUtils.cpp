@@ -30,7 +30,7 @@ TEST( CTileUtils, Tiling_zoom6 )
 
 //base on the: https://oms.wff.ch/calc.htm
 // cordinates lat/lon - 41.85/-87.65
-// for zoom level 7 should be on the tile: 262,380
+// for zoom level 10 should be on the tile: 262,380
 TEST( CTileUtils, Tiling_zoom10 ) 
 {
     int zoomLevel(10);
