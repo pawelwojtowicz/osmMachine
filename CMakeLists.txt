@@ -5,5 +5,5 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/src/GeoBase )
 
 add_subdirectory( src/GeoBase )
 add_subdirectory( src/osmCore )
-add_subdirectory( src/osmParser )
+add_subdirectory( src/osmReader )
 add_subdirectory( src/Test )
