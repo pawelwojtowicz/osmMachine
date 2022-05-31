@@ -9,3 +9,9 @@ add_executable( osmMachineTests
 
 target_link_libraries(osmMachineTests GeoBase ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} pthread )
 add_dependencies( osmMachineTests GeoBase )
+
+add_executable( pbfReader
+  pbfreader.cpp)
+
+target_link_libraries(pbfReader osmReader )
+add_dependencies( pbfReader osmReader )

@@ -11,7 +11,8 @@
   gtest installation:
   
   ```
-    sudo apt-get install libgtest-dev
+    sudo apt-get install zlib1g-dev libprotobuf-dev protobuf-compiler libgtest-dev libosmpbf-dev
+
     sudo apt-get install cmake
     cd /usr/src/gtest
     sudo cmake CMakeLists.txt
@@ -24,4 +25,12 @@
   Installing the tooling scripts dependencies, based on the requirements file
   ```
      pip install -r requirements.txt
+  ```
+
+## Development
+### Regenerating the osm.pbfs proto sources
+  Calling from the osmProto directory
+  ```
+    protoc osmFormat.proto --cpp_out=../src/osmReader
+    protoc fileFormat.proto --cpp_out=../src/osmReader
   ```
