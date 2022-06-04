@@ -3,7 +3,7 @@
 
 namespace osmMachine
 {
-CWaySegment::CWaySegment( tCOSMNodeShPtr beginNode, tCOSMNodeShPtr endNode )
+CWaySegment::CWaySegment( tOSMNodeShPtr beginNode, tOSMNodeShPtr endNode )
 : m_length( 0 )
 , m_beginNode(beginNode)
 , m_endNode( endNode)
@@ -15,12 +15,12 @@ CWaySegment::~CWaySegment()
 
 }
 
-tCOSMNodeShPtr CWaySegment::getBeginNode() const
+tOSMNodeShPtr CWaySegment::getBeginNode() const
 {
   return m_beginNode;
 }
 
-tCOSMNodeShPtr CWaySegment::getEndNode() const
+tOSMNodeShPtr CWaySegment::getEndNode() const
 {
   return m_endNode;
 }

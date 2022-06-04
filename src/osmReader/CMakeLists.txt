@@ -12,4 +12,4 @@ add_library( osmReader SHARED
     fileFormat.pb.h
 )
 
-target_link_libraries( osmReader PUBLIC tinyxml ${PROTOBUF_LIBRARY} ${ZLIB_LIBRARY} )
+target_link_libraries( osmReader PUBLIC tinyxml ${PROTOBUF_LIBRARY} ${ZLIB_LIBRARY} osmCore )

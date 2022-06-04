@@ -10,9 +10,9 @@ public:
   CGeoPoint();
   CGeoPoint( const double& lat, const double& lon);
   virtual ~CGeoPoint();
-  
-  inline const double getLon() const { return m_lon; };
+
   inline const double getLat() const { return m_lat; };
+  inline const double getLon() const { return m_lon; };
   inline const bool isValid() const {return m_valid; };
   
   CGeoPoint( const CGeoPoint& geoPoint ) = default;

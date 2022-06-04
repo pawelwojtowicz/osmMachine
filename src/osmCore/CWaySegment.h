@@ -6,19 +6,19 @@ namespace osmMachine
 class CWaySegment
 {
 public:
-  CWaySegment(  tCOSMNodeShPtr beginNode, tCOSMNodeShPtr endNode );
+  CWaySegment(  tOSMNodeShPtr beginNode, tOSMNodeShPtr endNode );
   virtual ~CWaySegment();
 
-  double getLength() const;
+  inline double getLength() const { return m_length;};
 
-  tCOSMNodeShPtr getBeginNode() const;
-  tCOSMNodeShPtr getEndNode() const;
+  tOSMNodeShPtr getBeginNode() const;
+  tOSMNodeShPtr getEndNode() const;
 
 private:
   double m_length;
 
-  tCOSMNodeShPtr m_beginNode;
-  tCOSMNodeShPtr m_endNode;
+  tOSMNodeShPtr m_beginNode;
+  tOSMNodeShPtr m_endNode;
 };
 
 }
