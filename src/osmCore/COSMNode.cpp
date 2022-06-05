@@ -1,5 +1,6 @@
 #include "COSMNode.h"
 #include <iostream>
+#include <iomanip>
 
 namespace osmMachine
 {
@@ -24,7 +25,7 @@ void COSMNode::addOSMNodeProperty( const std::string& name, const std::string& v
 
 void COSMNode::Print() const
 {
-    std::cout << m_nodeId << "-- lat/lon=" << getLat() << "/" << getLon() << std::endl;
+    std::cout << m_nodeId << "-- lat/lon=" << std::setprecision(9) << RAD2DEG(getLat()) << "/" << RAD2DEG(getLon()) << std::endl;
 }
 
 

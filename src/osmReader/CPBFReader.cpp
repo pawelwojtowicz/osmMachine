@@ -133,11 +133,22 @@ bool CPBFReader::ReadFile( const std::string& fileName )
                                         int kvIdx(0);
                                         int kvCount(denseNodes.keys_vals_size());
                                         int nodesCount(denseNodes.id_size() );
+                                        int64_t nodeId(0);
+                                        int64_t nodeLat(0);
+                                        int64_t nodeLon(0);
+
                                         for ( int nIdx = 0 ; nIdx < nodesCount ; ++nIdx )
                                         {
-                                            tOSMNodeShPtr nodePtr = std::make_shared<COSMNode>( denseNodes.id(nIdx), 
-                                                                                                DEG2RAD( denseNodes.lat(nIdx) ), 
-                                                                                                DEG2RAD( denseNodes.lon(nIdx) ) );
+                                            nodeId += denseNodes.id(nIdx);
+                                            nodeLat += denseNodes.lat(nIdx);
+                                            nodeLon += denseNodes.lon(nIdx);
+
+                                            double lat = sNanoDegreeScale * ( latOffset + ( granularity * nodeLat ) );
+                                            double lon = sNanoDegreeScale * ( lonOffset + ( granularity * nodeLon ) );
+
+                                            tOSMNodeShPtr nodePtr = std::make_shared<COSMNode>( nodeId, 
+                                                                                                DEG2RAD( lat ), 
+                                                                                                DEG2RAD( lon ) );
                                             
                                             int keyStringId( 0);
                                             do
