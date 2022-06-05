@@ -1,5 +1,6 @@
 #pragma once
 #include <COSMNode.h>
+#include <COSMWay.h>
 
 namespace osmMachine
 {
@@ -14,7 +15,8 @@ public:
 
     virtual void AddNode( tOSMNodeShPtr& ptrNode ) = 0;
 
-
+    virtual void AddWay( tWayShPtr& ptrWay ) = 0;
+    virtual void AddWaypoint( const int64_t& wayId, const int64_t& nodeId ) = 0;
 };
 
 }

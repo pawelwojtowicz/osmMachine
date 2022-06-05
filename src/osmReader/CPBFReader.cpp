@@ -153,7 +153,7 @@ bool CPBFReader::ReadFile( const std::string& fileName )
                                             int keyStringId( 0);
                                             do
                                             {
-                                                int keyStringId( denseNodes.keys_vals(kvIdx));
+                                                keyStringId =  denseNodes.keys_vals(kvIdx) ;
                                                 ++kvIdx;
                                                 if ( 0 != keyStringId )
                                                 {
@@ -165,6 +165,34 @@ bool CPBFReader::ReadFile( const std::string& fileName )
                                             } while ( (0 != keyStringId) && ( kvIdx < kvCount) );
 
                                             m_osmModelBuilder.AddNode(nodePtr);
+                                            
+                                        }
+                                    }
+                                
+                                    int wayCount(primitiveGroup.ways_size() );
+                                    for( size_t i = 0 ; i < wayCount ; ++i )
+                                    {
+                                        bool addToModel(false);
+                                        const auto& pbfWay( primitiveGroup.ways(i));
+
+                                        tWayShPtr ptrWay = std::make_shared<COSMWay>( pbfWay.id() );
+
+                                        size_t tagCount( pbfWay.keys_size() );
+                                        for ( size_t tagI = 0 ; tagI < tagCount ; ++tagI )
+                                        {
+                                            ptrWay->AddProperty( osmData.stringtable().s( pbfWay.keys(tagI)) , osmData.stringtable().s(pbfWay.vals(tagI)));
+                                        }
+
+                                        if (addToModel)
+                                        {
+                                            m_osmModelBuilder.AddWay(ptrWay);
+
+                                            size_t waypointCount( pbfWay.refs_size() );
+                                            for ( size_t wI = 0 ; wI < waypointCount ; ++ wI )
+                                            {
+                                                m_osmModelBuilder.AddWaypoint( pbfWay.id(), pbfWay.refs(wI));
+                                            }
+
                                             
                                         }
                                     }

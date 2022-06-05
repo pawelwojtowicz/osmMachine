@@ -17,6 +17,10 @@ public:
 
   void AddWaySegment( const CWaySegment& waySegment );
 
+  void Print();
+
+  void AddProperty( const std::string& key, const std::string& value );
+
 private:
   //osm way id
   int m_wayId;
@@ -34,5 +38,7 @@ private:
 
   std::shared_ptr<COSMNode> m_wayEnd;
 };
+
+using tWayShPtr = std::shared_ptr<COSMWay>;
 
 }

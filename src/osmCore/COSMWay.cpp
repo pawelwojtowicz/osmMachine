@@ -36,4 +36,16 @@ void COSMWay::AddWaySegment( const CWaySegment& waySegment )
   m_wayBegin = waySegment.getBeginNode();
 
 }
+
+void COSMWay::AddProperty( const std::string& key, const std::string& value )
+{
+  m_wayProperties.insert( tPropertyMap::value_type( key,value));
+}
+
+
+void COSMWay::Print()
+{
+
+}
+
 }

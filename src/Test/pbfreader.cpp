@@ -23,6 +23,18 @@ private:
         ptrNode->Print();
     }
 
+    virtual void AddWay( osmMachine::tWayShPtr& ptrWay )
+    {
+        ptrWay->Print();
+    }
+
+    virtual void AddWaypoint( const int64_t& wayId, const int64_t& nodeId )
+    {
+
+    };
+
+
+
 };
 
 int main( int argc, char** argv)
