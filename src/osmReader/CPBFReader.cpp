@@ -10,19 +10,18 @@
 
 using namespace std;
 
-static const std::string sBlobType_OSMHeader = "OSMHeader";
-static const std::string sBlobType_OSMData = "OSMData";
-constexpr size_t maxBlobSize( 32 * 1024 * 1024);
-constexpr double sNanoDegreeScale( 0.000000001);
-constexpr int64_t sDflt_LatOffset = 0;
-constexpr int64_t sDflt_LonOffset = 0;
-constexpr int64_t sDflt_Granularity = 100;
-
-//https://allegro.pl/oferta/etui-do-oppo-a53-2020-a53s-wzory-krowa-obudowa-10664109040?utm_feed=aa34192d-eee2-4419-9a9a-de66b9dfae24&utm_term=desc-yes&utm_source=google&utm_medium=cpc&utm_campaign=_elktrk_telefony_akcesoria_pla_ss&ev_adgr=akcesoria&ev_campaign_id=14376671485&gclid=EAIaIQobChMIn8zyiv2H-AIVmuh3Ch2X1QPiEAQYASABEgJmqvD_BwE
-//https://chaosinmotion.com/2011/11/21/parsing-the-new-openstreetmaps-pbf-file-format/
-
 namespace osmMachine
 {
+
+static const std::string sBlobType_OSMHeader = "OSMHeader";
+static const std::string sBlobType_OSMData = "OSMData";
+static constexpr size_t maxBlobSize( 32 * 1024 * 1024);
+static constexpr double sNanoDegreeScale( 0.000000001 );
+static constexpr int64_t sDflt_LatOffset = 0;
+static constexpr int64_t sDflt_LonOffset = 0;
+static constexpr int64_t sDflt_Granularity = 100;
+
+
 CPBFReader::CPBFReader( IOSMModelBuilder& osmModelBuilder)
 : m_osmModelBuilder( osmModelBuilder )
 {
@@ -83,21 +82,9 @@ bool CPBFReader::ReadFile( const std::string& fileName )
                             PrimitiveBlock osmData;
                             if ( osmData.ParseFromArray( outputBuffer, uncopressedDataSize) )
                             {   
-                                int64_t latOffset(sDflt_LatOffset);
-                                int64_t lonOffset(sDflt_LonOffset);
-                                int64_t granularity( sDflt_Granularity);
-                                if ( osmData.has_lat_offset() )
-                                {
-                                    latOffset = osmData.lat_offset();
-                                }
-                                if ( osmData.has_lon_offset() )
-                                {
-                                    lonOffset = osmData.lon_offset();
-                                }
-                                if ( osmData.has_granularity() )
-                                {
-                                    granularity = osmData.granularity();
-                                }
+                                int64_t latOffset(osmData.has_lat_offset() ? osmData.lat_offset() : sDflt_LatOffset);
+                                int64_t lonOffset(osmData.has_lon_offset() ? osmData.lon_offset() : sDflt_LonOffset);
+                                int64_t granularity( osmData.has_granularity() ? osmData.granularity() : sDflt_Granularity);
 
                                 size_t primitiveGroupCount(osmData.primitivegroup_size());
                                 for(size_t i = 0 ; i < primitiveGroupCount; ++i)
@@ -126,6 +113,7 @@ bool CPBFReader::ReadFile( const std::string& fileName )
 
                                     }
 
+                                    // extracting dense nodes
                                     if ( primitiveGroup.has_dense() )
                                     {
                                         const auto& denseNodes( primitiveGroup.dense() );
@@ -169,6 +157,7 @@ bool CPBFReader::ReadFile( const std::string& fileName )
                                         }
                                     }
                                 
+                                    //extracting ways
                                     int wayCount(primitiveGroup.ways_size() );
                                     for( size_t i = 0 ; i < wayCount ; ++i )
                                     {
@@ -191,9 +180,7 @@ bool CPBFReader::ReadFile( const std::string& fileName )
                                             for ( size_t wI = 0 ; wI < waypointCount ; ++ wI )
                                             {
                                                 m_osmModelBuilder.AddWaypoint( pbfWay.id(), pbfWay.refs(wI));
-                                            }
-
-                                            
+                                            }   
                                         }
                                     }
                                 }
@@ -226,11 +213,5 @@ bool CPBFReader::ReadFile( const std::string& fileName )
 
     return retVal;
 }
-
-void CPBFReader::ExtractNodes( const Nodes& nodes, const int64_t& latOffset, const int64_t& lonOffset, const int64_t&granularity )
-{
-
-}
-
 
 }

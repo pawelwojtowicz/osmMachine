@@ -19,13 +19,12 @@ COSMNode::~COSMNode()
 
 void COSMNode::addOSMNodeProperty( const std::string& name, const std::string& value)
 {
-    std::cout << name << "=" << value << std::endl;
     m_nodeProperties.insert( tPropertyMap::value_type( name, value ));
 }
 
 void COSMNode::Print() const
 {
-    std::cout << m_nodeId << "-- lat/lon=" << std::setprecision(9) << RAD2DEG(getLat()) << "/" << RAD2DEG(getLon()) << std::endl;
+    std::cout << m_nodeId << " - lat/lon=" << std::setprecision(9) << RAD2DEG(getLat()) << "/" << RAD2DEG(getLon()) << std::endl;
 }
 
 
