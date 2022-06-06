@@ -18,7 +18,7 @@ bool ReadOSMFile( const std::string& filename )
 {
   //  TiXmlDocument doc( filename.c_str() );
   //  TiXmlHandle hDoc(&doc);
-    return true;
+  return true;
 }
 
 }

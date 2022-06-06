@@ -19,6 +19,9 @@ void COSMWay::AddWaySegment( const CWaySegment& waySegment )
 {
   // there is already begin node
   bool beginAdded( !m_waySegments.empty() );
+
+  // add the way segment
+  m_waySegments.push_back(waySegment);
   
   //way length inreases with new the length of new way segment
   m_length += waySegment.getLength();
@@ -26,15 +29,13 @@ void COSMWay::AddWaySegment( const CWaySegment& waySegment )
   // there's new way end
   m_wayEnd = waySegment.getEndNode();
 
-
   if ( beginAdded )
   {
-      return;
+    return;
   } 
   
   // this is added only once, when the vector with segments is empty
   m_wayBegin = waySegment.getBeginNode();
-
 }
 
 void COSMWay::AddProperty( const std::string& key, const std::string& value )

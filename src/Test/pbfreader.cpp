@@ -8,30 +8,30 @@ using namespace std;
 class CModelBuilder : public osmMachine::IOSMModelBuilder
 {
 public:
-    CModelBuilder() 
-    {
-        
-    }
+  CModelBuilder() 
+  {
+      
+  }
 private:
-    virtual void NotifyBoundingBox( const double left, const double top, const double right, const double bottom ) override
-    {
-        cout << "left=" << left << endl << "top="<< top << endl << "right=" << right << endl << "bottm=" << bottom << endl; 
-    }
+  virtual void NotifyBoundingBox( const double left, const double top, const double right, const double bottom ) override
+  {
+    cout << "left=" << left << endl << "top="<< top << endl << "right=" << right << endl << "bottm=" << bottom << endl; 
+  }
 
-    virtual void AddNode( osmMachine::tOSMNodeShPtr& ptrNode )
-    {
-        ptrNode->Print();
-    }
+  virtual void AddNode( osmMachine::tOSMNodeShPtr& ptrNode )
+  {
+    ptrNode->Print();
+  }
 
-    virtual void AddWay( osmMachine::tWayShPtr& ptrWay )
-    {
-        ptrWay->Print();
-    }
+  virtual void AddWay( osmMachine::tWayShPtr& ptrWay )
+  {
+    ptrWay->Print();
+  }
 
-    virtual void AddWaypoint( const int64_t& wayId, const int64_t& nodeId )
-    {
+  virtual void AddWaypoint( const int64_t& wayId, const int64_t& nodeId )
+  {
 
-    };
+  };
 
 
 
@@ -39,9 +39,9 @@ private:
 
 int main( int argc, char** argv)
 {
-    CModelBuilder modelBuilder;
-    osmMachine::CPBFReader reader(modelBuilder);
+  CModelBuilder modelBuilder;
+  osmMachine::CPBFReader reader(modelBuilder);
 
-    reader.ReadFile("/home/ibisdev/swietokrzyskie-latest.osm.pbf");
-    return 0;
+  reader.ReadFile("/home/ibisdev/swietokrzyskie-latest.osm.pbf");
+  return 0;
 }

@@ -6,12 +6,12 @@ namespace osmMachine
 
 class COSMParser
 {
-COSMParser();
-virtual ~COSMParser();
+public:
+  COSMParser();
+  virtual ~COSMParser();
 
-bool ReadOSMFile( const std::string& filename );
+  bool ReadOSMFile( const std::string& filename );
 
-private:
-
+  private:
 };
 }
