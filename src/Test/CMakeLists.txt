@@ -15,3 +15,10 @@ add_executable( pbfReader
 
 target_link_libraries(pbfReader osmReader )
 add_dependencies( pbfReader osmReader )
+
+
+add_executable( osmParser
+  osmReader.cpp)
+
+target_link_libraries(osmParser osmReader )
+add_dependencies( osmParser osmReader )

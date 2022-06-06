@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "IOSMModelBuilder.h"
 
 namespace osmMachine
 {
@@ -7,11 +8,13 @@ namespace osmMachine
 class COSMParser
 {
 public:
-  COSMParser();
+  COSMParser(IOSMModelBuilder& osmModelBuilder);
   virtual ~COSMParser();
 
-  bool ReadOSMFile( const std::string& filename );
+  bool ReadFile( const std::string& filename );
 
-  private:
+private:
+
+  IOSMModelBuilder& m_osmModelBuilder;
 };
 }

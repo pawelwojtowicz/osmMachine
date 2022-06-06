@@ -1,4 +1,5 @@
 #include "COSMWay.h"
+#include <iostream>
 
 namespace osmMachine
 {
@@ -40,6 +41,7 @@ void COSMWay::AddWaySegment( const CWaySegment& waySegment )
 
 void COSMWay::AddProperty( const std::string& key, const std::string& value )
 {
+  std::cout << "WayProp - " << key << "=" << value << std::endl;
   m_wayProperties.insert( tPropertyMap::value_type( key,value));
 }
 

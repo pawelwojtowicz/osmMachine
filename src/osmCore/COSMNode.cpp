@@ -19,6 +19,7 @@ COSMNode::~COSMNode()
 
 void COSMNode::addOSMNodeProperty( const std::string& name, const std::string& value)
 {
+  std::cout << name << "= " << value << std::endl;
   m_nodeProperties.insert( tPropertyMap::value_type( name, value ));
 }
 
