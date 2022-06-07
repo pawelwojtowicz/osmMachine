@@ -1,5 +1,5 @@
 #include <COSMParser.h>
-#include <IOSMModelBuilder.h>
+#include <COSMModelBuilder.h>
 #include <iostream>
 #include <COSMNode.h>
 
@@ -39,9 +39,10 @@ private:
 
 int main( int argc, char** argv)
 {
-  CModelBuilder modelBuilder;
+  osmMachine::COSMModelBuilder modelBuilder;
   osmMachine::COSMParser reader(modelBuilder);
 
-  reader.ReadFile("/home/ibisdev/map.osm");
+  reader.ReadMapFile("/home/ibisdev/map.osm", osmMachine::eAll );
+  while(1) {};
   return 0;
 }

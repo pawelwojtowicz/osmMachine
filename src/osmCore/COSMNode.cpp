@@ -5,11 +5,10 @@
 namespace osmMachine
 {
 
-COSMNode::COSMNode( const int osmNodeId, const double lat, const double lon )
+COSMNode::COSMNode( const int64_t osmNodeId, const double lat, const double lon )
 : CGeoPoint( lat, lon )
 , m_nodeId( osmNodeId )
 {
-
 }
 
 COSMNode::~COSMNode()
@@ -19,7 +18,6 @@ COSMNode::~COSMNode()
 
 void COSMNode::addOSMNodeProperty( const std::string& name, const std::string& value)
 {
-  std::cout << name << "= " << value << std::endl;
   m_nodeProperties.insert( tPropertyMap::value_type( name, value ));
 }
 

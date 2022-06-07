@@ -1,17 +1,17 @@
 #pragma once
-#include <string>
+#include "IOSMMapFileReader.h"
 #include "IOSMModelBuilder.h"
 
 namespace osmMachine
 {
 
-class COSMParser
+class COSMParser : public IOSMMapFileReader
 {
 public:
   COSMParser(IOSMModelBuilder& osmModelBuilder);
   virtual ~COSMParser();
 
-  bool ReadFile( const std::string& filename );
+  bool ReadMapFile( const std::string& fileName , const tOSMPrimitiveType primitivesToRead ) override;
 
 private:
 

@@ -31,9 +31,9 @@ COSMParser::~COSMParser()
 
 }
 
-bool COSMParser::ReadFile( const std::string& filename )
+bool COSMParser::ReadMapFile( const std::string& fileName , const tOSMPrimitiveType primitivesToRead )
 {
-  TiXmlDocument doc( filename.c_str() );
+  TiXmlDocument doc( fileName.c_str() );
 
   if ( doc.LoadFile() )
   {
@@ -57,6 +57,7 @@ bool COSMParser::ReadFile( const std::string& filename )
       m_osmModelBuilder.NotifyBoundingBox(left, top, right, bottom);
     }
 
+    if ( eNodes & primitivesToRead )
     {
       auto osmNodeElement(hRoot.FirstChild( s_OSMNodeXMLNode ).Element());
       while ( nullptr != osmNodeElement)
@@ -87,6 +88,7 @@ bool COSMParser::ReadFile( const std::string& filename )
       }
     }
 
+    if ( eWays & primitivesToRead )
     {
       auto osmWayElement(hRoot.FirstChild( s_OSMWayXMLNode ).Element());
       while ( nullptr != osmWayElement )
@@ -126,12 +128,8 @@ bool COSMParser::ReadFile( const std::string& filename )
 
 
     }
-
   }
-
-    
   return true;
 }
 
 }
-

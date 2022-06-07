@@ -5,7 +5,7 @@ namespace osmMachine
 {
 
 
-COSMWay::COSMWay( const int wayId)
+COSMWay::COSMWay( const int64_t wayId)
 : m_wayId(wayId)
 , m_length(0)
 {
@@ -41,7 +41,6 @@ void COSMWay::AddWaySegment( const CWaySegment& waySegment )
 
 void COSMWay::AddProperty( const std::string& key, const std::string& value )
 {
-  std::cout << "WayProp - " << key << "=" << value << std::endl;
   m_wayProperties.insert( tPropertyMap::value_type( key,value));
 }
 

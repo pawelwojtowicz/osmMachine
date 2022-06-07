@@ -33,7 +33,7 @@ CPBFReader::~CPBFReader()
 
 }
 
-bool CPBFReader::ReadFile( const std::string& fileName )
+bool CPBFReader::ReadMapFile( const std::string& fileName , const tOSMPrimitiveType primitivesToRead )
 {
   bool retVal(true);
 
@@ -41,7 +41,8 @@ bool CPBFReader::ReadFile( const std::string& fileName )
   if ( myfile.is_open() )
   {
     int headerSize(0);
-    char* buffer = new char[maxBlobSize]; 
+    char* buffer = new char[maxBlobSize];
+    char* outputBuffer = new char[maxBlobSize];
 
     while ( myfile.read((char *)&headerSize, sizeof(headerSize) ) )
     {
@@ -60,7 +61,6 @@ bool CPBFReader::ReadFile( const std::string& fileName )
         if ( dataBlob.has_zlib_data() )
         {
           size_t uncopressedDataSize( maxBlobSize );
-          char* outputBuffer = new char[uncopressedDataSize];
 
           if ( Z_OK  == uncompress( (Bytef*) outputBuffer, &uncopressedDataSize, (Bytef*)dataBlob.zlib_data().c_str() , dataBlob.zlib_data().size() ) )
           {
@@ -89,91 +89,104 @@ bool CPBFReader::ReadFile( const std::string& fileName )
                 {
                   const auto& primitiveGroup = osmData.primitivegroup(i);
 
-                  // extracting nodes
-                  int nodeCount(primitiveGroup.nodes_size());
-                  for ( int nodeIdx = 0 ; nodeIdx < nodeCount ; ++nodeIdx )
+                  if ( eNodes & primitivesToRead)
                   {
-                    const auto& node = primitiveGroup.nodes(nodeIdx);
-
-                    double lat = sNanoDegreeScale * ( latOffset + ( granularity * node.lat() ) );
-                    double lon = sNanoDegreeScale * ( lonOffset + ( granularity * node.lon() ) );
-
-                    tOSMNodeShPtr nodePtr = std::make_shared<COSMNode>( node.id(), DEG2RAD( lat), DEG2RAD(lon) );
-
-                    int keyCount(node.keys_size());
-                    for (int kIdx = 0 ; kIdx < keyCount ; ++kIdx )
+                    // extracting nodes
+                    int nodeCount(primitiveGroup.nodes_size());
+                    for ( int nodeIdx = 0 ; nodeIdx < nodeCount ; ++nodeIdx )
                     {
-                      nodePtr->addOSMNodeProperty( osmData.stringtable().s(node.keys(kIdx)), osmData.stringtable().s(node.vals(kIdx)) );
-                    }
+                      const auto& node = primitiveGroup.nodes(nodeIdx);
 
-                    m_osmModelBuilder.AddNode(nodePtr);
-                  }
+                      double lat = sNanoDegreeScale * ( latOffset + ( granularity * node.lat() ) );
+                      double lon = sNanoDegreeScale * ( lonOffset + ( granularity * node.lon() ) );
 
-                  // extracting dense nodes
-                  if ( primitiveGroup.has_dense() )
-                  {
-                    const auto& denseNodes( primitiveGroup.dense() );
+                      tOSMNodeShPtr nodePtr = std::make_shared<COSMNode>( node.id(), DEG2RAD( lat), DEG2RAD(lon) );
 
-                    int kvIdx(0);
-                    int kvCount(denseNodes.keys_vals_size());
-                    int nodesCount(denseNodes.id_size() );
-                    int64_t nodeId(0);
-                    int64_t nodeLat(0);
-                    int64_t nodeLon(0);
-
-                    for ( int nIdx = 0 ; nIdx < nodesCount ; ++nIdx )
-                    {
-                      nodeId += denseNodes.id(nIdx);
-                      nodeLat += denseNodes.lat(nIdx);
-                      nodeLon += denseNodes.lon(nIdx);
-
-                      double lat = sNanoDegreeScale * ( latOffset + ( granularity * nodeLat ) );
-                      double lon = sNanoDegreeScale * ( lonOffset + ( granularity * nodeLon ) );
-
-                      tOSMNodeShPtr nodePtr = std::make_shared<COSMNode>( nodeId, 
-                      DEG2RAD( lat ), 
-                      DEG2RAD( lon ) );
-
-                      int keyStringId( 0);
-                      do
+                      int keyCount(node.keys_size());
+                      for (int kIdx = 0 ; kIdx < keyCount ; ++kIdx )
                       {
-                        keyStringId =  denseNodes.keys_vals(kvIdx) ;
-                        ++kvIdx;
-                        if ( 0 != keyStringId )
-                        {
-                          int valueStringId( denseNodes.keys_vals(kvIdx) );
-                          ++kvIdx;
-                          nodePtr->addOSMNodeProperty( osmData.stringtable().s(keyStringId), osmData.stringtable().s(valueStringId) );
-                        }
-                      } while ( (0 != keyStringId) && ( kvIdx < kvCount) );
+                        nodePtr->addOSMNodeProperty( osmData.stringtable().s(node.keys(kIdx)), osmData.stringtable().s(node.vals(kIdx)) );
+                      }
 
                       m_osmModelBuilder.AddNode(nodePtr);
                     }
+
+                    // extracting dense nodes
+                    if ( primitiveGroup.has_dense() )
+                    {
+                      const auto& denseNodes( primitiveGroup.dense() );
+
+                      int kvIdx(0);
+                      int kvCount(denseNodes.keys_vals_size());
+                      int nodesCount(denseNodes.id_size() );
+                      int64_t nodeId(0);
+                      int64_t nodeLat(0);
+                      int64_t nodeLon(0);
+
+                      for ( int nIdx = 0 ; nIdx < nodesCount ; ++nIdx )
+                      {
+                        nodeId += denseNodes.id(nIdx);
+                        nodeLat += denseNodes.lat(nIdx);
+                        nodeLon += denseNodes.lon(nIdx);
+
+                        double lat = sNanoDegreeScale * ( latOffset + ( granularity * nodeLat ) );
+                        double lon = sNanoDegreeScale * ( lonOffset + ( granularity * nodeLon ) );
+
+                        tOSMNodeShPtr nodePtr = std::make_shared<COSMNode>( nodeId, 
+                        DEG2RAD( lat ), 
+                        DEG2RAD( lon ) );
+
+                        int keyStringId( 0);
+                        do
+                        {
+                          keyStringId =  denseNodes.keys_vals(kvIdx) ;
+                          ++kvIdx;
+                          if ( 0 != keyStringId )
+                          {
+                            int valueStringId( denseNodes.keys_vals(kvIdx) );
+                            ++kvIdx;
+                            nodePtr->addOSMNodeProperty( osmData.stringtable().s(keyStringId), osmData.stringtable().s(valueStringId) );
+                          }
+                        } while ( (0 != keyStringId) && ( kvIdx < kvCount) );
+
+                        m_osmModelBuilder.AddNode(nodePtr);
+                      }
+                    }
                   }
 
-                  //extracting ways
-                  int wayCount(primitiveGroup.ways_size() );
-                  for( size_t i = 0 ; i < wayCount ; ++i )
+                  if ( eWays & primitivesToRead )
                   {
-                    bool addToModel(false);
-                    const auto& pbfWay( primitiveGroup.ways(i));
-
-                    tWayShPtr ptrWay = std::make_shared<COSMWay>( pbfWay.id() );
-
-                    size_t tagCount( pbfWay.keys_size() );
-                    for ( size_t tagI = 0 ; tagI < tagCount ; ++tagI )
+                    //extracting ways
+                    int wayCount(primitiveGroup.ways_size() );
+                    for( size_t i = 0 ; i < wayCount ; ++i )
                     {
-                      ptrWay->AddProperty( osmData.stringtable().s( pbfWay.keys(tagI)) , osmData.stringtable().s(pbfWay.vals(tagI)));
-                    }
+                      bool addToModel(false);
+                      const auto& pbfWay( primitiveGroup.ways(i));
 
-                    if (addToModel)
-                    {
-                      m_osmModelBuilder.AddWay(ptrWay); 
-                      size_t waypointCount( pbfWay.refs_size() );
-                      for ( size_t wI = 0 ; wI < waypointCount ; ++ wI )
+                      tWayShPtr ptrWay = std::make_shared<COSMWay>( pbfWay.id() );
+
+                      size_t tagCount( pbfWay.keys_size() );
+                      for ( size_t tagI = 0 ; tagI < tagCount ; ++tagI )
                       {
-                        m_osmModelBuilder.AddWaypoint( pbfWay.id(), pbfWay.refs(wI));
-                      }   
+                        if ( !addToModel && ("highway" == osmData.stringtable().s( pbfWay.keys(tagI)) ) )
+                        {
+                          addToModel = true;
+                        }
+                        ptrWay->AddProperty( osmData.stringtable().s( pbfWay.keys(tagI)) , osmData.stringtable().s(pbfWay.vals(tagI)));
+                      }
+
+                      if (addToModel)
+                      {
+                        m_osmModelBuilder.AddWay(ptrWay); 
+                        size_t waypointCount( pbfWay.refs_size() );
+                        int64_t wayPointRef(0);
+                        for ( size_t wI = 0 ; wI < waypointCount ; ++ wI )
+                        {
+                          wayPointRef += pbfWay.refs(wI);
+
+                          m_osmModelBuilder.AddWaypoint( pbfWay.id(), wayPointRef );
+                        }   
+                      }
                     }
                   }
                 }
@@ -188,7 +201,6 @@ bool CPBFReader::ReadFile( const std::string& fileName )
               cout << "Other option" << endl;
             }
           }
-          delete[] outputBuffer;
         } else //if ( dataBlob.has_raw() )
         {
           cout << " raw data " << endl;
@@ -199,7 +211,9 @@ bool CPBFReader::ReadFile( const std::string& fileName )
         cout << "finishing" << endl;
       }
     }
+    delete[] outputBuffer;
     delete[] buffer;
+    myfile.close();
   }
   return retVal;
 }

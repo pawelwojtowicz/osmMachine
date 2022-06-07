@@ -1,5 +1,5 @@
 #include <CPBFReader.h>
-#include <IOSMModelBuilder.h>
+#include <COSMModelBuilder.h>
 #include <iostream>
 #include <COSMNode.h>
 
@@ -39,9 +39,13 @@ private:
 
 int main( int argc, char** argv)
 {
-  CModelBuilder modelBuilder;
+  osmMachine::COSMModelBuilder modelBuilder;
   osmMachine::CPBFReader reader(modelBuilder);
 
-  reader.ReadFile("/home/ibisdev/swietokrzyskie-latest.osm.pbf");
+  reader.ReadMapFile("/home/ibisdev/swietokrzyskie-latest.osm.pbf", osmMachine::eNodes );
+  reader.ReadMapFile("/home/ibisdev/swietokrzyskie-latest.osm.pbf", osmMachine::eWays );
+  cout << "Done" << endl;
+  modelBuilder.CleanNodes();
+  while(1) {};
   return 0;
 }

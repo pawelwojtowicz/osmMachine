@@ -12,7 +12,7 @@ class COSMWay
   using tWaySegments = std::vector<CWaySegment>;
   using tPropertyMap = std::map<std::string, std::string>;
 public:
-  COSMWay( const int wayId);
+  COSMWay( const int64_t wayId);
   virtual ~COSMWay();
 
   void AddWaySegment( const CWaySegment& waySegment );
@@ -21,9 +21,11 @@ public:
 
   void AddProperty( const std::string& key, const std::string& value );
 
+  inline int64_t GetId() const { return m_wayId; } ;
+
 private:
   //osm way id
-  int m_wayId;
+  int64_t m_wayId;
 
   //the vector of all of the shapepoints
   tWaySegments m_waySegments;
