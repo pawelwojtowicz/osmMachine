@@ -1,15 +1,15 @@
 #pragma once
+#include "OSMCore.h"
 #include <CGeoPoint.h>
 #include <memory>
-#include <map>
 
 namespace osmMachine
 {
 
 class COSMNode : public CGeoPoint
 {
-  using tPropertyMap = std::map<std::string, std::string>;
 public:
+  COSMNode( const int64_t osmNodeId );
   COSMNode( const int64_t osmNodeId, const double lat, const double lon );
   virtual ~COSMNode();
 

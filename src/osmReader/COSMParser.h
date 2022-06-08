@@ -12,6 +12,9 @@ public:
   COSMParser(IOSMModelBuilder& osmModelBuilder);
   virtual ~COSMParser();
 
+  virtual void ConfigureWayFilter( const tFilterSettings& properties ) override ;
+
+
   virtual bool OpenFile( const std::string& filename ) override;
 
   virtual bool ReadOSMPrimitives( const tOSMPrimitiveType primitivesToRead ) override;

@@ -37,6 +37,11 @@ CPBFReader::~CPBFReader()
     delete[] m_fileBuffer;
 }
 
+void CPBFReader::ConfigureWayFilter( const tFilterSettings& properties )
+{
+  m_wayFilterSettings = properties;  
+}
+
 bool CPBFReader::OpenFile( const std::string& filename )
 {
   m_pbfFilestreamPtr = std::make_unique<std::ifstream>(filename, std::ios::binary);
@@ -183,11 +188,15 @@ bool CPBFReader::ReadOSMPrimitives( const tOSMPrimitiveType primitivesToRead )
                       size_t tagCount( pbfWay.keys_size() );
                       for ( size_t tagI = 0 ; tagI < tagCount ; ++tagI )
                       {
-                        if ( !addToModel && ("highway" == osmData.stringtable().s( pbfWay.keys(tagI)) ) )
+                        const auto& propertyKey( osmData.stringtable().s( pbfWay.keys(tagI) ) );
+                        const auto& propertyValue(osmData.stringtable().s(pbfWay.vals(tagI) ) );
+                      
+                        if ( !addToModel && EvaluteWayProperty( propertyKey, propertyValue) )
                         {
+                          cout << propertyKey << "==" << propertyValue << endl;
                           addToModel = true;
                         }
-                        ptrWay->AddProperty( osmData.stringtable().s( pbfWay.keys(tagI)) , osmData.stringtable().s(pbfWay.vals(tagI)));
+                        ptrWay->AddProperty( propertyKey , propertyValue );
                       }
 
                       if (addToModel)
@@ -229,5 +238,19 @@ bool CPBFReader::ReadOSMPrimitives( const tOSMPrimitiveType primitivesToRead )
   }
   return retVal;
 }
+
+bool CPBFReader::EvaluteWayProperty( const std::string& key, const std::string& value )
+{
+  bool toBeAdded(false);
+
+  for( auto iter = m_wayFilterSettings.begin() ; ( m_wayFilterSettings.end() != iter) && (!toBeAdded);  ++iter   )
+  {
+    toBeAdded = ( key == iter->first ) && ( iter->second.empty() || value == iter->second );
+  }
+
+  return toBeAdded;
+
+}
+
 
 }

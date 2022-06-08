@@ -4,6 +4,13 @@
 
 namespace osmMachine
 {
+COSMNode::COSMNode( const int64_t osmNodeId )
+: CGeoPoint( )
+, m_nodeId( osmNodeId )
+{
+
+}
+
 
 COSMNode::COSMNode( const int64_t osmNodeId, const double lat, const double lon )
 : CGeoPoint( lat, lon )

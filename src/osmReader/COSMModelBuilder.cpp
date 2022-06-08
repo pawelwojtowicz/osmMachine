@@ -34,6 +34,11 @@ bool COSMModelBuilder::ReadOSMData( const std::string& filename)
 
   if (mapReader)
   {
+    IOSMMapFileReader::tFilterSettings wayFilterSettings;
+
+    wayFilterSettings.push_back( std::make_pair("highway", ""));
+    mapReader->ConfigureWayFilter(wayFilterSettings);
+
     mapReader->OpenFile(filename);
 
     mapReader->ReadOSMPrimitives( eAll );
