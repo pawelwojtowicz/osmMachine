@@ -1,4 +1,5 @@
 #pragma once
+#include <tinyxml.h>
 #include "IOSMMapFileReader.h"
 #include "IOSMModelBuilder.h"
 
@@ -11,9 +12,14 @@ public:
   COSMParser(IOSMModelBuilder& osmModelBuilder);
   virtual ~COSMParser();
 
-  bool ReadMapFile( const std::string& fileName , const tOSMPrimitiveType primitivesToRead ) override;
+  virtual bool OpenFile( const std::string& filename ) override;
+
+  virtual bool ReadOSMPrimitives( const tOSMPrimitiveType primitivesToRead ) override;
 
 private:
+  TiXmlDocument m_xmlDocument;
+
+  TiXmlElement* m_rootElement;
 
   IOSMModelBuilder& m_osmModelBuilder;
 };

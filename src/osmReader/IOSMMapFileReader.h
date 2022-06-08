@@ -17,9 +17,11 @@ public:
   IOSMMapFileReader() = default;
   virtual ~IOSMMapFileReader() = default;
 
-  virtual bool ReadMapFile( const std::string& fileName , const tOSMPrimitiveType primitivesToRead ) = 0;
+  virtual bool OpenFile( const std::string& filename ) = 0;
 
-  
+  virtual bool ReadOSMPrimitives( const tOSMPrimitiveType primitivesToRead ) = 0;
+
+private:  
   IOSMMapFileReader(const IOSMMapFileReader&) = delete;
   IOSMMapFileReader& operator=(const IOSMMapFileReader&) = delete;
 };

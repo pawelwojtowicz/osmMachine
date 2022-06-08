@@ -1,5 +1,4 @@
 #include "COSMParser.h"
-#include <tinyxml.h>
 #include <COSMNode.h>
 #include <iostream>
 #include <iomanip>
@@ -21,7 +20,9 @@ static const char s_osmWayNdRefPropertyName[] = {"ref"};
 
 
 COSMParser::COSMParser(IOSMModelBuilder& osmModemBuilder)
-: m_osmModelBuilder(osmModemBuilder)
+: m_xmlDocument()
+, m_rootElement(nullptr)
+, m_osmModelBuilder(osmModemBuilder)
 {
 
 }
@@ -31,15 +32,20 @@ COSMParser::~COSMParser()
 
 }
 
-bool COSMParser::ReadMapFile( const std::string& fileName , const tOSMPrimitiveType primitivesToRead )
+bool COSMParser::OpenFile( const std::string& filename )
 {
-  TiXmlDocument doc( fileName.c_str() );
-
-  if ( doc.LoadFile() )
+  if (m_xmlDocument.LoadFile( filename ) )
   {
-    TiXmlHandle hDoc(&doc);
-    TiXmlElement* pElem(hDoc.FirstChildElement().Element());
-	  TiXmlHandle hRoot(pElem);
+    m_rootElement = m_xmlDocument.RootElement(); 
+  }
+  return false;
+}
+
+bool COSMParser::ReadOSMPrimitives( const tOSMPrimitiveType primitivesToRead )
+{
+  if ( nullptr != m_rootElement )
+  {
+	  TiXmlHandle hRoot(m_rootElement);
 
     auto bboxNode = hRoot.FirstChild( "bounds" ).Element();
     if ( nullptr != bboxNode )

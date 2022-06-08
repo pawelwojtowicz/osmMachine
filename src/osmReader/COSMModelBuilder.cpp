@@ -2,9 +2,13 @@
 #include "CPBFReader.h"
 #include "COSMParser.h"
 #include <iostream>
+#include <algorithm>
 
 namespace osmMachine
 {
+
+static const std::string osmFilenamePostfix(".osm");
+static const std::string pbfFilenamePostfix(".osm.pbf");
 
 COSMModelBuilder::COSMModelBuilder()
 {
@@ -17,9 +21,24 @@ COSMModelBuilder::~COSMModelBuilder()
 
 bool COSMModelBuilder::ReadOSMData( const std::string& filename)
 {
-  std::unique_ptr<IOSMMapFileReader> reader = std::make_unique<CPBFReader>(*this);
+  std::unique_ptr<IOSMMapFileReader> mapReader;
 
-  reader->ReadMapFile(filename, eAll );
+  if ( std::equal( osmFilenamePostfix.rbegin(), osmFilenamePostfix.rend(), filename.rbegin() ) )
+  {
+    mapReader = std::make_unique<COSMParser>(*this);
+  } 
+  else if ( std::equal( pbfFilenamePostfix.rbegin(), pbfFilenamePostfix.rend(), filename.rbegin() ) )
+  {
+    mapReader = std::make_unique<CPBFReader>(*this);
+  }
+
+  if (mapReader)
+  {
+    mapReader->OpenFile(filename);
+
+    mapReader->ReadOSMPrimitives( eAll );
+  }
+
 
 }
 

@@ -23,51 +23,66 @@ static constexpr int64_t sDflt_Granularity = 100;
 
 
 CPBFReader::CPBFReader( IOSMModelBuilder& osmModelBuilder)
-: m_osmModelBuilder( osmModelBuilder )
+: m_pbfFilestreamPtr()
+, m_fileBuffer( nullptr )
+, m_zlibBuffer( nullptr )
+, m_osmModelBuilder( osmModelBuilder )
 {
     
 }
 
 CPBFReader::~CPBFReader()
 {
-
+    delete[] m_zlibBuffer;
+    delete[] m_fileBuffer;
 }
 
-bool CPBFReader::ReadMapFile( const std::string& fileName , const tOSMPrimitiveType primitivesToRead )
+bool CPBFReader::OpenFile( const std::string& filename )
+{
+  m_pbfFilestreamPtr = std::make_unique<std::ifstream>(filename, std::ios::binary);
+  if ( m_pbfFilestreamPtr && m_pbfFilestreamPtr->is_open() )
+  {
+    m_fileBuffer = new char[maxBlobSize]; 
+    m_zlibBuffer = new char[maxBlobSize]; 
+    return true;
+  }
+
+  return false;
+}
+
+bool CPBFReader::ReadOSMPrimitives( const tOSMPrimitiveType primitivesToRead )
 {
   bool retVal(true);
 
-  std::ifstream myfile (fileName.c_str(), std::ios::binary);
-  if ( myfile.is_open() )
+  if ( m_pbfFilestreamPtr && m_pbfFilestreamPtr->is_open() )
   {
+    m_pbfFilestreamPtr->seekg(0,m_pbfFilestreamPtr->beg);
     int headerSize(0);
-    char* buffer = new char[maxBlobSize];
-    char* outputBuffer = new char[maxBlobSize];
 
-    while ( myfile.read((char *)&headerSize, sizeof(headerSize) ) )
+    while ( m_pbfFilestreamPtr->read((char *)&headerSize, sizeof(headerSize) ) )
     {
       headerSize = ntohl(headerSize);
 
-      myfile.read((char*)buffer, headerSize) ;
+      m_pbfFilestreamPtr->read((char*)m_fileBuffer, headerSize) ;
       BlobHeader blobHeader;
-      blobHeader.ParseFromArray(buffer, headerSize);
+      blobHeader.ParseFromArray(m_fileBuffer, headerSize);
 
       std::string dataType = blobHeader.type();
-      if ( myfile.read((char*)buffer, blobHeader.datasize() ) )
+      if ( m_pbfFilestreamPtr->read((char*)m_fileBuffer, blobHeader.datasize() ) )
       {
         Blob dataBlob; 
-        dataBlob.ParseFromArray(buffer, blobHeader.datasize());
+        dataBlob.ParseFromArray(m_fileBuffer, blobHeader.datasize());
 
         if ( dataBlob.has_zlib_data() )
         {
           size_t uncopressedDataSize( maxBlobSize );
 
-          if ( Z_OK  == uncompress( (Bytef*) outputBuffer, &uncopressedDataSize, (Bytef*)dataBlob.zlib_data().c_str() , dataBlob.zlib_data().size() ) )
+          if ( Z_OK  == uncompress( (Bytef*) m_zlibBuffer, &uncopressedDataSize, (Bytef*)dataBlob.zlib_data().c_str() , dataBlob.zlib_data().size() ) )
           {
             if (sBlobType_OSMHeader == dataType )
             {
               HeaderBlock headerBlock;
-              if (headerBlock.ParseFromArray( outputBuffer, uncopressedDataSize) )
+              if (headerBlock.ParseFromArray( m_zlibBuffer, uncopressedDataSize) )
               {
                 m_osmModelBuilder.NotifyBoundingBox( sNanoDegreeScale * headerBlock.bbox().left(),
                 sNanoDegreeScale * headerBlock.bbox().top(),
@@ -78,7 +93,7 @@ bool CPBFReader::ReadMapFile( const std::string& fileName , const tOSMPrimitiveT
             } else if ( sBlobType_OSMData == dataType )
             {
               PrimitiveBlock osmData;
-              if ( osmData.ParseFromArray( outputBuffer, uncopressedDataSize) )
+              if ( osmData.ParseFromArray( m_zlibBuffer, uncopressedDataSize) )
               {   
                 int64_t latOffset(osmData.has_lat_offset() ? osmData.lat_offset() : sDflt_LatOffset);
                 int64_t lonOffset(osmData.has_lon_offset() ? osmData.lon_offset() : sDflt_LonOffset);
@@ -211,9 +226,6 @@ bool CPBFReader::ReadMapFile( const std::string& fileName , const tOSMPrimitiveT
         cout << "finishing" << endl;
       }
     }
-    delete[] outputBuffer;
-    delete[] buffer;
-    myfile.close();
   }
   return retVal;
 }
