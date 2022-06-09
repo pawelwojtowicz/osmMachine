@@ -8,6 +8,8 @@ add_library( osmReader SHARED
     COSMParser.h
     COSMModelBuilder.cpp
     COSMModelBuilder.h
+    COSMMapFileReader.cpp
+    COSMMapFileReader.h
     osmFormat.pb.cc 
     osmFOrmat.pb.h
     fileFormat.pb.cc

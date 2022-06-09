@@ -32,12 +32,6 @@ COSMParser::~COSMParser()
 
 }
 
-void COSMParser::ConfigureWayFilter( const tFilterSettings& properties )
-{
-  
-}
-
-
 bool COSMParser::OpenFile( const std::string& filename )
 {
   if (m_xmlDocument.LoadFile( filename ) )

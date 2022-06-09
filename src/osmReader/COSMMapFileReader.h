@@ -12,21 +12,28 @@ enum tOSMPrimitiveType
   eAll = eNodes | eWays | eRelations
 };
 
-class IOSMMapFileReader
+class COSMMapFileReader
 {
 public:
   using tFilterSettings = std::vector<std::pair<std::string, std::string>>;
-  IOSMMapFileReader() = default;
-  virtual ~IOSMMapFileReader() = default;
 
-  virtual void ConfigureWayFilter( const tFilterSettings& properties ) = 0;
+  COSMMapFileReader();
+  virtual ~COSMMapFileReader() ;
+
+  virtual void ConfigureWayFilter( const tFilterSettings& properties );
 
   virtual bool OpenFile( const std::string& filename ) = 0;
 
   virtual bool ReadOSMPrimitives( const tOSMPrimitiveType primitivesToRead ) = 0;
 
+protected:
+    bool EvaluteWayProperty( const std::string& key, const std::string& value );
+
 private:  
-  IOSMMapFileReader(const IOSMMapFileReader&) = delete;
-  IOSMMapFileReader& operator=(const IOSMMapFileReader&) = delete;
+  COSMMapFileReader(const COSMMapFileReader&) = delete;
+  COSMMapFileReader& operator=(const COSMMapFileReader&) = delete;
+
+  tFilterSettings m_wayFilterSettings;
+
 };
 }

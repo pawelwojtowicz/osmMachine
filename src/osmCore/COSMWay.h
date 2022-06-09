@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include <map>
 #include <memory>
 #include "COSMNode.h"
 #include "CWaySegment.h"
@@ -10,7 +9,7 @@ namespace osmMachine
 class COSMWay
 {
   using tWaySegments = std::vector<CWaySegment>;
-  using tPropertyMap = std::map<std::string, std::string>;
+
 public:
   COSMWay( const int64_t wayId);
   virtual ~COSMWay();

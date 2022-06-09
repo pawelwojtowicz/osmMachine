@@ -1,19 +1,16 @@
 #pragma once
 #include <tinyxml.h>
-#include "IOSMMapFileReader.h"
+#include "COSMMapFileReader.h"
 #include "IOSMModelBuilder.h"
 
 namespace osmMachine
 {
 
-class COSMParser : public IOSMMapFileReader
+class COSMParser : public COSMMapFileReader
 {
 public:
   COSMParser(IOSMModelBuilder& osmModelBuilder);
   virtual ~COSMParser();
-
-  virtual void ConfigureWayFilter( const tFilterSettings& properties ) override ;
-
 
   virtual bool OpenFile( const std::string& filename ) override;
 

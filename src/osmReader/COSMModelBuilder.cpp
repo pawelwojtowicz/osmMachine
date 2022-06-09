@@ -21,7 +21,7 @@ COSMModelBuilder::~COSMModelBuilder()
 
 bool COSMModelBuilder::ReadOSMData( const std::string& filename)
 {
-  std::unique_ptr<IOSMMapFileReader> mapReader;
+  std::unique_ptr<COSMMapFileReader> mapReader;
 
   if ( std::equal( osmFilenamePostfix.rbegin(), osmFilenamePostfix.rend(), filename.rbegin() ) )
   {
@@ -34,7 +34,7 @@ bool COSMModelBuilder::ReadOSMData( const std::string& filename)
 
   if (mapReader)
   {
-    IOSMMapFileReader::tFilterSettings wayFilterSettings;
+    COSMMapFileReader::tFilterSettings wayFilterSettings;
 
     wayFilterSettings.push_back( std::make_pair("highway", ""));
     mapReader->ConfigureWayFilter(wayFilterSettings);
