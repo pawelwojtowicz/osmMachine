@@ -41,7 +41,40 @@ bool COSMModelBuilder::ReadOSMData( const std::string& filename)
 
     mapReader->OpenFile(filename);
 
-    mapReader->ReadOSMPrimitives( eAll );
+    std::cout << "Reading Ways" << std::endl;
+    mapReader->ReadOSMPrimitives( eWays );
+
+    std::cout << "Reading nodes" << std::endl;
+    mapReader->ReadOSMPrimitives( eNodes );
+
+    std::cout << "Done reading" << std::endl;
+
+
+    for ( auto wayIter : m_id2WayMap )
+    {
+      auto wayPtr = wayIter.second;
+
+      for ( const auto& waySegment : wayPtr->GetWaySegments() )
+      {
+        if ( waySegment.getBeginNode()->isValid() )
+        {
+          std::cout << "+";
+        }
+        else
+        {
+          std::cout << "-";
+        }
+        if ( waySegment.getEndNode()->isValid() )
+        {
+          std::cout << "+";
+        }
+        else
+        {
+          std::cout << "-";
+        }
+      }
+      std::cout << std::endl;
+    }
   }
 
 
@@ -62,7 +95,12 @@ void COSMModelBuilder::CleanNodes()
 
 void COSMModelBuilder::AddNode( tOSMNodeShPtr& ptrNode )
 {
-  m_id2NodeMap.insert(tNodeId2NodeMap::value_type( ptrNode->getId(), ptrNode ) ) ;
+  auto storedNodeObjectIter = m_id2NodeMap.find( ptrNode->getId() );
+
+  if ( m_id2NodeMap.end() != storedNodeObjectIter )
+  {
+    *(storedNodeObjectIter->second) = *(ptrNode);
+  }
 }
 
 void COSMModelBuilder::AddWay( tWayShPtr& ptrWay )
@@ -71,32 +109,30 @@ void COSMModelBuilder::AddWay( tWayShPtr& ptrWay )
 
   m_currentWay = ptrWay;
   m_prevGeoPoint.reset();
-  std::cout << std::endl << "NewWay-";
-
 }
 
 void COSMModelBuilder::AddWaypoint( const int64_t& wayId, const int64_t& nodeId )
 {
   if ( m_currentWay && ( wayId == m_currentWay->GetId() ) )
   {
+    tOSMNodeShPtr nodePtr;
     auto waypointIter = m_id2NodeMap.find( nodeId );
     if ( m_id2NodeMap.end() != waypointIter )
     {
-      if ( m_prevGeoPoint )
-      {
-        std::cout << "X";
-        m_currentWay->AddWaySegment( CWaySegment( m_prevGeoPoint, waypointIter->second ) );
-      }
-      m_prevGeoPoint = waypointIter->second;
+      nodePtr = waypointIter->second;
     }
     else
     {
-      std::cout << "O";
+      nodePtr = std::make_shared<COSMNode>(nodeId );
+
+      m_id2NodeMap.insert( tNodeId2NodeMap::value_type( nodeId, nodePtr) );
     }
-  }
-  else
-  {
-    std::cout << std::endl;
+
+    if ( m_prevGeoPoint )
+    {
+      m_currentWay->AddWaySegment( CWaySegment( m_prevGeoPoint, nodePtr ) );
+    }
+    m_prevGeoPoint = nodePtr;
   }
 }
 

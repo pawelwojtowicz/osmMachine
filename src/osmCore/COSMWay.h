@@ -22,6 +22,8 @@ public:
 
   inline int64_t GetId() const { return m_wayId; } ;
 
+  inline const tWaySegments& GetWaySegments() const { return m_waySegments; };
+  
 private:
   //osm way id
   int64_t m_wayId;

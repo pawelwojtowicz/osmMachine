@@ -56,7 +56,7 @@ bool CPBFReader::ReadOSMPrimitives( const tOSMPrimitiveType primitivesToRead )
 
   if ( m_pbfFilestreamPtr && m_pbfFilestreamPtr->is_open() )
   {
-    m_pbfFilestreamPtr->seekg(0,m_pbfFilestreamPtr->beg);
+    m_pbfFilestreamPtr->seekg(0, std::ios::beg);
     int headerSize(0);
 
     while ( m_pbfFilestreamPtr->read((char *)&headerSize, sizeof(headerSize) ) )
@@ -188,7 +188,6 @@ bool CPBFReader::ReadOSMPrimitives( const tOSMPrimitiveType primitivesToRead )
                       
                         if ( !addToModel && EvaluteWayProperty( propertyKey, propertyValue) )
                         {
-                          cout << propertyKey << "==" << propertyValue << endl;
                           addToModel = true;
                         }
                         ptrWay->AddProperty( propertyKey , propertyValue );
@@ -230,6 +229,8 @@ bool CPBFReader::ReadOSMPrimitives( const tOSMPrimitiveType primitivesToRead )
         cout << "finishing" << endl;
       }
     }
+  
+    m_pbfFilestreamPtr->clear();
   }
   return retVal;
 }
