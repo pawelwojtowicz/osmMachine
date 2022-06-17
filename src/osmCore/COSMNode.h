@@ -24,6 +24,4 @@ private:
 
   tPropertyMap m_nodeProperties;
 };
-
-using tOSMNodeShPtr = std::shared_ptr<COSMNode>;
 }

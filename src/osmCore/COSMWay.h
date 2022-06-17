@@ -42,6 +42,4 @@ private:
   std::shared_ptr<COSMNode> m_wayEnd;
 };
 
-using tWayShPtr = std::shared_ptr<COSMWay>;
-
 }

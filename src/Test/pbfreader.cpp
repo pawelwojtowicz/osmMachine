@@ -9,7 +9,6 @@ int main( int argc, char** argv)
   osmMachine::COSMModelBuilder modelBuilder;
   modelBuilder.ReadOSMData("/home/ibisdev/swietokrzyskie-latest.osm.pbf");
   cout << "Done" << endl;
-  modelBuilder.CleanNodes();
   while(1) {};
   return 0;
 }

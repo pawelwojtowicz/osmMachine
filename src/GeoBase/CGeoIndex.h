@@ -2,6 +2,8 @@
 
 namespace osmMachine
 {
+using tGeoIndex = unsigned int;
+
 class CGeoIndex
 {
 public:
@@ -10,7 +12,7 @@ public:
 
     int Initialize( double latBegin, double lonBegin, double latEnd, double lonEnd, int zoomLevel );
 
-    int CalculateIndex( double lat, double lon ) const;
+    tGeoIndex CalculateIndex( double lat, double lon ) const;
 private:
     int m_zoomLevel;
     int m_xMin;

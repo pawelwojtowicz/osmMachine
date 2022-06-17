@@ -5,7 +5,8 @@ include_directories(${GTEST_INCLUDE_DIRS})
 add_executable( osmMachineTests
   GeoBase_CGeoPoint.cpp
   GeoBase_CGeoUtils.cpp
-  GeoBase_CTileUtils.cpp)
+  GeoBase_CTileUtils.cpp
+  osmCore_CGeoBucket.cpp )
 
 target_link_libraries(osmMachineTests GeoBase ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} pthread )
 add_dependencies( osmMachineTests GeoBase )
