@@ -1,5 +1,6 @@
 import distHelper
 import folium
+import math
 import pandas as pd
 
 LAT = 2
@@ -18,20 +19,26 @@ mapCenterLon = gpsTraceData['longitude'].mean()
 #initialize the OSM HTML renderer
 map = folium.Map(location=[mapCenterLat, mapCenterLon])
 
-prevGeoPoint = None
+prevLat = 0
+prevLon = 0
+
+distDriven = 0
+error = 0
 
 for index, geoPoint in gpsTraceData.iterrows():
     text = "spd=" + str(geoPoint['speed(m/s)'])
+    if prevLat != 0:
+      distToPrev = distHelper.twoPointDistR(prevLon,prevLat,
+                                          geoPoint['longitude'],geoPoint['latitude'])
+      distDriven = distDriven + distToPrev;
+      error = error + abs(geoPoint['speed(m/s)'] - distToPrev)
+      text += " dd=" + str(distToPrev) + "d=" + str(geoPoint['speed(m/s)'] - distToPrev)
+    prevLon = geoPoint['longitude']
+    prevLat = geoPoint['latitude']
 
-    print(index)
-#    if ( prevGeoPoint != None):
-#      print ("temp")
-#      distToPrev = distHelper.twoPointDistR(prevGeoPoint['longitude'],prevGeoPoint['latitude'],
-#                                            geoPoint['longitude'],geoPoint['latitude']
-#                                           )
- #     print ("temp")
- #     text += " dd=" + str(distToPrev)
-    prevGeoPoint = geoPoint
     folium.Marker( [geoPoint['latitude'], geoPoint['longitude']], popup=(str(index)), tooltip= text ).add_to(map)
 
 map.save("gpsTrace.html") 
+
+print( "Driven distance =" + str(distDriven)+ "m")
+print( "Error during the driving=" + str(error) + "m, in percent:" + str((error/distDriven)*100))
