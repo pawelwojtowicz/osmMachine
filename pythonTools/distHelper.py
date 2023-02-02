@@ -1,10 +1,11 @@
 import math
 
-R = 6373000.0
+R = 6371000.0
 
 xIdx = "lon"
 yIdx = "lat"
 
+# P2P distance from two geo points given with lat and long in degrees
 def twoPointDistR( lon1, lat1, lon2, lat2):
   dlon = math.radians(lon2) - math.radians(lon1);
   dlat = math.radians(lat2) - math.radians(lat1);
@@ -62,7 +63,8 @@ def distanceFromLine( xx0, yy0, xx1, yy1, xx2, yy2 ):
   
   return result
   
-  
+
+# Calculates the distance of the point from the straight line that is passing through linePoint1 and linePoint2  
 def distanceFromShape( point, linePoint1, linePoint2 ):
   x0 = math.radians(point[xIdx])
   y0 = math.radians(point[yIdx])
@@ -72,3 +74,19 @@ def distanceFromShape( point, linePoint1, linePoint2 ):
   y2 = math.radians(linePoint2[yIdx])
 
   return distanceFromLine( x0,y0,x1,y1,x2,y2 ) 
+
+# Calculates a point, that is placed on the straight line between shapeBegin&shapeEnd 
+# in the distance of distanceOnLine m from the shapeBegin
+def CalculatePointFromBegin( shapeBegin, shapeEnd, distanceOnLine):
+  e2eDistance = twoPointDistR(shapeBegin["lon"],shapeBegin["lat"],shapeEnd["lon"],shapeEnd["lat"])
+  dLat = shapeEnd["lat"] - shapeBegin["lat"] 
+  dLon = shapeEnd["lon"] - shapeBegin["lon"]  
+  print(dLon)
+  print(dLat)
+  distanceRatio = distanceOnLine / e2eDistance
+
+  geoPoint = {}
+  geoPoint["lat"] = shapeBegin["lat"] + distanceRatio*dLat
+  geoPoint["lon"] = shapeBegin["lon"] + distanceRatio*dLon
+
+  return geoPoint
