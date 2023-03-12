@@ -11,7 +11,7 @@ add_library( osmReader SHARED
     COSMMapFileReader.cpp
     COSMMapFileReader.h
     osmFormat.pb.cc 
-    osmFOrmat.pb.h
+    osmFormat.pb.h
     fileFormat.pb.cc
     fileFormat.pb.h
 )
