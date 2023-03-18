@@ -7,7 +7,6 @@ using namespace std;
 int main( int argc, char** argv)
 {
   osmMachine::COSMModelBuilder modelBuilder;
-  modelBuilder.ReadOSMData("/home/ibisdev/map.osm");
-  while(1) {};
+  modelBuilder.ReadOSMData("mapaZlotoryja.osm");
   return 0;
 }

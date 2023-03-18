@@ -47,7 +47,12 @@ void COSMWay::AddProperty( const std::string& key, const std::string& value )
 
 void COSMWay::Print()
 {
-
+  std::cout << "PRoperties: [";
+  for (auto property : m_wayProperties)
+  {
+    std::cout << property.first << "=" << property.second << "|";
+  }
+  std::cout << std::endl;
 }
 
 }

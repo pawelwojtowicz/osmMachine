@@ -1,6 +1,7 @@
 #include "COSMModelBuilder.h"
 #include "CPBFReader.h"
 #include "COSMParser.h"
+#include "COSMNetworkValidator.h"
 #include <iostream>
 #include <algorithm>
 
@@ -36,7 +37,19 @@ bool COSMModelBuilder::ReadOSMData( const std::string& filename)
   {
     COSMMapFileReader::tFilterSettings wayFilterSettings;
 
-    wayFilterSettings.push_back( std::make_pair("highway", ""));
+    //https://wiki.openstreetmap.org/wiki/Key:highway
+    wayFilterSettings.push_back( std::make_pair("highway", "motorway"));
+    wayFilterSettings.push_back( std::make_pair("highway", "trunk"));
+    wayFilterSettings.push_back( std::make_pair("highway", "primary"));
+    wayFilterSettings.push_back( std::make_pair("highway", "secondary"));
+    wayFilterSettings.push_back( std::make_pair("highway", "tertiary"));
+    wayFilterSettings.push_back( std::make_pair("highway", "residential"));
+    wayFilterSettings.push_back( std::make_pair("highway", "motorway_link"));
+    wayFilterSettings.push_back( std::make_pair("highway", "trunk_link"));
+    wayFilterSettings.push_back( std::make_pair("highway", "primary_link"));
+    wayFilterSettings.push_back( std::make_pair("highway", "secondary_link"));
+    wayFilterSettings.push_back( std::make_pair("highway", "tertiary_link"));
+
     mapReader->ConfigureWayFilter(wayFilterSettings);
 
     mapReader->OpenFile(filename);
@@ -49,35 +62,13 @@ bool COSMModelBuilder::ReadOSMData( const std::string& filename)
 
     std::cout << "Done reading" << std::endl;
 
-
-    for ( auto wayIter : m_id2WayMap )
-    {
-      auto wayPtr = wayIter.second;
-
-      for ( const auto& waySegment : wayPtr->GetWaySegments() )
-      {
-        if ( waySegment.getBeginNode()->isValid() )
-        {
-          std::cout << "+";
-        }
-        else
-        {
-          std::cout << "-";
-        }
-        if ( waySegment.getEndNode()->isValid() )
-        {
-          std::cout << "+";
-        }
-        else
-        {
-          std::cout << "-";
-        }
-      }
-      std::cout << std::endl;
-    }
+    BuildRoutingNetwork();
   }
 
 
+  COSMNetworkValidator validator(m_routingNetwork);
+
+  return validator.Validate();
 }
 
 void COSMModelBuilder::NotifyBoundingBox( const double left, const double top, const double right, const double bottom )
@@ -87,17 +78,17 @@ void COSMModelBuilder::NotifyBoundingBox( const double left, const double top, c
 
 void COSMModelBuilder::CleanNodes()
 {
-  m_id2NodeMap.clear();
-  m_id2WayMap.clear();
+  m_routingNetwork.id2NodeMap.clear();
+  m_routingNetwork.id2WayMap.clear();
 }
 
 
 
 void COSMModelBuilder::AddNode( tOSMNodeShPtr& ptrNode )
 {
-  auto storedNodeObjectIter = m_id2NodeMap.find( ptrNode->getId() );
+  auto storedNodeObjectIter = m_routingNetwork.id2NodeMap.find( ptrNode->getId() );
 
-  if ( m_id2NodeMap.end() != storedNodeObjectIter )
+  if ( m_routingNetwork.id2NodeMap.end() != storedNodeObjectIter )
   {
     *(storedNodeObjectIter->second) = *(ptrNode);
   }
@@ -105,7 +96,7 @@ void COSMModelBuilder::AddNode( tOSMNodeShPtr& ptrNode )
 
 void COSMModelBuilder::AddWay( tWayShPtr& ptrWay )
 {
-  m_id2WayMap.insert( tWayId2WayMap::value_type( ptrWay->GetId(), ptrWay));
+  m_routingNetwork.id2WayMap.insert( tWayId2WayMap::value_type( ptrWay->GetId(), ptrWay));
 
   m_currentWay = ptrWay;
   m_prevGeoPoint.reset();
@@ -116,8 +107,8 @@ void COSMModelBuilder::AddWaypoint( const int64_t& wayId, const int64_t& nodeId 
   if ( m_currentWay && ( wayId == m_currentWay->GetId() ) )
   {
     tOSMNodeShPtr nodePtr;
-    auto waypointIter = m_id2NodeMap.find( nodeId );
-    if ( m_id2NodeMap.end() != waypointIter )
+    auto waypointIter = m_routingNetwork.id2NodeMap.find( nodeId );
+    if ( m_routingNetwork.id2NodeMap.end() != waypointIter )
     {
       nodePtr = waypointIter->second;
     }
@@ -125,7 +116,7 @@ void COSMModelBuilder::AddWaypoint( const int64_t& wayId, const int64_t& nodeId 
     {
       nodePtr = std::make_shared<COSMNode>(nodeId );
 
-      m_id2NodeMap.insert( tNodeId2NodeMap::value_type( nodeId, nodePtr) );
+      m_routingNetwork.id2NodeMap.insert( tNodeId2NodeMap::value_type( nodeId, nodePtr) );
     }
 
     if ( m_prevGeoPoint )
@@ -133,8 +124,92 @@ void COSMModelBuilder::AddWaypoint( const int64_t& wayId, const int64_t& nodeId 
       m_currentWay->AddWaySegment( CWaySegment( m_prevGeoPoint, nodePtr ) );
     }
     m_prevGeoPoint = nodePtr;
+
+    auto nodeIter = m_node2wayListsMap.find(nodeId );
+    if ( m_node2wayListsMap.end() != nodeIter )
+    {
+      nodeIter->second.push_back( m_currentWay );
+    }
+    else
+    {
+      m_node2wayListsMap.insert(tNodeId2WayListsMap::value_type(nodeId, { m_currentWay }));
+    }
   }
 }
 
+void COSMModelBuilder::BuildRoutingNetwork()
+{
+  for ( auto wayIter : m_routingNetwork.id2WayMap )
+  {
+    auto wayPtr = wayIter.second;
+    addWayToNodeRecord( wayPtr->GetBeginNode()->getId(), wayPtr );
+    addWayToNodeRecord( wayPtr->GetEndNode()->getId(), wayPtr );
+  }
+
+  std::cout << "Building the rest" << std::endl;
+
+  for ( auto nodeWayListIter : m_routingNetwork.nodeId2Ways)
+  {
+    auto nodeId = nodeWayListIter.first;
+    auto wayLists = nodeWayListIter.second;
+
+    int wayListsSize = wayLists.size();
+    if (  wayListsSize < 2 )
+    {
+      std::cout << "Node nalezy do tylu drog " << wayListsSize << " -- ";
+
+      for (auto way : wayLists )
+      {
+        if ( way->GetBeginNode()->getId() == nodeId )
+        {
+          std::cout << "Begin ";
+        }
+        if ( way->GetEndNode()->getId() == nodeId )
+        {
+          std::cout << "End ";
+        }
+
+        auto generalListIter = m_node2wayListsMap.find(nodeId);
+        if ( m_node2wayListsMap.end() != generalListIter)
+        {
+          auto listItIs = generalListIter->second;
+          std::cout << "so Much of ways: " << listItIs.size();
+          for (auto way2 : listItIs )
+          {
+            way2->Print();
+            if ( way2->GetBeginNode()->getId() == nodeId )
+            {
+              std::cout << "BeginXX ";
+            }
+            if ( way2->GetEndNode()->getId() == nodeId )
+            {
+              std::cout << "EndXX ";
+            }
+          }
+        }
+      }
+
+
+      std::cout << std::endl;
+    }
+
+  }
+
+}
+
+
+void COSMModelBuilder::addWayToNodeRecord( const int64_t& nodeId, tWayShPtr wayPtr)
+{
+  auto nodeWaysListIter = m_routingNetwork.nodeId2Ways.find(nodeId);
+
+  if ( m_routingNetwork.nodeId2Ways.end() == nodeWaysListIter )
+  {
+    m_routingNetwork.nodeId2Ways.insert( tNodeId2WayListsMap::value_type(nodeId, { wayPtr }) );
+  }
+  else
+  {
+    nodeWaysListIter->second.push_back( wayPtr) ;
+  }
+}
 
 }

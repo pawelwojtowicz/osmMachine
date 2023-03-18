@@ -1,14 +1,12 @@
 #pragma once
 #include "IOSMModelBuilder.h"
+#include <OSMRoutingNetwork.h>
 
 namespace osmMachine
 {
 
 class COSMModelBuilder : public IOSMModelBuilder
 {
-  using tNodeId2NodeMap = std::map< int64_t , tOSMNodeShPtr>;
-
-  using tWayId2WayMap = std::map< int64_t, tWayShPtr >;
 public:
   COSMModelBuilder();
   virtual ~COSMModelBuilder();
@@ -22,14 +20,17 @@ private:
   virtual void AddWay( tWayShPtr& ptrWay ) override;
   virtual void AddWaypoint( const int64_t& wayId, const int64_t& nodeId ) override;
 
+  void BuildRoutingNetwork();
+  void addWayToNodeRecord( const int64_t& nodeId, tWayShPtr wayPtr );
+
 
 private:
   COSMModelBuilder(const COSMModelBuilder&) = delete;
   COSMModelBuilder& operator=(const COSMModelBuilder&) = delete;
 
-  tNodeId2NodeMap m_id2NodeMap;
+  OSMRoutingNetwork m_routingNetwork;
 
-  tWayId2WayMap m_id2WayMap;
+  tNodeId2WayListsMap m_node2wayListsMap;
 
   tWayShPtr m_currentWay;
   tOSMNodeShPtr m_prevGeoPoint;

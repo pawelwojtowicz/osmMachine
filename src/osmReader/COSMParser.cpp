@@ -106,27 +106,37 @@ bool COSMParser::ReadOSMPrimitives( const tOSMPrimitiveType primitivesToRead )
 
         tWayShPtr ptrWay = std::make_shared<COSMWay>(wayId);
 
+        bool addToRoutingNetwork(false);
+
         auto osmTagElement(wayHandle.FirstChild( s_osmTagXMLNode ).Element());
         while( nullptr !=  osmTagElement )
         {
           std::string key( osmTagElement->Attribute( s_keyXmlProperty ) );
           std::string value ( osmTagElement->Attribute( s_valueXmlProperty ) );
 
+          if ( EvaluteWayProperty(key,value))
+          {
+            addToRoutingNetwork = true;
+          }
+
           ptrWay->AddProperty(key, value);
           osmTagElement = osmTagElement->NextSiblingElement( s_osmTagXMLNode );
         }
 
-        m_osmModelBuilder.AddWay(ptrWay);
-
-        auto osmWayNdElement(wayHandle.FirstChild( s_osmWayNdElement ).Element());
-        while( nullptr !=  osmWayNdElement )
+        if ( addToRoutingNetwork )
         {
-          int osmWayNodeId(0);
-          osmWayNdElement->QueryIntAttribute(s_osmWayNdRefPropertyName, &osmWayNodeId);
+          m_osmModelBuilder.AddWay(ptrWay);
 
-          m_osmModelBuilder.AddWaypoint( wayId, osmWayNodeId );
+          auto osmWayNdElement(wayHandle.FirstChild( s_osmWayNdElement ).Element());
+          while( nullptr !=  osmWayNdElement )
+          {
+            int osmWayNodeId(0);
+            osmWayNdElement->QueryIntAttribute(s_osmWayNdRefPropertyName, &osmWayNodeId);
 
-          osmWayNdElement = osmWayNdElement->NextSiblingElement( s_osmWayNdElement );
+            m_osmModelBuilder.AddWaypoint( wayId, osmWayNodeId );
+
+            osmWayNdElement = osmWayNdElement->NextSiblingElement( s_osmWayNdElement );
+          }
         }
         
         osmWayElement = osmWayElement->NextSiblingElement( s_OSMWayXMLNode );

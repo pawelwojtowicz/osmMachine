@@ -27,6 +27,8 @@ int CGeoIndex::Initialize( double minLat, double minLon, double maxLat, double m
   m_yMin = CTileUtils::gpsLat2TileY( minLat ,m_zoomLevel );
   m_dx = CTileUtils::gpsLon2TileX( maxLon ,m_zoomLevel ) - m_xMin;
   m_dy = CTileUtils::gpsLat2TileY( maxLat, m_zoomLevel ) - m_yMin;
+
+  return 0;
 }
 
 tGeoIndex CGeoIndex::CalculateIndex( double lat, double lon ) const

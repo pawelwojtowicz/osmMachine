@@ -24,6 +24,10 @@ public:
 
   inline const tWaySegments& GetWaySegments() const { return m_waySegments; };
   
+  inline const tOSMNodeShPtr GetBeginNode() const { return m_wayBegin; };
+
+  inline const tOSMNodeShPtr GetEndNode() const { return m_wayEnd; };
+
 private:
   //osm way id
   int64_t m_wayId;
@@ -37,9 +41,9 @@ private:
   //storing the TAG properties
   tPropertyMap m_wayProperties;
 
-  std::shared_ptr<COSMNode> m_wayBegin;
+  tOSMNodeShPtr m_wayBegin;
 
-  std::shared_ptr<COSMNode> m_wayEnd;
+  tOSMNodeShPtr m_wayEnd;
 };
 
 }

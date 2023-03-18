@@ -10,6 +10,8 @@ add_library( osmReader SHARED
     COSMModelBuilder.h
     COSMMapFileReader.cpp
     COSMMapFileReader.h
+    COSMNetworkValidator.cpp
+    COSMNetworkValidator.h
     osmFormat.pb.cc 
     osmFormat.pb.h
     fileFormat.pb.cc
