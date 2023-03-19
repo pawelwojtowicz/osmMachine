@@ -49,6 +49,7 @@ bool COSMModelBuilder::ReadOSMData( const std::string& filename)
     wayFilterSettings.push_back( std::make_pair("highway", "primary_link"));
     wayFilterSettings.push_back( std::make_pair("highway", "secondary_link"));
     wayFilterSettings.push_back( std::make_pair("highway", "tertiary_link"));
+    wayFilterSettings.push_back( std::make_pair("highway", "give_way"));
 
     mapReader->ConfigureWayFilter(wayFilterSettings);
 
@@ -154,43 +155,45 @@ void COSMModelBuilder::BuildRoutingNetwork()
     auto wayLists = nodeWayListIter.second;
 
     int wayListsSize = wayLists.size();
-    if (  wayListsSize < 2 )
+    if (  1 == wayListsSize  )
     {
-      std::cout << "Node nalezy do tylu drog " << wayListsSize << " -- ";
-
-      for (auto way : wayLists )
+      std::cout << nodeId << " -- It looks, there is only one way in this node" << std::endl;
+      auto way = *(wayLists.begin());
+      
+      int64_t potentiallyDeadEndNodeId = 0;
+      if ( nodeId == way->GetBeginNode()->getId() )
       {
-        if ( way->GetBeginNode()->getId() == nodeId )
+        std::cout << "it's a beging" << nodeId << std::endl;
+        potentiallyDeadEndNodeId = way->GetBeginNode()->getId();
+      }
+     // else {std::cout << "not a beging" << std::endl; }
+      if ( nodeId == way->GetEndNode()->getId() )
+      {
+        std::cout << "it's an end " << nodeId << std::endl;
+        potentiallyDeadEndNodeId = way->GetEndNode()->getId();
+      }
+     // else {std::cout << "not an end" << std::endl; }
+      auto iterToContainingWay = m_node2wayListsMap.find( potentiallyDeadEndNodeId );
+      if ( m_node2wayListsMap.end() != iterToContainingWay )
+      {
+        auto nodesWays = iterToContainingWay->second;
+        std::cout << "there's containing way " << nodesWays.size() << std::endl;
+        for ( auto way : nodesWays )
         {
-          std::cout << "Begin ";
-        }
-        if ( way->GetEndNode()->getId() == nodeId )
-        {
-          std::cout << "End ";
-        }
+          way->Print();
+          auto segments = way->GetWaySegments();
 
-        auto generalListIter = m_node2wayListsMap.find(nodeId);
-        if ( m_node2wayListsMap.end() != generalListIter)
-        {
-          auto listItIs = generalListIter->second;
-          std::cout << "so Much of ways: " << listItIs.size();
-          for (auto way2 : listItIs )
+          for ( int i = 0 ; i < segments.size() ; ++i)
           {
-            way2->Print();
-            if ( way2->GetBeginNode()->getId() == nodeId )
+            auto segment = segments[i];
+            if ( segment.getEndNode()->getId() == nodeId || segment.getBeginNode()->getId() == nodeId)
             {
-              std::cout << "BeginXX ";
-            }
-            if ( way2->GetEndNode()->getId() == nodeId )
-            {
-              std::cout << "EndXX ";
+              std::cout << "The nodeId " << nodeId << " is in the middle " << i << "++"<< std::endl;
             }
           }
         }
+
       }
-
-
-      std::cout << std::endl;
     }
 
   }

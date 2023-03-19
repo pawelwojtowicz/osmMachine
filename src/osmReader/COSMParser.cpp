@@ -2,6 +2,8 @@
 #include <COSMNode.h>
 #include <iostream>
 #include <iomanip>
+#include <cstdlib>
+
 
 
 namespace osmMachine
@@ -68,11 +70,13 @@ bool COSMParser::ReadOSMPrimitives( const tOSMPrimitiveType primitivesToRead )
       auto osmNodeElement(hRoot.FirstChild( s_OSMNodeXMLNode ).Element());
       while ( nullptr != osmNodeElement)
       {
-        int osmNodeId(0);
         double lat(0);
         double lon(0);
+        std::string osmNodeIdString;
 
-        osmNodeElement->QueryIntAttribute(s_idXMLPropertyName, &osmNodeId);
+        osmNodeElement->QueryStringAttribute(s_idXMLPropertyName, &osmNodeIdString);
+        int64_t osmNodeId = strtoll(osmNodeIdString.c_str(), nullptr , 10 );
+
         osmNodeElement->QueryDoubleAttribute(s_latXmlPropertyName, &lat);
         osmNodeElement->QueryDoubleAttribute(s_lonXmlPropertyName, &lon);
 
@@ -100,9 +104,10 @@ bool COSMParser::ReadOSMPrimitives( const tOSMPrimitiveType primitivesToRead )
       while ( nullptr != osmWayElement )
       {
         TiXmlHandle wayHandle( osmWayElement );
-        int wayId(0);
+        std::string wayIdString;
+        osmWayElement->QueryStringAttribute(s_idXMLPropertyName, &wayIdString);
 
-        osmWayElement->QueryIntAttribute(s_idXMLPropertyName, &wayId);
+        int64_t wayId = strtoll(wayIdString.c_str(), nullptr, 10);
 
         tWayShPtr ptrWay = std::make_shared<COSMWay>(wayId);
 
@@ -130,9 +135,10 @@ bool COSMParser::ReadOSMPrimitives( const tOSMPrimitiveType primitivesToRead )
           auto osmWayNdElement(wayHandle.FirstChild( s_osmWayNdElement ).Element());
           while( nullptr !=  osmWayNdElement )
           {
-            int osmWayNodeId(0);
-            osmWayNdElement->QueryIntAttribute(s_osmWayNdRefPropertyName, &osmWayNodeId);
-
+            std::string osmWayIdString;
+            osmWayNdElement->QueryStringAttribute(s_osmWayNdRefPropertyName, &osmWayIdString);
+            int64_t osmWayNodeId = strtoll(osmWayIdString.c_str(), nullptr, 10 );
+            
             m_osmModelBuilder.AddWaypoint( wayId, osmWayNodeId );
 
             osmWayNdElement = osmWayNdElement->NextSiblingElement( s_osmWayNdElement );
