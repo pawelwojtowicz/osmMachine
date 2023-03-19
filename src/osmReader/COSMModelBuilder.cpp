@@ -160,20 +160,7 @@ void COSMModelBuilder::BuildRoutingNetwork()
       std::cout << nodeId << " -- It looks, there is only one way in this node" << std::endl;
       auto way = *(wayLists.begin());
       
-      int64_t potentiallyDeadEndNodeId = 0;
-      if ( nodeId == way->GetBeginNode()->getId() )
-      {
-        std::cout << "it's a beging" << nodeId << std::endl;
-        potentiallyDeadEndNodeId = way->GetBeginNode()->getId();
-      }
-     // else {std::cout << "not a beging" << std::endl; }
-      if ( nodeId == way->GetEndNode()->getId() )
-      {
-        std::cout << "it's an end " << nodeId << std::endl;
-        potentiallyDeadEndNodeId = way->GetEndNode()->getId();
-      }
-     // else {std::cout << "not an end" << std::endl; }
-      auto iterToContainingWay = m_node2wayListsMap.find( potentiallyDeadEndNodeId );
+      auto iterToContainingWay = m_node2wayListsMap.find( nodeId );
       if ( m_node2wayListsMap.end() != iterToContainingWay )
       {
         auto nodesWays = iterToContainingWay->second;
@@ -183,10 +170,11 @@ void COSMModelBuilder::BuildRoutingNetwork()
           way->Print();
           auto segments = way->GetWaySegments();
 
-          for ( int i = 0 ; i < segments.size() ; ++i)
+          int sizeSegment( segments.size() );
+          for ( int i = 0 ; i < sizeSegment ; ++i)
           {
             auto segment = segments[i];
-            if ( segment.getEndNode()->getId() == nodeId || segment.getBeginNode()->getId() == nodeId)
+            if ( (i !=0 )&&(i != sizeSegment-1) && ( segment.getEndNode()->getId() == nodeId || segment.getBeginNode()->getId() == nodeId ))
             {
               std::cout << "The nodeId " << nodeId << " is in the middle " << i << "++"<< std::endl;
             }
