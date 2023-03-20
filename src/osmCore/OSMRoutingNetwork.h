@@ -10,6 +10,8 @@ struct OSMRoutingNetwork
 
   tWayId2WayMap id2WayMap;
 
+  tWayId2WayMap helperWayId2MapWay;
+
   tNodeId2WayListsMap nodeId2Ways;
 };
 

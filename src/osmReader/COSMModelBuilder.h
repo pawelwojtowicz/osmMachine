@@ -20,6 +20,8 @@ private:
   virtual void AddWay( tWayShPtr& ptrWay ) override;
   virtual void AddWaypoint( const int64_t& wayId, const int64_t& nodeId ) override;
 
+  tWayShPtr AddHelperWay( int64_t masterWayId, const tPropertyMap& properties );
+
   void BuildRoutingNetwork();
   void addWayToNodeRecord( const int64_t& nodeId, tWayShPtr wayPtr );
 
@@ -34,6 +36,8 @@ private:
 
   tWayShPtr m_currentWay;
   tOSMNodeShPtr m_prevGeoPoint;
+
+  int64_t m_helperWayId;
 };
 
 }

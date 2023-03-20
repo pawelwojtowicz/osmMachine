@@ -24,9 +24,11 @@ public:
 
   inline const tWaySegments& GetWaySegments() const { return m_waySegments; };
   
-  inline const tOSMNodeShPtr GetBeginNode() const { return m_wayBegin; };
+  inline const tOSMNodeShPtr GetBeginNode() const { return m_wayBegin; } ;
 
-  inline const tOSMNodeShPtr GetEndNode() const { return m_wayEnd; };
+  inline const tOSMNodeShPtr GetEndNode() const { return m_wayEnd; } ;
+
+  inline const tPropertyMap GetProperties() const { return m_wayProperties; };
 
 private:
   //osm way id

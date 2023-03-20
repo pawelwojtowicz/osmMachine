@@ -2,6 +2,7 @@
 #include "CPBFReader.h"
 #include "COSMParser.h"
 #include "COSMNetworkValidator.h"
+#include <set>
 #include <iostream>
 #include <algorithm>
 
@@ -12,6 +13,7 @@ static const std::string osmFilenamePostfix(".osm");
 static const std::string pbfFilenamePostfix(".osm.pbf");
 
 COSMModelBuilder::COSMModelBuilder()
+: m_helperWayId(0)
 {
 
 }
@@ -103,6 +105,25 @@ void COSMModelBuilder::AddWay( tWayShPtr& ptrWay )
   m_prevGeoPoint.reset();
 }
 
+tWayShPtr COSMModelBuilder::AddHelperWay( int64_t masterWayId, const tPropertyMap& properties )
+{
+  tWayShPtr ptrWay = std::make_shared<COSMWay>(++m_helperWayId);
+
+  for ( const auto& propertyPair : properties )
+  {
+    ptrWay->AddProperty( propertyPair.first, propertyPair.second);
+  }
+  ptrWay->AddProperty("osmWayMasterId", std::to_string(masterWayId) );
+
+  m_routingNetwork.helperWayId2MapWay.insert( tWayId2WayMap::value_type( ptrWay->GetId(), ptrWay));
+
+  m_currentWay = ptrWay;
+  m_prevGeoPoint.reset();
+
+  return ptrWay;
+}
+
+
 void COSMModelBuilder::AddWaypoint( const int64_t& wayId, const int64_t& nodeId )
 {
   if ( m_currentWay && ( wayId == m_currentWay->GetId() ) )
@@ -140,6 +161,54 @@ void COSMModelBuilder::AddWaypoint( const int64_t& wayId, const int64_t& nodeId 
 
 void COSMModelBuilder::BuildRoutingNetwork()
 {
+  //will store the ways, and their geonodes, tha
+  std::map<int64_t, std::set<int64_t>> wayId2dividingNodeIds;
+
+  for ( const auto& nodeWayPair : m_node2wayListsMap )
+  {
+    const auto nodeId = nodeWayPair.first;
+    const auto& wayList = nodeWayPair.second;
+
+    if (wayList.size() > 1 )
+    {
+      for ( const auto& way : wayList )
+      {
+        if ( ( way->GetBeginNode()->getId() ) != nodeId && ( way->GetEndNode()->getId() != nodeId ) )
+        {
+          auto wayIter = wayId2dividingNodeIds.find( way->GetId() );
+          if ( wayId2dividingNodeIds.end() != wayIter )
+          {
+            wayIter->second.insert( nodeId );
+          }
+          else
+          {
+            wayId2dividingNodeIds[ way->GetId() ] = { nodeId }; 
+          }
+        }
+      }
+    }
+  }
+
+  for ( const auto& wayId2SplittingNodes : wayId2dividingNodeIds)
+  {
+    const auto wayId = wayId2SplittingNodes.first;
+
+    const auto& splittingNodes = wayId2SplittingNodes.second;
+
+    const auto& wayToSplit = m_routingNetwork.id2WayMap[wayId]; 
+    
+    tWayShPtr helperWay = AddHelperWay( wayId, wayToSplit->GetProperties() );
+    for ( const auto& waySegment : wayToSplit->GetWaySegments() )
+    {
+      helperWay->AddWaySegment( waySegment );
+
+      if ( splittingNodes.find (waySegment.getEndNode()->getId() ) != splittingNodes.end() )
+      {
+        tWayShPtr helperWay = AddHelperWay( wayId, wayToSplit->GetProperties() );
+      }
+    }
+  }
+
   for ( auto wayIter : m_routingNetwork.id2WayMap )
   {
     auto wayPtr = wayIter.second;
@@ -147,45 +216,12 @@ void COSMModelBuilder::BuildRoutingNetwork()
     addWayToNodeRecord( wayPtr->GetEndNode()->getId(), wayPtr );
   }
 
-  std::cout << "Building the rest" << std::endl;
-
-  for ( auto nodeWayListIter : m_routingNetwork.nodeId2Ways)
+  for ( auto wayIter : m_routingNetwork.helperWayId2MapWay )
   {
-    auto nodeId = nodeWayListIter.first;
-    auto wayLists = nodeWayListIter.second;
-
-    int wayListsSize = wayLists.size();
-    if (  1 == wayListsSize  )
-    {
-      std::cout << nodeId << " -- It looks, there is only one way in this node" << std::endl;
-      auto way = *(wayLists.begin());
-      
-      auto iterToContainingWay = m_node2wayListsMap.find( nodeId );
-      if ( m_node2wayListsMap.end() != iterToContainingWay )
-      {
-        auto nodesWays = iterToContainingWay->second;
-        std::cout << "there's containing way " << nodesWays.size() << std::endl;
-        for ( auto way : nodesWays )
-        {
-          way->Print();
-          auto segments = way->GetWaySegments();
-
-          int sizeSegment( segments.size() );
-          for ( int i = 0 ; i < sizeSegment ; ++i)
-          {
-            auto segment = segments[i];
-            if ( (i !=0 )&&(i != sizeSegment-1) && ( segment.getEndNode()->getId() == nodeId || segment.getBeginNode()->getId() == nodeId ))
-            {
-              std::cout << "The nodeId " << nodeId << " is in the middle " << i << "++"<< std::endl;
-            }
-          }
-        }
-
-      }
-    }
-
+    auto wayPtr = wayIter.second;
+    addWayToNodeRecord( wayPtr->GetBeginNode()->getId(), wayPtr );
+    addWayToNodeRecord( wayPtr->GetEndNode()->getId(), wayPtr );
   }
-
 }
 
 
