@@ -204,7 +204,7 @@ void COSMModelBuilder::BuildRoutingNetwork()
 
       if ( splittingNodes.find (waySegment.getEndNode()->getId() ) != splittingNodes.end() )
       {
-        tWayShPtr helperWay = AddHelperWay( wayId, wayToSplit->GetProperties() );
+        helperWay = AddHelperWay( wayId, wayToSplit->GetProperties() );
       }
     }
   }
@@ -213,14 +213,20 @@ void COSMModelBuilder::BuildRoutingNetwork()
   {
     auto wayPtr = wayIter.second;
     addWayToNodeRecord( wayPtr->GetBeginNode()->getId(), wayPtr );
-    addWayToNodeRecord( wayPtr->GetEndNode()->getId(), wayPtr );
+    if ( !wayPtr->IsOneWay() )
+    {
+      addWayToNodeRecord( wayPtr->GetEndNode()->getId(), wayPtr );
+    }
   }
 
   for ( auto wayIter : m_routingNetwork.helperWayId2MapWay )
   {
     auto wayPtr = wayIter.second;
     addWayToNodeRecord( wayPtr->GetBeginNode()->getId(), wayPtr );
-    addWayToNodeRecord( wayPtr->GetEndNode()->getId(), wayPtr );
+    if ( !wayPtr->IsOneWay() )
+    {
+      addWayToNodeRecord( wayPtr->GetEndNode()->getId(), wayPtr );
+    }
   }
 }
 

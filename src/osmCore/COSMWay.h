@@ -22,6 +22,8 @@ public:
 
   inline int64_t GetId() const { return m_wayId; } ;
 
+  inline bool IsOneWay() const { return m_isOneWay; };
+
   inline const tWaySegments& GetWaySegments() const { return m_waySegments; };
   
   inline const tOSMNodeShPtr GetBeginNode() const { return m_wayBegin; } ;
@@ -33,6 +35,8 @@ public:
 private:
   //osm way id
   int64_t m_wayId;
+
+  bool m_isOneWay;
 
   //the vector of all of the shapepoints
   tWaySegments m_waySegments;

@@ -7,6 +7,7 @@ namespace osmMachine
 
 COSMWay::COSMWay( const int64_t wayId)
 : m_wayId(wayId)
+, m_isOneWay(false)
 , m_length(0)
 {
 }
@@ -41,6 +42,10 @@ void COSMWay::AddWaySegment( const CWaySegment& waySegment )
 
 void COSMWay::AddProperty( const std::string& key, const std::string& value )
 {
+  if ( 0 == key.compare("oneway") && 0 == value.compare("yes") )
+  {
+    m_isOneWay = true;
+  }
   m_wayProperties.insert( tPropertyMap::value_type( key,value));
 }
 
