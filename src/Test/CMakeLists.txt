@@ -6,7 +6,8 @@ add_executable( osmMachineTests
   GeoBase_CGeoPoint.cpp
   GeoBase_CGeoUtils.cpp
   GeoBase_CTileUtils.cpp
-  osmCore_CGeoBucket.cpp )
+  #osmCore_CGeoBucket.cpp 
+  )
 
 target_link_libraries(osmMachineTests GeoBase ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} pthread )
 add_dependencies( osmMachineTests GeoBase )
@@ -23,3 +24,8 @@ add_executable( osmParser
 
 target_link_libraries(osmParser osmReader )
 add_dependencies( osmParser osmReader )
+
+add_executable( tileSizeTable
+  tileSizeTable.cpp
+)
+target_link_libraries( tileSizeTable GeoBase osmCore)

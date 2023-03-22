@@ -2,7 +2,7 @@
 #include <CGeoBucket.h>
 #include <algorithm>
 
-using tTestSubject = osmMachine::CGeoBucket<int, int>; 
+using tTestSubject = osmMachine::CGeoBucket< int>; 
 
 TEST( osmCore_CGeoBucket , Empty )
 {

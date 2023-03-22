@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 
 namespace osmMachine
 {
@@ -15,9 +16,9 @@ public:
     tGeoIndex CalculateIndex( double lat, double lon ) const;
 private:
     int m_zoomLevel;
-    int m_xMin;
-    int m_yMin;
-    int m_dx;
-    int m_dy;
+    uint32_t m_xMin;
+    uint32_t m_yMin;
+    uint32_t m_dx;
+    uint32_t m_dy;
 };
 }
