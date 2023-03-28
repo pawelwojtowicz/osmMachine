@@ -31,15 +31,15 @@ int CGeoIndex::Initialize( double minLat, double minLon, double maxLat, double m
   return 0;
 }
 
-tGeoIndex CGeoIndex::CalculateIndex( double lat, double lon ) const
+int64_t CGeoIndex::CalculateIndex( double lat, double lon ) const
 {
-  tGeoIndex index(-1);
+  int64_t index(0);
 
   if ( 0 != m_zoomLevel )
   {
     int xTile = CTileUtils::gpsLon2TileX( lon ,m_zoomLevel ) - m_xMin;
     int yTile = CTileUtils::gpsLat2TileY( lat ,m_zoomLevel ) - m_yMin;
-    index = ( (0xffff & yTile) << 16 ) + (0xffff & xTile);
+    index = ( (0xffffffff & yTile) << 32 ) + (0xffffffff & xTile);
   }
 
   return index;

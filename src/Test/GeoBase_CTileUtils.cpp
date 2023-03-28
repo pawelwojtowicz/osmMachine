@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <CTileUtils.cpp>
 #include <GeoDefs.h>
+#include "tileTestHelper.h"
 
 using namespace osmMachine;
 
@@ -50,4 +51,37 @@ TEST( CTileUtils, Tiling_zoom15 )
   auto tileX = CTileUtils::gpsLon2TileX((-87.65),zoomLevel);
   ASSERT_EQ( tileX , 8405 );
   ASSERT_EQ( tileY , 12182 );    
+}
+
+TEST( CTileUtils, BackAndForthZoom10 ) 
+{
+  uint32_t tileX = 100;
+  uint32_t tileY = 100;
+
+  std::pair<double, double> center =  returnCenterOfATile( tileX, tileY, 10);
+  
+  ASSERT_EQ( tileY , osmMachine::CTileUtils::gpsLat2TileY(center.first, 10) );
+  ASSERT_EQ( tileX , osmMachine::CTileUtils::gpsLon2TileX(center.second, 10 ) );    
+}
+
+TEST( CTileUtils, BackAndForthZoom15 ) 
+{
+  uint32_t tileX = 1000;
+  uint32_t tileY = 100;
+
+  std::pair<double, double> center =  returnCenterOfATile( tileX, tileY, 10);
+  
+  ASSERT_EQ( tileY , osmMachine::CTileUtils::gpsLat2TileY(center.first, 10) );
+  ASSERT_EQ( tileX , osmMachine::CTileUtils::gpsLon2TileX(center.second, 10 ) );    
+}
+
+TEST( CTileUtils, BackAndForthZoom20 ) 
+{
+  uint32_t tileX = 1000;
+  uint32_t tileY = 5000;
+
+  std::pair<double, double> center =  returnCenterOfATile( tileX, tileY, 10);
+  
+  ASSERT_EQ( tileY , osmMachine::CTileUtils::gpsLat2TileY(center.first, 10) );
+  ASSERT_EQ( tileX , osmMachine::CTileUtils::gpsLon2TileX(center.second, 10 ) );    
 }

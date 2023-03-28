@@ -22,7 +22,7 @@ double CTileUtils::TileX2gpsLon(uint32_t x, int z)
 double CTileUtils::TileY2gpsLat(uint32_t y, int z)
 {
    double n = M_PI - 2.0 * M_PI * y / pow(2.0, z);
-   return 180.0 / M_PI * atan(0.5 * (exp(n) - exp(-n)));
+   return double((180.0 / M_PI) * (atan(0.5 * (exp(n) - exp(-n)))));
 }
 
 }

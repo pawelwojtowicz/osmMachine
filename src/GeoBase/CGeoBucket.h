@@ -1,72 +1,78 @@
 #pragma once
 #include <map>
 #include <list>
-#include <CGeoPoint.h>
-#include <CTileUtils.h>
+#include "CGeoPoint.h"
+#include "CTileUtils.h"
 
 namespace osmMachine
 {
 
-template < class OSM_ENTITY >
+template <class OSM_ENTITY >
 class CGeoBucket
 {
 public:
-  typedef std::list<OSM_ENTITY> tEntityList ;
+  using tEntityList = std::list<OSM_ENTITY>  ;
 private:
-  typedef std::map<uint32_t,tEntityList> tGeoIndex2EntityMap ;
+  using tGeoIndex2EntityMap = std::map<uint64_t,tEntityList>  ;
 
 public:
 
   CGeoBucket()
   : m_zoomLevel(0)
+  , m_rowLength(1)
   {
 
   }
 
-  bool Initialize( double latBegin, double lonBegin, double latEnd, double lonEnd, int zoomLevel )
+  bool Initialize( int zoomLevel )
   {
-    bool isInitialized(false);
     m_zoomLevel = zoomLevel;
+    m_rowLength <<= zoomLevel;
 
-    if ( latBegin > latEnd && lonBegin > lonEnd )
-    {
-      m_xMin = CTileUtils::gpsLon2TileX( minLon ,m_zoomLevel );
-      m_yMin = CTileUtils::gpsLat2TileY( minLat ,m_zoomLevel );
-      m_dx = CTileUtils::gpsLon2TileX( maxLon ,m_zoomLevel ) - m_xMin;
-      m_dy = CTileUtils::gpsLat2TileY( maxLat, m_zoomLevel ) - m_yMin;
-
-      isInitialized = (dx > 0 & dy > 0);
-    }
-
-    return isInitialized;
+    return (m_zoomLevel = zoomLevel);
   }
 
-  const CGeoBucket<OSM_ENTITY>::tEntityList& getAllAround( const CGeoPoint& point, int radius = 2 )
+  CGeoBucket<OSM_ENTITY>::tEntityList getAllAround( const CGeoPoint& point, int radius = 0 )
   {
-    uint32_t xIndex = CTileUtils::gpsLon2TileX(point.getLon(), m_zoomLevel);
-    uint32_t yIndex = CTileUtils::gpsLat2TileY(point.getLat(), m_zoomLevel);
+    uint64_t xIndex = CTileUtils::gpsLon2TileX(RAD2DEG(point.getLon()), m_zoomLevel);
+    uint64_t yIndex = CTileUtils::gpsLat2TileY(RAD2DEG(point.getLat()), m_zoomLevel);
 
-    uint32_t geoIndex = ( 0xffff & xIndex)<<16 | (0xffff & yIndex);
+    uint64_t zero = 0;
 
-    const auto bucketIter = m_geoIndex2EntityBucket.find( geoIndex);
-    if ( m_geoIndex2EntityBucket.end() != bucketIter )
+    uint64_t xBegining( std::max( zero , xIndex - radius ));
+    uint64_t xEnd(std::min(m_rowLength-1, xIndex + radius  ));
+    uint64_t yBegining( std::max( zero,yIndex- radius));
+    uint64_t yEnd( std::min( m_rowLength-1, yIndex+radius));
+
+    CGeoBucket<OSM_ENTITY>::tEntityList entitiesInArea;
+
+    for ( uint64_t x = xBegining ; x<= xEnd ; ++x )
     {
-      return bucketIter->second;
+      for ( uint64_t y = yBegining ; y<= yEnd ; ++y)
+      {
+        uint64_t geoIndex = ( 0xffffffff & x)<<32 | (0xffffffff & y);
+        const auto bucketIter = m_geoIndex2EntityBucket.find( geoIndex);
+        if ( m_geoIndex2EntityBucket.end() != bucketIter )
+        {
+          entitiesInArea.insert(entitiesInArea.end(), bucketIter->second.begin(), bucketIter->second.end());
+        }
+      }
     }
-    return {};
+   
+    return entitiesInArea;
   }
 
   void addEntityToArea( const CGeoPoint& point, OSM_ENTITY osmEntity )
   {
-    uint32_t xIndex = CTileUtils::gpsLon2TileX( point.getLon(), m_zoomLevel );
-    uint32_t yIndex = CTileUtils::gpsLat2TileY( point.getLat(), m_zoomLevel );
+    uint64_t xIndex = CTileUtils::gpsLon2TileX( RAD2DEG(point.getLon()), m_zoomLevel );
+    uint64_t yIndex = CTileUtils::gpsLat2TileY( RAD2DEG(point.getLat()), m_zoomLevel );
 
-    uint32_t geoIndex = ( 0xffff & xIndex)<<16 | (0xffff & yIndex);
+    uint64_t geoIndex = ( 0xffffff & xIndex)<<32 | (0xffffffff & yIndex);
 
     auto bucketIter = m_geoIndex2EntityBucket.find( geoIndex);
     if ( m_geoIndex2EntityBucket.end() == bucketIter )
     {
-      auto insertResult = m_geoIndex2EntityBucket.insert( typename CGeoBucket<INDEX_TYPE, OSM_ENTITY>::tGeoIndex2EntityMap::value_type( geoIndex, m_emptyList) ); 
+      auto insertResult = m_geoIndex2EntityBucket.insert( typename CGeoBucket<OSM_ENTITY>::tGeoIndex2EntityMap::value_type( geoIndex, {} ) ); 
       bucketIter = insertResult.first;
     }
 
@@ -75,12 +81,9 @@ public:
 private:
   int m_zoomLevel;
 
-  uint32_t m_xMin;
-  uint32_t m_yMin;
-  uint32_t m_dx;
-  uint32_t m_dy;
+  uint64_t m_rowLength;
 
-  typename CGeoBucket<uint32_t , OSM_ENTITY>::tGeoIndex2EntityMap m_geoIndex2EntityBucket;
+  typename CGeoBucket<OSM_ENTITY>::tGeoIndex2EntityMap m_geoIndex2EntityBucket;
 
 };
 }

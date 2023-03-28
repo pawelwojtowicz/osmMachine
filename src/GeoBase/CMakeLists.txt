@@ -8,6 +8,7 @@ add_library( GeoBase SHARED
   GeoUtils.h
   CTileUtils.cpp
   CTileUtils.h
+  CGeoBucket.h
 )
 
 target_link_libraries( GeoBase PUBLIC )
