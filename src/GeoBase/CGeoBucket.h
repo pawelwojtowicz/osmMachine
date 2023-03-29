@@ -1,6 +1,6 @@
 #pragma once
 #include <map>
-#include <list>
+#include <set>
 #include "CGeoPoint.h"
 #include "CTileUtils.h"
 
@@ -11,9 +11,9 @@ template <class OSM_ENTITY >
 class CGeoBucket
 {
 public:
-  using tEntityList = std::list<OSM_ENTITY>  ;
+  using tEntitySet = std::set<OSM_ENTITY>  ;
 private:
-  using tGeoIndex2EntityMap = std::map<uint64_t,tEntityList>  ;
+  using tGeoIndex2EntityMap = std::map<uint64_t,tEntitySet>  ;
 
 public:
 
@@ -32,7 +32,7 @@ public:
     return (m_zoomLevel = zoomLevel);
   }
 
-  CGeoBucket<OSM_ENTITY>::tEntityList getAllAround( const CGeoPoint& point, int radius = 0 )
+  CGeoBucket<OSM_ENTITY>::tEntitySet getAllAround( const CGeoPoint& point, int radius = 0 )
   {
     uint64_t xIndex = CTileUtils::gpsLon2TileX(RAD2DEG(point.getLon()), m_zoomLevel);
     uint64_t yIndex = CTileUtils::gpsLat2TileY(RAD2DEG(point.getLat()), m_zoomLevel);
@@ -44,7 +44,7 @@ public:
     uint64_t yBegining( std::max( zero,yIndex- radius));
     uint64_t yEnd( std::min( m_rowLength-1, yIndex+radius));
 
-    CGeoBucket<OSM_ENTITY>::tEntityList entitiesInArea;
+    CGeoBucket<OSM_ENTITY>::tEntitySet entitiesInArea;
 
     for ( uint64_t x = xBegining ; x<= xEnd ; ++x )
     {
@@ -54,7 +54,7 @@ public:
         const auto bucketIter = m_geoIndex2EntityBucket.find( geoIndex);
         if ( m_geoIndex2EntityBucket.end() != bucketIter )
         {
-          entitiesInArea.insert(entitiesInArea.end(), bucketIter->second.begin(), bucketIter->second.end());
+          entitiesInArea.insert( bucketIter->second.begin(), bucketIter->second.end());
         }
       }
     }
@@ -76,7 +76,7 @@ public:
       bucketIter = insertResult.first;
     }
 
-    bucketIter->second.push_back( osmEntity );
+    bucketIter->second.insert( osmEntity );
   }
 private:
   int m_zoomLevel;

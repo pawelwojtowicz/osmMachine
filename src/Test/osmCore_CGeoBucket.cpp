@@ -22,7 +22,7 @@
  * 
 */
 
-using tTestParameters = std::tuple<int, int, int, osmMachine::CGeoBucket<int>::tEntityList>;
+using tTestParameters = std::tuple<int, int, int, osmMachine::CGeoBucket<int>::tEntitySet>;
 
 class ExtractingValuesFixture : public ::testing::TestWithParam<tTestParameters>
 {
@@ -63,7 +63,7 @@ TEST_P( ExtractingValuesFixture , ReturningObjectsFromAreas )
   int x = std::get<0>(testParameters);
   int y = std::get<1>(testParameters);
   int radius = std::get<2>(testParameters);
-  osmMachine::CGeoBucket<int>::tEntityList expectedOutput = std::get<3>(testParameters);
+  osmMachine::CGeoBucket<int>::tEntitySet expectedOutput = std::get<3>(testParameters);
 
   auto latLonPair = returnCenterOfATile( _xOffset + x, _yOffset + y, _zoomLevel);
 
@@ -71,10 +71,7 @@ TEST_P( ExtractingValuesFixture , ReturningObjectsFromAreas )
 
   auto geoBucketOutput = m_geoBuckets.getAllAround(point, radius);
   
-  geoBucketOutput.sort();
-
-  EXPECT_TRUE( std::equal(  expectedOutput.begin(), expectedOutput.end(), 
-                            geoBucketOutput.begin(), geoBucketOutput.end()) );
+  EXPECT_TRUE( expectedOutput == geoBucketOutput );
 }
 
 INSTANTIATE_TEST_CASE_P(
@@ -82,12 +79,12 @@ INSTANTIATE_TEST_CASE_P(
         ExtractingValuesFixture,
         ::testing::Values(
                 tTestParameters({3, 7, 0, { 74 } } ),
-                tTestParameters({3, 7, 1, osmMachine::CGeoBucket<int>::tEntityList{ 63, 64, 65, 73, 74, 75, 83, 84, 85 } } ),
-                tTestParameters({3, 7, 2, osmMachine::CGeoBucket<int>::tEntityList{ 52, 53, 54, 55, 56, 62, 63, 64, 65, 66, 72, 73, 74, 75, 76, 82, 83, 84, 85, 86, 92, 93, 94, 95, 96} } ),
-                tTestParameters({8, 8, 0, osmMachine::CGeoBucket<int>::tEntityList{ 89 } } ),
-                tTestParameters({8, 8, 1, osmMachine::CGeoBucket<int>::tEntityList{ 78, 79, 80, 88, 89, 90, 98, 99, 100} } ),
-                tTestParameters({8, 8, 2, osmMachine::CGeoBucket<int>::tEntityList{ 67, 68, 69, 70, 77, 78, 79, 80, 87, 88, 89, 90, 97,  98, 99, 100 } } ),
-                tTestParameters({-1, -1, 0, osmMachine::CGeoBucket<int>::tEntityList{ } } ),
-                tTestParameters({-1, -1, 1, osmMachine::CGeoBucket<int>::tEntityList{ 1 } } ),
-                tTestParameters({-1, -1, 2, osmMachine::CGeoBucket<int>::tEntityList{ 1, 2, 11, 12 } } )
+                tTestParameters({3, 7, 1, osmMachine::CGeoBucket<int>::tEntitySet{ 63, 64, 65, 73, 74, 75, 83, 84, 85 } } ),
+                tTestParameters({3, 7, 2, osmMachine::CGeoBucket<int>::tEntitySet{ 52, 53, 54, 55, 56, 62, 63, 64, 65, 66, 72, 73, 74, 75, 76, 82, 83, 84, 85, 86, 92, 93, 94, 95, 96} } ),
+                tTestParameters({8, 8, 0, osmMachine::CGeoBucket<int>::tEntitySet{ 89 } } ),
+                tTestParameters({8, 8, 1, osmMachine::CGeoBucket<int>::tEntitySet{ 78, 79, 80, 88, 89, 90, 98, 99, 100} } ),
+                tTestParameters({8, 8, 2, osmMachine::CGeoBucket<int>::tEntitySet{ 67, 68, 69, 70, 77, 78, 79, 80, 87, 88, 89, 90, 97,  98, 99, 100 } } ),
+                tTestParameters({-1, -1, 0, osmMachine::CGeoBucket<int>::tEntitySet{ } } ),
+                tTestParameters({-1, -1, 1, osmMachine::CGeoBucket<int>::tEntitySet{ 1 } } ),
+                tTestParameters({-1, -1, 2, osmMachine::CGeoBucket<int>::tEntitySet{ 1, 2, 11, 12 } } )
         ));
