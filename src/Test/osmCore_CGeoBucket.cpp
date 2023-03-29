@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <tuple>
 #include "tileTestHelper.h"
 #include <CGeoBucket.h>
 #include <algorithm>
@@ -21,10 +22,12 @@
  * 
 */
 
-class GeoBucketTesting : public ::testing::Test
+using tTestParameters = std::tuple<int, int, int, osmMachine::CGeoBucket<int>::tEntityList>;
+
+class ExtractingValuesFixture : public ::testing::TestWithParam<tTestParameters>
 {
 public:
-  void SetUp( ) 
+  void InitializeGeoBucket( ) 
   {
     m_geoBuckets.Initialize(_zoomLevel);
 
@@ -44,167 +47,47 @@ public:
 
   }
 
-  void TearDown( )
-  { 
-  }
-
   int _zoomLevel = 15;
   int32_t _xOffset = 100;
   int32_t _yOffset = 100;
 
 
   osmMachine::CGeoBucket<int> m_geoBuckets;
-
 };
 
-TEST_F( GeoBucketTesting , Basic_GetCompleteArea_Radius_0 )
+TEST_P( ExtractingValuesFixture , ReturningObjectsFromAreas )
 {
+  InitializeGeoBucket(); 
+  auto testParameters = GetParam();
 
-  int x = 3;
-  int y = 7;
+  int x = std::get<0>(testParameters);
+  int y = std::get<1>(testParameters);
+  int radius = std::get<2>(testParameters);
+  osmMachine::CGeoBucket<int>::tEntityList expectedOutput = std::get<3>(testParameters);
+
   auto latLonPair = returnCenterOfATile( _xOffset + x, _yOffset + y, _zoomLevel);
 
   osmMachine::CGeoPoint point(DEG2RAD(latLonPair.first), DEG2RAD(latLonPair.second));
 
-  auto geoBucketOutput = m_geoBuckets.getAllAround(point);
-
-  osmMachine::CGeoBucket<int>::tEntityList expectedOutput = { 74 };
+  auto geoBucketOutput = m_geoBuckets.getAllAround(point, radius);
   
-  EXPECT_TRUE( std::equal(  expectedOutput.begin(), expectedOutput.end(), 
-                            geoBucketOutput.begin(), geoBucketOutput.end()) );
-}
-
-TEST_F( GeoBucketTesting , Basic_GetCompleteArea_Radius_1 )
-{
-
-  int x = 3;
-  int y = 7;
-  auto latLonPair = returnCenterOfATile( _xOffset + x, _yOffset + y, _zoomLevel);
-
-  osmMachine::CGeoPoint point(DEG2RAD(latLonPair.first), DEG2RAD(latLonPair.second));
-  auto geoBucketOutput = m_geoBuckets.getAllAround(point, 1);
-
-  geoBucketOutput.sort() ;
-  osmMachine::CGeoBucket<int>::tEntityList expectedOutput = { 63, 64, 65, 73, 74, 75, 83, 84, 85 };
-  
-  EXPECT_TRUE( std::equal(  expectedOutput.begin(), expectedOutput.end(), 
-                            geoBucketOutput.begin(), geoBucketOutput.end()) );
-}
-
-TEST_F( GeoBucketTesting , Basic_GetCompleteArea_Radius_2 )
-{
-  int x = 3;
-  int y = 7;
-  auto latLonPair = returnCenterOfATile( _xOffset + x, _yOffset + y, _zoomLevel);
-
-  osmMachine::CGeoPoint point(DEG2RAD(latLonPair.first), DEG2RAD(latLonPair.second));
-  auto geoBucketOutput = m_geoBuckets.getAllAround(point, 2);
-  geoBucketOutput.sort() ;
-
-  osmMachine::CGeoBucket<int>::tEntityList expectedOutput = { 52, 53, 54, 55, 56, 62, 63, 64, 65, 66, 72, 73, 74, 75, 76, 82, 83, 84, 85, 86, 92, 93, 94, 95, 96 };
+  geoBucketOutput.sort();
 
   EXPECT_TRUE( std::equal(  expectedOutput.begin(), expectedOutput.end(), 
                             geoBucketOutput.begin(), geoBucketOutput.end()) );
 }
 
-TEST_F( GeoBucketTesting , Basic_GetAreaInDaCorner_Radius_0 )
-{
-
-  int x = 8;
-  int y = 8;
-  auto latLonPair = returnCenterOfATile( _xOffset + x, _yOffset + y, _zoomLevel);
-
-  osmMachine::CGeoPoint point(DEG2RAD(latLonPair.first), DEG2RAD(latLonPair.second));
-  auto geoBucketOutput = m_geoBuckets.getAllAround(point, 0);
-
-  geoBucketOutput.sort() ;
-  osmMachine::CGeoBucket<int>::tEntityList expectedOutput = { 89 };
-  
-  EXPECT_TRUE( std::equal(  expectedOutput.begin(), expectedOutput.end(), 
-                            geoBucketOutput.begin(), geoBucketOutput.end()) );
-}
-
-TEST_F( GeoBucketTesting , Basic_GetAreaInDaCorner_Radius_1 )
-{
-
-  int x = 8;
-  int y = 8;
-  auto latLonPair = returnCenterOfATile( _xOffset + x, _yOffset + y, _zoomLevel);
-
-  osmMachine::CGeoPoint point(DEG2RAD(latLonPair.first), DEG2RAD(latLonPair.second));
-  auto geoBucketOutput = m_geoBuckets.getAllAround(point, 1);
-
-  geoBucketOutput.sort() ;
-  osmMachine::CGeoBucket<int>::tEntityList expectedOutput = { 78, 79, 80, 88, 89, 90, 98, 99, 100 };
-  
-  EXPECT_TRUE( std::equal(  expectedOutput.begin(), expectedOutput.end(), 
-                            geoBucketOutput.begin(), geoBucketOutput.end()) );
-}
-
-TEST_F( GeoBucketTesting , Basic_GetAreaInDaCorner_Radius_2 )
-{
-
-  int x = 8;
-  int y = 8;
-  auto latLonPair = returnCenterOfATile( _xOffset + x, _yOffset + y, _zoomLevel);
-
-  osmMachine::CGeoPoint point(DEG2RAD(latLonPair.first), DEG2RAD(latLonPair.second));
-  auto geoBucketOutput = m_geoBuckets.getAllAround(point, 2);
-
-  geoBucketOutput.sort() ;
-  osmMachine::CGeoBucket<int>::tEntityList expectedOutput = {67, 68, 69, 70, 77, 78, 79, 80, 87, 88, 89, 90, 97,  98, 99, 100 };
-  
-  EXPECT_TRUE( std::equal(  expectedOutput.begin(), expectedOutput.end(), 
-                            geoBucketOutput.begin(), geoBucketOutput.end()) );
-}
-
-TEST_F( GeoBucketTesting , Basic_CenterOutOfArea_Radius_0 )
-{
-
-  int x = -1;
-  int y = -1;
-  auto latLonPair = returnCenterOfATile( _xOffset + x, _yOffset + y, _zoomLevel);
-
-  osmMachine::CGeoPoint point(DEG2RAD(latLonPair.first), DEG2RAD(latLonPair.second));
-  auto geoBucketOutput = m_geoBuckets.getAllAround(point, 0 );
-
-  geoBucketOutput.sort() ;
-  osmMachine::CGeoBucket<int>::tEntityList expectedOutput = { };
-  
-  EXPECT_TRUE( std::equal(  expectedOutput.begin(), expectedOutput.end(), 
-                            geoBucketOutput.begin(), geoBucketOutput.end()) );
-}
-
-TEST_F( GeoBucketTesting , Basic_CenterOutOfArea_Radius_1 )
-{
-
-  int x = -1;
-  int y = -1;
-  auto latLonPair = returnCenterOfATile( _xOffset + x, _yOffset + y, _zoomLevel);
-
-  osmMachine::CGeoPoint point(DEG2RAD(latLonPair.first), DEG2RAD(latLonPair.second));
-  auto geoBucketOutput = m_geoBuckets.getAllAround(point, 1 );
-
-  geoBucketOutput.sort() ;
-  osmMachine::CGeoBucket<int>::tEntityList expectedOutput = { 1 };
-  
-  EXPECT_TRUE( std::equal(  expectedOutput.begin(), expectedOutput.end(), 
-                            geoBucketOutput.begin(), geoBucketOutput.end()) );
-}
-
-TEST_F( GeoBucketTesting , Basic_CenterOutOfArea_Radius_2 )
-{
-
-  int x = -1;
-  int y = -1;
-  auto latLonPair = returnCenterOfATile( _xOffset + x, _yOffset + y, _zoomLevel);
-
-  osmMachine::CGeoPoint point(DEG2RAD(latLonPair.first), DEG2RAD(latLonPair.second));
-  auto geoBucketOutput = m_geoBuckets.getAllAround(point, 2 );
-
-  geoBucketOutput.sort() ;
-  osmMachine::CGeoBucket<int>::tEntityList expectedOutput = { 1, 2, 11, 12 };
-  
-  EXPECT_TRUE( std::equal(  expectedOutput.begin(), expectedOutput.end(), 
-                            geoBucketOutput.begin(), geoBucketOutput.end()) );
-}
+INSTANTIATE_TEST_CASE_P(
+        GeoBucketTesting , 
+        ExtractingValuesFixture,
+        ::testing::Values(
+                tTestParameters({3, 7, 0, { 74 } } ),
+                tTestParameters({3, 7, 1, osmMachine::CGeoBucket<int>::tEntityList{ 63, 64, 65, 73, 74, 75, 83, 84, 85 } } ),
+                tTestParameters({3, 7, 2, osmMachine::CGeoBucket<int>::tEntityList{ 52, 53, 54, 55, 56, 62, 63, 64, 65, 66, 72, 73, 74, 75, 76, 82, 83, 84, 85, 86, 92, 93, 94, 95, 96} } ),
+                tTestParameters({8, 8, 0, osmMachine::CGeoBucket<int>::tEntityList{ 89 } } ),
+                tTestParameters({8, 8, 1, osmMachine::CGeoBucket<int>::tEntityList{ 78, 79, 80, 88, 89, 90, 98, 99, 100} } ),
+                tTestParameters({8, 8, 2, osmMachine::CGeoBucket<int>::tEntityList{ 67, 68, 69, 70, 77, 78, 79, 80, 87, 88, 89, 90, 97,  98, 99, 100 } } ),
+                tTestParameters({-1, -1, 0, osmMachine::CGeoBucket<int>::tEntityList{ } } ),
+                tTestParameters({-1, -1, 1, osmMachine::CGeoBucket<int>::tEntityList{ 1 } } ),
+                tTestParameters({-1, -1, 2, osmMachine::CGeoBucket<int>::tEntityList{ 1, 2, 11, 12 } } )
+        ));
