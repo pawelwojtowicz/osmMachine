@@ -195,7 +195,7 @@ void COSMModelBuilder::BuildRoutingNetwork()
 
     const auto& splittingNodes = wayId2SplittingNodes.second;
 
-    const auto& wayToSplit = m_routingNetwork.id2WayMap[wayId]; 
+    auto& wayToSplit = m_routingNetwork.id2WayMap[wayId]; 
     
     tWayShPtr helperWay = AddHelperWay( wayId, wayToSplit->GetProperties() );
     for ( const auto& waySegment : wayToSplit->GetWaySegments() )
@@ -207,25 +207,54 @@ void COSMModelBuilder::BuildRoutingNetwork()
         helperWay = AddHelperWay( wayId, wayToSplit->GetProperties() );
       }
     }
+
+    // the way was split into helper ways, do not use it in map matching and in routing
+    wayToSplit->MarkNotUsed();
   }
 
   for ( auto wayIter : m_routingNetwork.id2WayMap )
   {
     auto wayPtr = wayIter.second;
-    addWayToNodeRecord( wayPtr->GetBeginNode()->getId(), wayPtr );
-    if ( !wayPtr->IsOneWay() )
+    if (wayPtr->IsUsed() )
     {
-      addWayToNodeRecord( wayPtr->GetEndNode()->getId(), wayPtr );
+      addWayToNodeRecord( wayPtr->GetBeginNode()->getId(), wayPtr );
+      if ( !wayPtr->IsOneWay() )
+      {
+        addWayToNodeRecord( wayPtr->GetEndNode()->getId(), wayPtr );
+      }
     }
   }
 
   for ( auto wayIter : m_routingNetwork.helperWayId2MapWay )
   {
     auto wayPtr = wayIter.second;
-    addWayToNodeRecord( wayPtr->GetBeginNode()->getId(), wayPtr );
-    if ( !wayPtr->IsOneWay() )
+    if (wayPtr->IsUsed() )
     {
-      addWayToNodeRecord( wayPtr->GetEndNode()->getId(), wayPtr );
+      addWayToNodeRecord( wayPtr->GetBeginNode()->getId(), wayPtr );
+      if ( !wayPtr->IsOneWay() )
+      {
+        addWayToNodeRecord( wayPtr->GetEndNode()->getId(), wayPtr );
+      }
+    }
+  }
+
+  for ( const auto& nodeWayPair : m_node2wayListsMap )
+  {
+    auto geoNodeId = nodeWayPair.first;
+    const auto& waysIncludingTheNode = nodeWayPair.second;
+    tOSMNodeShPtr nodePtr;
+    
+    for( const auto& way : waysIncludingTheNode )
+    {
+      if ( way->IsUsed() )
+      {
+        if (!nodePtr)
+        {
+          //do not check if it exists
+          nodePtr = m_routingNetwork.id2NodeMap[geoNodeId];
+        }
+        m_routingNetwork.wayGeoBuckets.addEntityToArea(*nodePtr, way);
+      }
     }
   }
 }

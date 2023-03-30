@@ -1,5 +1,5 @@
 #pragma once
-#include "OSMCore.h"
+#include <COSMNode.h>
 
 namespace osmMachine
 {
@@ -13,6 +13,8 @@ struct OSMRoutingNetwork
   tWayId2WayMap helperWayId2MapWay;
 
   tNodeId2WayListsMap nodeId2Ways;
+
+  tWayGeoBuckets wayGeoBuckets;
 };
 
 }

@@ -14,6 +14,8 @@ public:
   COSMWay( const int64_t wayId);
   virtual ~COSMWay();
 
+  void MarkNotUsed();
+
   void AddWaySegment( const CWaySegment& waySegment );
 
   void Print();
@@ -21,6 +23,8 @@ public:
   void AddProperty( const std::string& key, const std::string& value );
 
   inline int64_t GetId() const { return m_wayId; } ;
+
+  inline bool IsUsed() const { return m_isUsed; };
 
   inline bool IsOneWay() const { return m_isOneWay; };
 
@@ -36,6 +40,10 @@ private:
   //osm way id
   int64_t m_wayId;
 
+  // should this way be used in the map matching, routing algorithms?
+  bool m_isUsed;
+
+  // the way can be enter only from the beginning.
   bool m_isOneWay;
 
   //the vector of all of the shapepoints

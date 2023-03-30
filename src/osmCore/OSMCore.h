@@ -2,6 +2,7 @@
 #include <map>
 #include <list>
 #include <memory>
+#include <CGeoBucket.h>
 
 namespace osmMachine
 {
@@ -17,4 +18,5 @@ using tWayId2WayMap = std::map< int64_t, tWayShPtr >;
 using tWayList = std::list<tWayShPtr>;
 using tNodeId2WayListsMap = std::map< int64_t, tWayList>;
 
+using tWayGeoBuckets = CGeoBucket<tWayShPtr>;
 }

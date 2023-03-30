@@ -7,6 +7,7 @@ namespace osmMachine
 
 COSMWay::COSMWay( const int64_t wayId)
 : m_wayId(wayId)
+, m_isUsed(true)
 , m_isOneWay(false)
 , m_length(0)
 {
@@ -14,6 +15,11 @@ COSMWay::COSMWay( const int64_t wayId)
 
 COSMWay::~COSMWay()
 {
+}
+
+void COSMWay::MarkNotUsed()
+{
+  m_isUsed = false;
 }
 
 
