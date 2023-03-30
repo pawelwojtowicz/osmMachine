@@ -17,6 +17,15 @@ private:
 
 public:
 
+  struct tGeoBucketStats
+  {
+    int zoomLevel;
+    int min;
+    int max;
+    int avrg;
+    int bucketCount;
+  };
+
   CGeoBucket()
   : m_zoomLevel(0)
   , m_rowLength(1)
@@ -78,6 +87,28 @@ public:
 
     bucketIter->second.insert( osmEntity );
   }
+
+  tGeoBucketStats Stats()
+  {
+    tGeoBucketStats geoBucketStats;
+    geoBucketStats.zoomLevel = m_zoomLevel;
+    geoBucketStats.min = 999999999;
+    geoBucketStats.max = 0;
+    geoBucketStats.bucketCount = m_geoIndex2EntityBucket.size();
+    geoBucketStats.avrg = 0;
+
+    for ( const auto& indexWayPair : m_geoIndex2EntityBucket )
+    {
+      int count = indexWayPair.second.size();
+      geoBucketStats.avrg += count;
+      geoBucketStats.min = std::min(geoBucketStats.min, count);
+      geoBucketStats.max = std::max(geoBucketStats.max, count);
+    }
+    geoBucketStats.avrg = geoBucketStats.avrg/geoBucketStats.bucketCount;
+
+    return geoBucketStats;
+  }
+
 private:
   int m_zoomLevel;
 

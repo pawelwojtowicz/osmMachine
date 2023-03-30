@@ -31,3 +31,8 @@ add_executable( tileSizeTable
   tileSizeTable.cpp
 )
 target_link_libraries( tileSizeTable GeoBase osmCore)
+
+add_executable( geobucketTuner
+  geoBucketTuner.cpp
+)
+target_link_libraries( geobucketTuner GeoBase osmCore osmReader )

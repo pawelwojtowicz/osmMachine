@@ -12,8 +12,9 @@ namespace osmMachine
 static const std::string osmFilenamePostfix(".osm");
 static const std::string pbfFilenamePostfix(".osm.pbf");
 
-COSMModelBuilder::COSMModelBuilder()
-: m_helperWayId(0)
+COSMModelBuilder::COSMModelBuilder(OSMRoutingNetwork& routingNetwork)
+: m_routingNetwork(routingNetwork)
+, m_helperWayId(0)
 {
 
 }
@@ -22,9 +23,10 @@ COSMModelBuilder::~COSMModelBuilder()
 
 }
 
-bool COSMModelBuilder::ReadOSMData( const std::string& filename)
+bool COSMModelBuilder::ReadOSMData( const std::string& filename , int geoBucketFactor )
 {
   std::unique_ptr<COSMMapFileReader> mapReader;
+  m_routingNetwork.wayGeoBuckets.Initialize(geoBucketFactor);
 
   if ( std::equal( osmFilenamePostfix.rbegin(), osmFilenamePostfix.rend(), filename.rbegin() ) )
   {
@@ -57,13 +59,9 @@ bool COSMModelBuilder::ReadOSMData( const std::string& filename)
 
     mapReader->OpenFile(filename);
 
-    std::cout << "Reading Ways" << std::endl;
     mapReader->ReadOSMPrimitives( eWays );
 
-    std::cout << "Reading nodes" << std::endl;
     mapReader->ReadOSMPrimitives( eNodes );
-
-    std::cout << "Done reading" << std::endl;
 
     BuildRoutingNetwork();
   }

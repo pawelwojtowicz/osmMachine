@@ -8,10 +8,10 @@ namespace osmMachine
 class COSMModelBuilder : public IOSMModelBuilder
 {
 public:
-  COSMModelBuilder();
+  COSMModelBuilder(OSMRoutingNetwork& routingNetwork);
   virtual ~COSMModelBuilder();
 
-  bool ReadOSMData( const std::string& filename);
+  bool ReadOSMData( const std::string& filename, int zoomLevel = 5 );
 
   void CleanNodes();
 private:
@@ -30,7 +30,7 @@ private:
   COSMModelBuilder(const COSMModelBuilder&) = delete;
   COSMModelBuilder& operator=(const COSMModelBuilder&) = delete;
 
-  OSMRoutingNetwork m_routingNetwork;
+  OSMRoutingNetwork& m_routingNetwork;
 
   tNodeId2WayListsMap m_node2wayListsMap;
 
