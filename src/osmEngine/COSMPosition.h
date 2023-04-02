@@ -15,6 +15,10 @@ public:
 
   bool IsValid() const;
 
+  inline int64_t GetWayId() const { return m_wayId; };
+
+  inline double GetDistance() const { return m_distanceOnSegment; };
+
 
 private:
   int64_t m_wayId;

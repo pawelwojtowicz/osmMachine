@@ -80,7 +80,7 @@ bool COSMParser::ReadOSMPrimitives( const tOSMPrimitiveType primitivesToRead )
         osmNodeElement->QueryDoubleAttribute(s_latXmlPropertyName, &lat);
         osmNodeElement->QueryDoubleAttribute(s_lonXmlPropertyName, &lon);
 
-        tOSMNodeShPtr ptrNode = std::make_shared<COSMNode>(osmNodeId, lat,lon);
+        tOSMNodeShPtr ptrNode = std::make_shared<COSMNode>(osmNodeId, DEG2RAD(lat),DEG2RAD(lon));
 
         TiXmlHandle nodeHandle(osmNodeElement);
         auto osmTagElement(nodeHandle.FirstChild( s_osmTagXMLNode ).Element());

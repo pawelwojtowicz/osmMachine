@@ -14,18 +14,11 @@ add_executable( osmMachineTests
 target_link_libraries(osmMachineTests GeoBase ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} pthread )
 add_dependencies( osmMachineTests GeoBase )
 
-add_executable( pbfReader
-  pbfreader.cpp)
+add_executable( fullStackMatcherTest
+   fullStackMatcherTest.cpp)
 
-target_link_libraries(pbfReader osmReader )
-add_dependencies( pbfReader osmReader )
-
-
-add_executable( osmParser
-  osmReader.cpp)
-
-target_link_libraries(osmParser osmReader )
-add_dependencies( osmParser osmReader )
+target_link_libraries(fullStackMatcherTest osmReader osmEngine )
+add_dependencies( fullStackMatcherTest osmReader osmEngine)
 
 add_executable( tileSizeTable
   tileSizeTable.cpp

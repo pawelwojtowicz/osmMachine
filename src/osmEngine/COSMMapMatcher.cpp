@@ -1,5 +1,6 @@
 #include "COSMMapMatcher.h"
 #include <GeoUtils.h>
+#include <iostream>
 
 namespace osmMachine
 {
@@ -31,6 +32,7 @@ COSMPosition COSMMapMatcher::FindOSMPosition( const CGeoPoint& point)
 
   for( const auto& way : wayElementsInArea)
   {
+
     if ( way->IsUsed() )
     {
       const auto& segments = way->GetWaySegments();
@@ -46,8 +48,10 @@ COSMPosition COSMMapMatcher::FindOSMPosition( const CGeoPoint& point)
                                       *segments[index].getEndNode(), 
                                       projection,
                                       distance );
+        std::cout << "Id=" << std::dec << way->GetId() << " distance=[" << distance <<"]" << std::endl;
         if ( distance < bestDistance )
         {
+          std::cout << "boom " << std::dec << " " << segments[index].getBeginNode()->getId() << " " << segments[index].getEndNode()->getId() << std::endl;
           bestMatchingWay = way;
           mapMatchedGeoNode = projection;
           bestDistance = distance;
@@ -57,6 +61,8 @@ COSMPosition COSMMapMatcher::FindOSMPosition( const CGeoPoint& point)
     }
   }
 
-  return COSMPosition( bestMatchingWay->GetId() , bestMatchingSegmentIdx, bestDistance, point, mapMatchedGeoNode);
+  int64_t id = bestMatchingWay ? bestMatchingWay->GetId() : 0;
+
+  return COSMPosition( id , bestMatchingSegmentIdx, bestDistance, point, mapMatchedGeoNode);
 }
 }

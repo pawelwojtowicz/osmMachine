@@ -60,6 +60,7 @@ public:
       for ( uint64_t y = yBegining ; y<= yEnd ; ++y)
       {
         uint64_t geoIndex = ( 0xffffffff & x)<<32 | (0xffffffff & y);
+
         const auto bucketIter = m_geoIndex2EntityBucket.find( geoIndex);
         if ( m_geoIndex2EntityBucket.end() != bucketIter )
         {

@@ -13,7 +13,10 @@ public:
   virtual ~COSMEngine();
 
   bool Initialize( const OSMConfiguration& configuration);
+
   void CleanUp();
+
+  COSMPosition FindOSMLocation( const CGeoPoint& point );
 
 private:
   OSMRoutingNetwork m_routingNetwork;

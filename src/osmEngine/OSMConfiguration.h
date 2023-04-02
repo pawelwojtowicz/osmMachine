@@ -8,9 +8,9 @@ struct OSMConfiguration
 {
 std::string osmMapFile;
 
-int geoBucketingFactor;
+int geoBucketingFactor = { 13 };
 
-int mapMatcherNeighbourhoodSize;
+int mapMatcherNeighbourhoodSize = { 2 };
 };
 
 }
