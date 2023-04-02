@@ -13,6 +13,17 @@ COSMPosition::COSMPosition()
 
 }
 
+COSMPosition::COSMPosition( const int64_t wayId, const int waySegmentIdex, const double distanceOnSegment, const CGeoPoint& rawGeoPoint, const CGeoPoint& snappedToMap)
+: m_wayId(wayId)
+, m_waySegmentIdex(waySegmentIdex)
+, m_distanceOnSegment(distanceOnSegment)
+, m_rawGeoPoint(rawGeoPoint)
+, m_snappedToMap(snappedToMap)
+{
+
+}
+
+
 bool COSMPosition::IsValid() const
 {
   return ( m_rawGeoPoint.isValid() && m_snappedToMap.isValid() );

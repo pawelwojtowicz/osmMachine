@@ -1,14 +1,12 @@
 #include "COSMEngine.h"
 #include <COSMModelBuilder.h>
 
-#include <string>
-
 namespace osmMachine
 {
 
 COSMEngine::COSMEngine()
 : m_routingNetwork()
-, m_mapMatcher( m_routingNetwork )
+, m_mapMatcher(m_routingNetwork)
 {
 
 }
@@ -18,16 +16,14 @@ COSMEngine::~COSMEngine()
 
 }
 
-bool COSMEngine::Initialize()
+bool COSMEngine::Initialize( const OSMConfiguration& configuration )
 {
-  bool success(false);
-
-  std::string osmDataFileName("mapaZlotoryja.osm");
-
   COSMModelBuilder osmBuilder(m_routingNetwork);
-  osmBuilder.ReadOSMData(osmDataFileName);
+  osmBuilder.ReadOSMData(configuration.osmMapFile, configuration.geoBucketingFactor );
 
-  return success;
+  m_mapMatcher.Initialize( configuration.mapMatcherNeighbourhoodSize);
+
+  return true;
 }
 
 void COSMEngine::CleanUp()

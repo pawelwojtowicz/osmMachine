@@ -3,6 +3,7 @@
 #include <memory>
 #include "COSMNode.h"
 #include "CWaySegment.h"
+
 namespace osmMachine
 {
 

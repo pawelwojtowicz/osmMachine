@@ -41,7 +41,7 @@ public:
     return (m_zoomLevel = zoomLevel);
   }
 
-  CGeoBucket<OSM_ENTITY>::tEntitySet getAllAround( const CGeoPoint& point, int radius = 0 )
+  CGeoBucket<OSM_ENTITY>::tEntitySet getAllAround( const CGeoPoint& point, int radius = 0 ) const
   {
     uint64_t xIndex = CTileUtils::gpsLon2TileX(RAD2DEG(point.getLon()), m_zoomLevel);
     uint64_t yIndex = CTileUtils::gpsLat2TileY(RAD2DEG(point.getLat()), m_zoomLevel);

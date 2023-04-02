@@ -2,9 +2,9 @@
 #include <CGeoBucket.h>
 #include "COSMNode.h"
 #include "COSMWay.h"
+#include <string>
 #include <list>
 #include <map>
-
 
 namespace osmMachine
 {
@@ -16,6 +16,8 @@ using tWayGeoBuckets = CGeoBucket<tWayShPtr>;
 
 struct OSMRoutingNetwork
 {
+  OSMRoutingNetwork() {};
+  
   tNodeId2NodeMap id2NodeMap;
 
   tWayId2WayMap id2WayMap;
