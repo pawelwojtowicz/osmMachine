@@ -39,7 +39,7 @@ int64_t CGeoIndex::CalculateIndex( double lat, double lon ) const
   {
     int xTile = CTileUtils::gpsLon2TileX( lon ,m_zoomLevel ) - m_xMin;
     int yTile = CTileUtils::gpsLat2TileY( lat ,m_zoomLevel ) - m_yMin;
-    index = ( (0xffffffff & yTile) << 32 ) + (0xffffffff & xTile);
+    index = ( (0xffffffff & static_cast<int64_t>(yTile)) << 32 ) + (0xffffffff & static_cast<int64_t>(xTile));
   }
 
   return index;

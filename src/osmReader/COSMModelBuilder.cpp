@@ -103,7 +103,7 @@ void COSMModelBuilder::AddWay( tWayShPtr& ptrWay )
   m_prevGeoPoint.reset();
 }
 
-tWayShPtr COSMModelBuilder::AddHelperWay( int64_t masterWayId, const tPropertyMap& properties )
+tWayShPtr COSMModelBuilder::AddHelperWay( int64_t masterWayId, const COSMWay::tPropertyMap& properties )
 {
   tWayShPtr ptrWay = std::make_shared<COSMWay>(++m_helperWayId);
 

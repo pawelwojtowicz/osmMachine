@@ -1,7 +1,8 @@
 #pragma once
-#include "OSMCore.h"
 #include <CGeoPoint.h>
+#include <map>
 #include <memory>
+
 
 namespace osmMachine
 {
@@ -9,6 +10,8 @@ namespace osmMachine
 class COSMNode : public CGeoPoint
 {
 public:
+  using tPropertyMap = std::map<std::string, std::string>;
+
   COSMNode( const int64_t osmNodeId );
   COSMNode( const int64_t osmNodeId, const double lat, const double lon );
   virtual ~COSMNode();
@@ -24,4 +27,7 @@ private:
 
   tPropertyMap m_nodeProperties;
 };
+
+using tOSMNodeShPtr = std::shared_ptr<COSMNode>;
+
 }

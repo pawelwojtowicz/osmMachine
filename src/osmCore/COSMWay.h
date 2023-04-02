@@ -11,6 +11,8 @@ class COSMWay
   using tWaySegments = std::vector<CWaySegment>;
 
 public:
+  using tPropertyMap = std::map<std::string, std::string>;
+
   COSMWay( const int64_t wayId);
   virtual ~COSMWay();
 
@@ -59,5 +61,7 @@ private:
 
   tOSMNodeShPtr m_wayEnd;
 };
+
+using tWayShPtr = std::shared_ptr<COSMWay>;
 
 }
