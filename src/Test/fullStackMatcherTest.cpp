@@ -21,6 +21,7 @@ int main( int argc, char** argv)
     osmMachine::OSMConfiguration configuration;
 
     configuration.osmMapFile = osmFileName;
+    configuration.geoBucketingFactor = 15;
 
     Utils::CTimespanMeter timespanMeter("LoadingOSM");
 
@@ -30,8 +31,9 @@ int main( int argc, char** argv)
 
 //    osmMachine::CGeoPoint point( DEG2RAD(51.121398),DEG2RAD(15.906612)); // wayID = 229214577
     osmMachine::CGeoPoint point( DEG2RAD(51.1237259939271),DEG2RAD(15.915939244701315)); // wayID = 234858257 
+    timespanMeter.ResetTimeBaseline();
     osmMachine::COSMPosition mapMatching = engine.FindOSMLocation(point);
-
+    timespanMeter.CatchTimestampToBaseline("Map matching");
    LOG(INFO,("Map matched WayId=%d", mapMatching.GetWayId()));
   }
 

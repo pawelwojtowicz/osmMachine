@@ -48,10 +48,10 @@ COSMPosition COSMMapMatcher::FindOSMPosition( const CGeoPoint& point)
                                       *segments[index].getEndNode(), 
                                       projection,
                                       distance );
-        std::cout << "Id=" << std::dec << way->GetId() << " distance=[" << distance <<"]" << std::endl;
+       // std::cout << "Id=" << std::dec << way->GetId() << " distance=[" << distance <<"]" << std::endl;
         if ( distance < bestDistance )
         {
-          std::cout << "boom " << std::dec << " " << segments[index].getBeginNode()->getId() << " " << segments[index].getEndNode()->getId() << std::endl;
+          //std::cout << "boom " << std::dec << " " << segments[index].getBeginNode()->getId() << " " << segments[index].getEndNode()->getId() << std::endl;
           bestMatchingWay = way;
           mapMatchedGeoNode = projection;
           bestDistance = distance;

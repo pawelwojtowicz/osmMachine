@@ -23,7 +23,7 @@ void CTimespanMeter::ResetTimeBaseline()
 
 void CTimespanMeter::CatchTimestampToBaseline( const std::string& referenceLabel)
 {
-  auto timeSpanInMiliseconds = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - m_timeBaseline);
+  auto timeSpanInMiliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - m_timeBaseline);
   LOG(PERF,("[%s] - %s - span=%d[ms]", m_timeMeasurementTopic.c_str(), referenceLabel.c_str(), timeSpanInMiliseconds));
 }
 
