@@ -1,5 +1,5 @@
 #pragma once
-#include <CGeoBucket.h>
+#include <GeoBase/CGeoBucket.h>
 #include "COSMNode.h"
 #include "COSMWay.h"
 #include <string>

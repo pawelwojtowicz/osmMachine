@@ -1,5 +1,5 @@
 #pragma once
-#include <OSMRoutingNetwork.h>
+#include <osmCore/OSMRoutingNetwork.h>
 #include "COSMPosition.h"
 
 namespace osmMachine

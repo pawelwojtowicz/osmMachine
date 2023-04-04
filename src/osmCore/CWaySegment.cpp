@@ -1,5 +1,5 @@
 #include "CWaySegment.h"
-#include <GeoUtils.h>
+#include <GeoBase/GeoUtils.h>
 
 namespace osmMachine
 {

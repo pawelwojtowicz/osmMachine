@@ -1,6 +1,6 @@
 #pragma once
-#include <COSMNode.h>
-#include <COSMWay.h>
+#include <osmCore/COSMNode.h>
+#include <osmCore/COSMWay.h>
 
 namespace osmMachine
 {

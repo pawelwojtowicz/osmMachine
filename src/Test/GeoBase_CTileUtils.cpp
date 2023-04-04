@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include <CTileUtils.cpp>
-#include <GeoDefs.h>
+#include <GeoBase/CTileUtils.cpp>
+#include <GeoBase/GeoDefs.h>
 #include "tileTestHelper.h"
 
 using namespace osmMachine;

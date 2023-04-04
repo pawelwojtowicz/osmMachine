@@ -1,6 +1,6 @@
 #pragma once
 #include <stdint.h>
-#include <CGeoPoint.h>
+#include <GeoBase/CGeoPoint.h>
 
 namespace osmMachine
 {

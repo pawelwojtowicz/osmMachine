@@ -1,6 +1,6 @@
 #pragma once
 #include "IOSMModelBuilder.h"
-#include <OSMRoutingNetwork.h>
+#include <osmCore/OSMRoutingNetwork.h>
 
 namespace osmMachine
 {

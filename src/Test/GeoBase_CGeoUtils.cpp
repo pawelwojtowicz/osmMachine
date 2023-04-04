@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <GeoUtils.h>
+#include <GeoBase/GeoUtils.h>
 #include <iostream>
 
 TEST( GeoUtils_Point2PointDistance, ShortRange ) 

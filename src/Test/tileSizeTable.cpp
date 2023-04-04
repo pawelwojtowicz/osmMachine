@@ -1,6 +1,6 @@
-#include <CTileUtils.h>
-#include <CGeoPoint.h>
-#include <GeoUtils.h>
+#include <GeoBase/CTileUtils.h>
+#include <GeoBase/CGeoPoint.h>
+#include <GeoBase/GeoUtils.h>
 #include <iostream>
 
 using namespace std;

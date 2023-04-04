@@ -1,7 +1,7 @@
 #include <iostream>
 #include <iomanip>
-#include <OSMRoutingNetwork.h>
-#include <COSMModelBuilder.h>
+#include <osmCore/OSMRoutingNetwork.h>
+#include <osmReader/COSMModelBuilder.h>
 
 int main( int argc, char** argv)
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include <OSMRoutingNetwork.h>
+#include <osmCore/OSMRoutingNetwork.h>
 #include "COSMMapMatcher.h"
 #include "OSMConfiguration.h"
 

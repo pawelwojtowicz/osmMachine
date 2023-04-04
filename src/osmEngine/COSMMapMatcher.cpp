@@ -1,5 +1,5 @@
 #include "COSMMapMatcher.h"
-#include <GeoUtils.h>
+#include <GeoBase/GeoUtils.h>
 #include <iostream>
 
 namespace osmMachine

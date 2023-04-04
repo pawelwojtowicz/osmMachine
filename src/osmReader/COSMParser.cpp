@@ -1,5 +1,5 @@
 #include "COSMParser.h"
-#include <COSMNode.h>
+#include <osmCore/COSMNode.h>
 #include <iostream>
 #include <iomanip>
 #include <cstdlib>

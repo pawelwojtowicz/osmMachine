@@ -1,5 +1,5 @@
 #include "COSMEngine.h"
-#include <COSMModelBuilder.h>
+#include <osmReader/COSMModelBuilder.h>
 
 namespace osmMachine
 {

@@ -6,7 +6,7 @@
 #include <fstream>
 #include <zlib.h>
 
-#include <COSMNode.h>
+#include <osmCore/COSMNode.h>
 
 using namespace std;
 

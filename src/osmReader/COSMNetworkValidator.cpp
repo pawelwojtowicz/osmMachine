@@ -1,6 +1,6 @@
 #include "COSMNetworkValidator.h"
-#include <COSMWay.h>
-#include <COSMNode.h>
+#include <osmCore/COSMWay.h>
+#include <osmCore/COSMNode.h>
 #include <iostream>
 namespace osmMachine
 {

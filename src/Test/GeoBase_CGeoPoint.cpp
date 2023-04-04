@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <CGeoPoint.h>
+#include <GeoBase/CGeoPoint.h>
 
 TEST( CGeoPoint, DefaultConstructor)
 {

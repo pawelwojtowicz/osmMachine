@@ -1,5 +1,5 @@
 #pragma once
-#include <CGeoPoint.h>
+#include <GeoBase/CGeoPoint.h>
 #include <map>
 #include <memory>
 

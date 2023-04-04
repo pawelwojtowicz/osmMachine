@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <tuple>
 #include "tileTestHelper.h"
-#include <CGeoBucket.h>
+#include <GeoBase/CGeoBucket.h>
 #include <algorithm>
 
 //using testing::_;

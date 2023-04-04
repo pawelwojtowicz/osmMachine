@@ -1,5 +1,5 @@
 #include "tileTestHelper.h"
-#include <CTileUtils.h>
+#include <GeoBase/CTileUtils.h>
 
 using namespace osmMachine;
 
