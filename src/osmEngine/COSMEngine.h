@@ -1,5 +1,7 @@
 #pragma once
 #include <osmCore/OSMRoutingNetwork.h>
+#include <Logger/Logger.h>
+#include <Logger/ILogger.h>
 #include "COSMMapMatcher.h"
 #include "OSMConfiguration.h"
 
@@ -12,7 +14,7 @@ public:
   COSMEngine();
   virtual ~COSMEngine();
 
-  bool Initialize( const OSMConfiguration& configuration);
+  bool Initialize( const OSMConfiguration& configuration, std::shared_ptr<Logger::ILogger> pLogger = {} );
 
   void CleanUp();
 
@@ -23,6 +25,7 @@ private:
   
   COSMMapMatcher m_mapMatcher;
 
+  std::shared_ptr<Logger::ILogger> m_pLogger;
 };
 
 }

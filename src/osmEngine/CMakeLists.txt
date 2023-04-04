@@ -8,4 +8,4 @@ add_library( osmEngine SHARED
     OSMConfiguration.h
 )
 
-target_link_libraries( osmEngine PUBLIC osmCore osmReader )
+target_link_libraries( osmEngine PUBLIC osmCore osmReader Logger)

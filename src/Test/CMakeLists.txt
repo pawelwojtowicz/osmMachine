@@ -17,8 +17,8 @@ add_dependencies( osmMachineTests GeoBase )
 add_executable( fullStackMatcherTest
    fullStackMatcherTest.cpp)
 
-target_link_libraries(fullStackMatcherTest osmReader osmEngine )
-add_dependencies( fullStackMatcherTest osmReader osmEngine)
+target_link_libraries(fullStackMatcherTest Logger osmReader osmEngine Utils)
+add_dependencies( fullStackMatcherTest Logger osmReader osmEngine Utils)
 
 add_executable( tileSizeTable
   tileSizeTable.cpp
