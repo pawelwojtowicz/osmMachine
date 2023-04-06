@@ -30,10 +30,8 @@ int main( int argc, char** argv)
     LOG(INFO,("Loaded [%s]",osmFileName.c_str()));
 
     //osmMachine::CGeoPoint point( DEG2RAD(51.16096162263386),DEG2RAD(16.896208535971038)); // wayID = 
-
-
-    osmMachine::CGeoPoint point( DEG2RAD(51.121398),DEG2RAD(15.906612)); // wayID = 229214577
-//    osmMachine::CGeoPoint point( DEG2RAD(51.1237259939271),DEG2RAD(15.915939244701315)); // wayID = 234858257 
+    //osmMachine::CGeoPoint point( DEG2RAD(51.121398),DEG2RAD(15.906612)); // wayID = 229214577
+    osmMachine::CGeoPoint point( DEG2RAD(51.1237259939271),DEG2RAD(15.915939244701315)); // wayID = 234858257 
     timespanMeter.ResetTimeBaseline();
     const auto mapMatching = engine.FindOSMLocation(point);
     timespanMeter.CatchTimestampToBaseline("Map matching");

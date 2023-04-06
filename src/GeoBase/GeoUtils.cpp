@@ -1,18 +1,31 @@
 #include "GeoUtils.h"
 #include "CGeoPoint.h"
+#include <numbers>
+#include <fpu_control.h>
 
 namespace osmMachine
 {
 
 double GeoUtils::Point2PointDistance( const CGeoPoint& p1, const CGeoPoint& p2)
 {
-  double dlon = p2.getLon() - p1.getLon();
-  double dlat = p2.getLat() - p2.getLat();
+  // interesting part - for setting up the floating point control register
+  // on the WSL ( damn - this is crazy)
+  // unsigned short Cw = 0x37f;
+  // _FPU_SETCW(Cw);
 
-  double a = pow( sin(dlat/2) , 2 ) + cos(p1.getLat()) * cos(p2.getLat()) * pow( sin(dlon/2) , 2);
-  double c = 2 * atan2( sqrt(a) , sqrt( 1- a) );
 
-  return s_earthRadiusKM * c;  
+  // distance between latitudes
+  // and longitudes
+  double dLat = (p2.getLat() - p1.getLat());              
+  double dLon = (p2.getLon() - p1.getLon());
+ 
+  // apply formulae
+  double a = pow(sin(dLat / 2), 2) +
+              pow(sin(dLon / 2), 2) *
+              cos(p1.getLat()) * cos(p2.getLat());
+
+  double c = 2 * asin(sqrt(a));
+  return s_earthRadiusKM * c;
 }
   
 bool GeoUtils::ProjectPoint2Shape( const CGeoPoint& point, const CGeoPoint& shapeBegin, const CGeoPoint& shapeEnd, CGeoPoint& projection, double& distance )

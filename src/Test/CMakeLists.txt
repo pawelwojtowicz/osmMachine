@@ -14,6 +14,14 @@ add_executable( osmMachineTests
 target_link_libraries(osmMachineTests GeoBase ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} pthread )
 add_dependencies( osmMachineTests GeoBase )
 
+add_executable( geoZoneMonitorTests
+  CSimpleZoneMonitorTests.cpp
+  )
+
+target_link_libraries(geoZoneMonitorTests GeoBase GeoZoneMonitor ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} pthread )
+add_dependencies( geoZoneMonitorTests GeoBase GeoZoneMonitor)
+
+
 add_executable( fullStackMatcherTest
    fullStackMatcherTest.cpp)
 
