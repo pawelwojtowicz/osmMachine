@@ -29,12 +29,21 @@ int main( int argc, char** argv)
     timespanMeter.CatchTimestampToBaseline("Finished");
     LOG(INFO,("Loaded [%s]",osmFileName.c_str()));
 
-//    osmMachine::CGeoPoint point( DEG2RAD(51.121398),DEG2RAD(15.906612)); // wayID = 229214577
-    osmMachine::CGeoPoint point( DEG2RAD(51.1237259939271),DEG2RAD(15.915939244701315)); // wayID = 234858257 
+    //osmMachine::CGeoPoint point( DEG2RAD(51.16096162263386),DEG2RAD(16.896208535971038)); // wayID = 
+
+
+    osmMachine::CGeoPoint point( DEG2RAD(51.121398),DEG2RAD(15.906612)); // wayID = 229214577
+//    osmMachine::CGeoPoint point( DEG2RAD(51.1237259939271),DEG2RAD(15.915939244701315)); // wayID = 234858257 
     timespanMeter.ResetTimeBaseline();
-    osmMachine::COSMPosition mapMatching = engine.FindOSMLocation(point);
+    const auto mapMatching = engine.FindOSMLocation(point);
     timespanMeter.CatchTimestampToBaseline("Map matching");
-   LOG(INFO,("Map matched WayId=%d", mapMatching.GetWayId()));
+    if (mapMatching.size())
+    {
+      for ( const auto& position : mapMatching)
+      {
+        LOG(INFO,("Map matched WayId=%d - distance=%4.3f", position.GetWayId(), position.GetRaw2ProjectionDistance() ) );  
+      }
+    }
   }
 
   return 0;

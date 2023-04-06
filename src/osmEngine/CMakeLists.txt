@@ -1,6 +1,7 @@
 add_library( osmEngine SHARED
     COSMEngine.cpp
     COSMEngine.h
+    IOSMMapMatcher.h
     COSMMapMatcher.cpp
     COSMMapMatcher.h
     COSMPosition.cpp

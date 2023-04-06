@@ -18,7 +18,7 @@ public:
 
   void CleanUp();
 
-  COSMPosition FindOSMLocation( const CGeoPoint& point );
+  tMapMatching FindOSMLocation( const CGeoPoint& point );
 
 private:
   OSMRoutingNetwork m_routingNetwork;

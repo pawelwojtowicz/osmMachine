@@ -8,6 +8,8 @@ namespace osmMachine
 COSMMapMatcher::COSMMapMatcher( const OSMRoutingNetwork& routingNetwork )
 : m_routingNetwork( routingNetwork)
 , m_neighbourhoodSize( 1 )
+, m_recomendationSize(1)
+, m_mapMatchingTolerance( std::numeric_limits<double>::max() )
 {
 }
 
@@ -16,19 +18,23 @@ COSMMapMatcher::~COSMMapMatcher()
 
 }
 
-void COSMMapMatcher::Initialize ( const int neighbourhoodSize )
+void COSMMapMatcher::Initialize ( const int neighbourhoodSize, 
+                                  const int mapMatcherRecomendationSize, 
+                                  const double mapMatchingTolerance )
 {
   m_neighbourhoodSize = neighbourhoodSize;
+  m_recomendationSize = mapMatcherRecomendationSize;
+  if ( -1 == mapMatchingTolerance )
+  {
+    m_mapMatchingTolerance = std::numeric_limits<double>::max();
+  }
 }
 
-COSMPosition COSMMapMatcher::FindOSMPosition( const CGeoPoint& point)
+tMapMatching COSMMapMatcher::FindOSMPosition( const CGeoPoint& point)
 {
   const auto wayElementsInArea = m_routingNetwork.wayGeoBuckets.getAllAround(point, m_neighbourhoodSize );
 
-  tWayShPtr bestMatchingWay;
-  double bestDistance = std::numeric_limits<double>::max();
-  CGeoPoint mapMatchedGeoNode;
-  int bestMatchingSegmentIdx = 0;
+  tMapMatching osmMapMatchings;
 
   for( const auto& way : wayElementsInArea)
   {
@@ -48,21 +54,26 @@ COSMPosition COSMMapMatcher::FindOSMPosition( const CGeoPoint& point)
                                       *segments[index].getEndNode(), 
                                       projection,
                                       distance );
-       // std::cout << "Id=" << std::dec << way->GetId() << " distance=[" << distance <<"]" << std::endl;
-        if ( distance < bestDistance )
+        if ( distance < m_mapMatchingTolerance )
         {
-          //std::cout << "boom " << std::dec << " " << segments[index].getBeginNode()->getId() << " " << segments[index].getEndNode()->getId() << std::endl;
-          bestMatchingWay = way;
-          mapMatchedGeoNode = projection;
-          bestDistance = distance;
-          bestMatchingSegmentIdx = index;
+          osmMapMatchings.insert( COSMPosition(
+            way->GetId(),
+            index,
+            GeoUtils::Point2PointDistance(*(way->GetBeginNode()), projection ),
+            distance,
+            point,
+            projection
+          ));
+
+          if ( osmMapMatchings.size() > m_recomendationSize )
+          {
+            osmMapMatchings.erase( --osmMapMatchings.end() );
+          }
         }
       }
     }
   }
 
-  int64_t id = bestMatchingWay ? bestMatchingWay->GetId() : 0;
-
-  return COSMPosition( id , bestMatchingSegmentIdx, bestDistance, point, mapMatchedGeoNode);
+  return osmMapMatchings;
 }
 }

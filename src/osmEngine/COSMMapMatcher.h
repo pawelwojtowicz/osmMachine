@@ -1,24 +1,29 @@
 #pragma once
+#include "IOSMMapMatcher.h"
 #include <osmCore/OSMRoutingNetwork.h>
 #include "COSMPosition.h"
 
 namespace osmMachine
 {
 
-class COSMMapMatcher
+class COSMMapMatcher : public IOSMMapMatcher
 {
 public:
   COSMMapMatcher( const OSMRoutingNetwork& routingNetwork );
   virtual ~COSMMapMatcher();
 
-  void Initialize ( const int neighbourhoodSize );
+  void Initialize ( const int neighbourhoodSize, const int mapMatcherRecomendationSize, const double mapMatchingTolerance);
 
-  COSMPosition FindOSMPosition( const CGeoPoint& point);
+  tMapMatching FindOSMPosition( const CGeoPoint& position) override;
 
 private:
   const OSMRoutingNetwork& m_routingNetwork;
 
   int m_neighbourhoodSize;
+
+  int m_recomendationSize;
+
+  double m_mapMatchingTolerance;
 };
 
 }

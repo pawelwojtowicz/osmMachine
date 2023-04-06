@@ -1,4 +1,6 @@
 add_library( osmCore SHARED 
+  CGPSPosition.cpp
+  CGPSPosition.h
   COSMNode.cpp
   COSMNode.h
   COSMWay.cpp

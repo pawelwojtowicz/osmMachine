@@ -35,7 +35,9 @@ bool COSMEngine::Initialize( const OSMConfiguration& configuration, std::shared_
   COSMModelBuilder osmBuilder(m_routingNetwork);
   osmBuilder.ReadOSMData(configuration.osmMapFile, configuration.geoBucketingFactor );
 
-  m_mapMatcher.Initialize( configuration.mapMatcherNeighbourhoodSize);
+  m_mapMatcher.Initialize( configuration.mapMatcherNeighbourhoodSize,
+                           configuration.mapMatcherRecomendationSize,
+                           configuration.mapMatchingTolerance );
 
   return true;
 }
@@ -45,7 +47,7 @@ void COSMEngine::CleanUp()
 
 }
 
-COSMPosition COSMEngine::FindOSMLocation( const CGeoPoint& point )
+tMapMatching COSMEngine::FindOSMLocation( const CGeoPoint& point )
 {
   return m_mapMatcher.FindOSMPosition( point);
 }
