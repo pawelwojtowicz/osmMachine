@@ -6,6 +6,7 @@ add_executable( osmMachineTests
   GeoBase_CGeoPoint.cpp
   GeoBase_CGeoUtils.cpp
   GeoBase_CTileUtils.cpp
+  GeoBase_BoundingBoxTests.cpp
   osmCore_CGeoBucket.cpp
   tileTestHelper.h
   tileTestHelper.cpp
