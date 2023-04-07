@@ -3,7 +3,7 @@
 
 namespace osmMachine
 {
-class CGPSPosition : public CGeoPoint
+class CGPSPosition : public GeoBase::CGeoPoint
 {
   CGPSPosition();
   CGPSPosition(double latDeg,double longDeg);

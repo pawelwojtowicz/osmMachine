@@ -14,7 +14,7 @@ public:
 
   void Initialize ( const int neighbourhoodSize, const int mapMatcherRecomendationSize, const double mapMatchingTolerance);
 
-  tMapMatching FindOSMPosition( const CGeoPoint& position) override;
+  tMapMatching FindOSMPosition( const GeoBase::CGeoPoint& position) override;
 
 private:
   const OSMRoutingNetwork& m_routingNetwork;

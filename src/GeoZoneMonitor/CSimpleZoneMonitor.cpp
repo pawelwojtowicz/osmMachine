@@ -16,10 +16,10 @@ CSimpleZoneMonitor::~CSimpleZoneMonitor()
 
 }
 
-bool CSimpleZoneMonitor::IsInsideArea( const osmMachine::CGeoPoint& point )
+bool CSimpleZoneMonitor::IsInsideArea( const GeoBase::CGeoPoint& point )
 {
-  std::cout << " --- " << osmMachine::GeoUtils::Point2PointDistance( point, m_geoZoneCenter) << std::endl;
-  return ( osmMachine::GeoUtils::Point2PointDistance( point, m_geoZoneCenter) <= m_zoneRadius );
+  std::cout << " --- " << GeoBase::GeoUtils::Point2PointDistance( point, m_geoZoneCenter) << std::endl;
+  return ( GeoBase::GeoUtils::Point2PointDistance( point, m_geoZoneCenter) <= m_zoneRadius );
 }
 
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "GeoDefs.h"
 
-namespace osmMachine
+namespace GeoBase
 {
 
 class CGeoPoint

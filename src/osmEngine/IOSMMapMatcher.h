@@ -14,6 +14,6 @@ public:
   IOSMMapMatcher() = default;
   virtual ~IOSMMapMatcher() = default;
 
-  virtual tMapMatching FindOSMPosition( const CGeoPoint& position) = 0;
+  virtual tMapMatching FindOSMPosition( const GeoBase::CGeoPoint& position) = 0;
 };
 }

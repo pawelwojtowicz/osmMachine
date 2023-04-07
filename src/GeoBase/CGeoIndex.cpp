@@ -2,7 +2,7 @@
 #include <cmath>
 #include "CTileUtils.h"
 
-namespace osmMachine
+namespace GeoBase
 {
 
 CGeoIndex::CGeoIndex()

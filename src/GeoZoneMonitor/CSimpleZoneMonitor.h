@@ -10,10 +10,10 @@ public:
   CSimpleZoneMonitor( const double lat, const double lon, const double radius );
   virtual ~CSimpleZoneMonitor();
 
-  virtual bool IsInsideArea( const osmMachine::CGeoPoint& point ) override;
+  virtual bool IsInsideArea( const GeoBase::CGeoPoint& point ) override;
 
 private:
-  osmMachine::CGeoPoint m_geoZoneCenter;
+  GeoBase::CGeoPoint m_geoZoneCenter;
 
   double m_zoneRadius;
 };

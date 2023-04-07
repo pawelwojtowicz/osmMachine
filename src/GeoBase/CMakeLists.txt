@@ -1,5 +1,7 @@
 add_library( GeoBase SHARED 
   GeoDefs.h
+  CBoundingBox.cpp
+  CBoundingBox.h
   CGeoIndex.cpp
   CGeoIndex.h
   CGeoPoint.cpp

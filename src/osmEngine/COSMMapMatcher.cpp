@@ -30,7 +30,7 @@ void COSMMapMatcher::Initialize ( const int neighbourhoodSize,
   }
 }
 
-tMapMatching COSMMapMatcher::FindOSMPosition( const CGeoPoint& point)
+tMapMatching COSMMapMatcher::FindOSMPosition( const GeoBase::CGeoPoint& point)
 {
   const auto wayElementsInArea = m_routingNetwork.wayGeoBuckets.getAllAround(point, m_neighbourhoodSize );
 
@@ -47,19 +47,19 @@ tMapMatching COSMMapMatcher::FindOSMPosition( const CGeoPoint& point)
 
       for ( int index = 0 ; index < segmentCount ; ++index)
       {
-        CGeoPoint projection;
+        GeoBase::CGeoPoint projection;
         double distance = std::numeric_limits<double>::max() ;
-        GeoUtils::ProjectPoint2Shape( point, 
-                                      *segments[index].getBeginNode(),
-                                      *segments[index].getEndNode(), 
-                                      projection,
-                                      distance );
+        GeoBase::GeoUtils::ProjectPoint2Shape( point, 
+                                               *segments[index].getBeginNode(),
+                                               *segments[index].getEndNode(), 
+                                               projection,
+                                               distance );
         if ( distance < m_mapMatchingTolerance )
         {
           osmMapMatchings.insert( COSMPosition(
             way->GetId(),
             index,
-            GeoUtils::Point2PointDistance(*(way->GetBeginNode()), projection ),
+            GeoBase::GeoUtils::Point2PointDistance(*(way->GetBeginNode()), projection ),
             distance,
             point,
             projection

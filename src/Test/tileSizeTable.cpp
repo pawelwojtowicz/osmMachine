@@ -4,7 +4,7 @@
 #include <iostream>
 
 using namespace std;
-using namespace osmMachine;
+using namespace GeoBase;
 
 void PrintTileSizeForZoomLevel( int zoomLevel )
 {

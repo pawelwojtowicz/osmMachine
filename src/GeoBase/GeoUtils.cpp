@@ -3,7 +3,7 @@
 #include <numbers>
 #include <fpu_control.h>
 
-namespace osmMachine
+namespace GeoBase
 {
 
 double GeoUtils::Point2PointDistance( const CGeoPoint& p1, const CGeoPoint& p2)

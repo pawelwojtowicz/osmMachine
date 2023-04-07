@@ -6,6 +6,6 @@ namespace GeoZoneMonitor
 class IGeoZoneMonitor
 {
 public:
-  virtual bool IsInsideArea( const osmMachine::CGeoPoint& point ) = 0;
+  virtual bool IsInsideArea( const GeoBase::CGeoPoint& point ) = 0;
 };
 }

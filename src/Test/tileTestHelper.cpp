@@ -1,7 +1,7 @@
 #include "tileTestHelper.h"
 #include <GeoBase/CTileUtils.h>
 
-using namespace osmMachine;
+using namespace GeoBase;
 
 std::pair< double, double> returnCenterOfATile( uint32_t x, uint32_t y , int zoomLevel)
 {

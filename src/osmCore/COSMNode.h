@@ -7,7 +7,7 @@
 namespace osmMachine
 {
 
-class COSMNode : public CGeoPoint
+class COSMNode : public GeoBase::CGeoPoint
 {
 public:
   using tPropertyMap = std::map<std::string, std::string>;

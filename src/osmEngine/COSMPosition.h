@@ -8,7 +8,12 @@ class COSMPosition
 {
 public:
   COSMPosition();
-  COSMPosition( const int64_t wayId, const int waySegmentIdex, const double m_distanceOnSegment, const double rawFromProjectionDistance,const CGeoPoint& rawGeoPoint, const CGeoPoint& snappedToMap);
+  COSMPosition( const int64_t wayId,
+                const int waySegmentIdex, 
+                const double m_distanceOnSegment, 
+                const double rawFromProjectionDistance,
+                const GeoBase::CGeoPoint& rawGeoPoint, 
+                const GeoBase::CGeoPoint& snappedToMap);
 
   COSMPosition(const COSMPosition& ) = default;
   COSMPosition& operator=(const COSMPosition& ) = default;
@@ -33,8 +38,8 @@ private:
 
   double m_rawFromProjectionDistance;
 
-  CGeoPoint m_rawGeoPoint;
+  GeoBase::CGeoPoint m_rawGeoPoint;
 
-  CGeoPoint m_snappedToMap;
+  GeoBase::CGeoPoint m_snappedToMap;
 };
 }

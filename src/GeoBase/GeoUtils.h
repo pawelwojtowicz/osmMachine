@@ -2,7 +2,7 @@
 #include <cmath>
 #include "CGeoPoint.h"
 
-namespace osmMachine
+namespace GeoBase
 {
 
 class GeoUtils

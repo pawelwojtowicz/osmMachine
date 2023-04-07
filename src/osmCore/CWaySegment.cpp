@@ -8,7 +8,7 @@ CWaySegment::CWaySegment( tOSMNodeShPtr beginNode, tOSMNodeShPtr endNode )
 , m_beginNode(beginNode)
 , m_endNode( endNode)
 {
-  m_length = GeoUtils::Point2PointDistance(*m_beginNode, *m_endNode);
+  m_length = GeoBase::GeoUtils::Point2PointDistance(*m_beginNode, *m_endNode);
 }
 CWaySegment::~CWaySegment()
 {

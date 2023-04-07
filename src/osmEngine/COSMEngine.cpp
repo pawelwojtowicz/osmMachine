@@ -47,7 +47,7 @@ void COSMEngine::CleanUp()
 
 }
 
-tMapMatching COSMEngine::FindOSMLocation( const CGeoPoint& point )
+tMapMatching COSMEngine::FindOSMLocation( const GeoBase::CGeoPoint& point )
 {
   return m_mapMatcher.FindOSMPosition( point);
 }

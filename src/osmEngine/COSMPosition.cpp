@@ -13,7 +13,11 @@ COSMPosition::COSMPosition()
 
 }
 
-COSMPosition::COSMPosition( const int64_t wayId, const int waySegmentIdex, const double distanceOnSegment, const double rawFromProjectionDistance, const CGeoPoint& rawGeoPoint, const CGeoPoint& snappedToMap)
+COSMPosition::COSMPosition( const int64_t wayId, 
+                            const int waySegmentIdex, 
+                            const double distanceOnSegment, 
+                            const double rawFromProjectionDistance, 
+                            const GeoBase::CGeoPoint& rawGeoPoint, const GeoBase::CGeoPoint& snappedToMap)
 : m_wayId(wayId)
 , m_waySegmentIdex(waySegmentIdex)
 , m_distanceOnSegment(distanceOnSegment)

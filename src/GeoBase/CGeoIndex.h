@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-namespace osmMachine
+namespace GeoBase
 {
 class CGeoIndex
 {

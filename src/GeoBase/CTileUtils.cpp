@@ -1,7 +1,7 @@
 #include "CTileUtils.h"
 #include <cmath>
 
-namespace osmMachine
+namespace GeoBase
 {
 
 uint32_t CTileUtils::gpsLon2TileX(double lon, int z)

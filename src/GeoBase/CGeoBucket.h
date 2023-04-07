@@ -4,7 +4,7 @@
 #include "CGeoPoint.h"
 #include "CTileUtils.h"
 
-namespace osmMachine
+namespace GeoBase
 {
 
 template <class OSM_ENTITY >
@@ -93,8 +93,8 @@ public:
   {
     tGeoBucketStats geoBucketStats;
     geoBucketStats.zoomLevel = m_zoomLevel;
-    geoBucketStats.min = 999999999;
-    geoBucketStats.max = 0;
+    geoBucketStats.min = std::numeric_limits<double>::max();
+    geoBucketStats.max = std::numeric_limits<double>::min();
     geoBucketStats.bucketCount = m_geoIndex2EntityBucket.size();
     geoBucketStats.avrg = 0;
 

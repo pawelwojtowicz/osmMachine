@@ -1,6 +1,6 @@
 #include "CGeoPoint.h"
 
-namespace osmMachine
+namespace GeoBase
 {
 
 CGeoPoint::CGeoPoint()

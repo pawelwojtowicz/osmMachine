@@ -18,7 +18,7 @@ public:
 
   void CleanUp();
 
-  tMapMatching FindOSMLocation( const CGeoPoint& point );
+  tMapMatching FindOSMLocation( const GeoBase::CGeoPoint& point );
 
 private:
   OSMRoutingNetwork m_routingNetwork;
