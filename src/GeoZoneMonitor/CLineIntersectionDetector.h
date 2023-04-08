@@ -7,6 +7,7 @@ class CLineIntersectionDetector
 {
   enum class tLineType {
     eVertical,
+    eHorizontal,
     eOther
   };
 
