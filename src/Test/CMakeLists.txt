@@ -17,6 +17,7 @@ add_dependencies( osmMachineTests GeoBase )
 
 add_executable( geoZoneMonitorTests
   CSimpleZoneMonitorTests.cpp
+  CPolylineZoneMonitorTests.cpp
   )
 
 target_link_libraries(geoZoneMonitorTests GeoBase GeoZoneMonitor ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} pthread )
