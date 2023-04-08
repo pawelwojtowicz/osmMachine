@@ -1,5 +1,6 @@
 #include "CLineIntersectionDetector.h"
 #include <GeoBase/CGeoPoint.h>
+#include <iostream>
 
 namespace GeoZoneMonitor
 {
@@ -17,13 +18,15 @@ CLineIntersectionDetector::CLineIntersectionDetector( const GeoBase::CGeoPoint& 
   if ( begin.getLon() == end.getLon() )
   {
     m_lineType = tLineType::eVertical;
-    m_latBegin = std::min(m_latBegin, m_latEnd);
-    m_latEnd = std::max(m_latBegin, m_latEnd);
+    m_lonBegin = begin.getLon();
+    m_latBegin = std::min(begin.getLat(), end.getLat() );
+    m_latEnd = std::max(begin.getLat(), end.getLat() );
 
   }
   else if ( begin.getLat() == end.getLat() )
   {
     m_lineType = tLineType::eHorizontal;
+    m_lonBegin = std::min(begin.getLon(), end.getLon());
     m_lineDefinitionB = begin.getLat();
   }
   else
@@ -54,17 +57,19 @@ bool CLineIntersectionDetector::Intersects( const GeoBase::CGeoPoint& point) con
   {
     if ( m_lineDefinitionB == point.getLat() )
     {
-      return ( point.getLon() >= m_lonBegin && point.getLon() <= m_lonEnd );
+      return ( point.getLon() <= m_lonBegin );
     }
   };break;
   case tLineType::eVertical:
   {
-    return (point.getLat() >= m_latBegin && point.getLat() <= m_latEnd );
+    return (  ( point.getLat() >= m_latBegin ) && 
+              ( point.getLat() <= m_latEnd) && 
+              ( point.getLon() <= m_lonBegin ) );
   };break;
   default:
   {
     double lonIntersection = (point.getLat() - m_lineDefinitionB)/m_lineDefinitionA;
-    if ( lonIntersection >= point.getLon() && point.getLon() <= m_lonEnd )
+    if ( lonIntersection >= point.getLon() && lonIntersection <= m_lonEnd )
     {
       return true;
     }

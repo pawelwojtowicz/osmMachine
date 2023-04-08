@@ -2,6 +2,8 @@
 #include "IGeoZoneMonitor.h"
 #include <vector>
 #include <GeoBase/CBoundingBox.h>
+#include "CLineIntersectionDetector.h"
+#include <vector>
 
 namespace GeoZoneMonitor
 {
@@ -18,5 +20,7 @@ public:
 
 private:
   GeoBase::CBoundingBox m_boundingBox;
+
+  std::vector<CLineIntersectionDetector> m_lineGuards;
 };
 }

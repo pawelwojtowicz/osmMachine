@@ -1,11 +1,12 @@
 #include "CPolylineZoneMonitor.h"
+#include <algorithm>
 
 namespace GeoZoneMonitor
 {
 CPolylineZoneMonitor::CPolylineZoneMonitor(const std::vector<GeoBase::CGeoPoint>& definition)
 : m_boundingBox()
 {
-
+  PreprocessGeoZoneDefinition(definition);
 }
 
 CPolylineZoneMonitor::~CPolylineZoneMonitor()
@@ -22,10 +23,9 @@ void CPolylineZoneMonitor::PreprocessGeoZoneDefinition( const std::vector<GeoBas
 
     for( int pLineIdx = 0; pLineIdx < polylineSize ; ++pLineIdx )
     {
-      // buildSegment evaluator
-      //definition[pLineIdx], definition[pLineIdx%polylineSize]
+      m_boundingBox.IncludeGeoPoint( definition[pLineIdx%polylineSize] );
+      m_lineGuards.push_back(CLineIntersectionDetector(definition[pLineIdx], definition[(pLineIdx+1)%polylineSize]));
     }
-
   }
 }
 
@@ -33,7 +33,11 @@ bool CPolylineZoneMonitor::IsInsideArea( const GeoBase::CGeoPoint& point )
 {
   if ( m_boundingBox.IsInsideBBox( point ) )
   {
-
+    int intersectionCount = std::count_if(m_lineGuards.begin(), m_lineGuards.end() , [point]( const auto& detector) {
+      return detector.Intersects( point );
+    } );
+    intersectionCount += 0;
+    return (0 != intersectionCount%2);
   }
   return false;
 }

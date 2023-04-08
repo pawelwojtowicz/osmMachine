@@ -29,7 +29,7 @@ bool CBoundingBox::IsInsideBBox( const CGeoPoint& point )
 {
   return  ( ( point.getLat() >= m_latMin ) && 
             ( point.getLat() <= m_latMax ) && 
-            ( point.getLon() >= m_latMin ) &&
+            ( point.getLon() >= m_lonMin ) &&
             ( point.getLon() <= m_lonMax ) ); 
 }
 
