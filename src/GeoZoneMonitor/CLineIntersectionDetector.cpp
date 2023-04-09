@@ -31,15 +31,19 @@ CLineIntersectionDetector::CLineIntersectionDetector( const GeoBase::CGeoPoint& 
   }
   else
   {
-    m_lineDefinitionA = ( begin.getLat() - end.getLat() )/( begin.getLon() - end.getLon() );
-    if ( begin.getLon() > end.getLon() )
+    if ( begin.getLon() < end.getLon())
     {
-      m_lineDefinitionA *= -1;
+      m_lonBegin = begin.getLon();
+      m_lonEnd = end.getLon(); 
+      m_lineDefinitionA = ( begin.getLat() - end.getLat() )/( begin.getLon() - end.getLon() );  
+    }
+    else
+    {
+      m_lonBegin = end.getLon();
+      m_lonEnd = begin.getLon(); 
+      m_lineDefinitionA = ( end.getLat() - begin.getLat() )/( end.getLon() - begin.getLon() );
     }
     m_lineDefinitionB = begin.getLat() - m_lineDefinitionA * begin.getLon();
-
-    m_lonBegin = std::min( begin.getLon(), end.getLon() );
-    m_lonEnd = std::max( begin.getLon(), end.getLon() ); 
   }
 }
 
