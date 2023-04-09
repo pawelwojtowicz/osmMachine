@@ -31,15 +31,11 @@ void CPolylineZoneMonitor::PreprocessGeoZoneDefinition( const std::vector<GeoBas
 
 bool CPolylineZoneMonitor::IsInsideArea( const GeoBase::CGeoPoint& point )
 {
-  if ( m_boundingBox.IsInsideBBox( point ) )
+  if ( !m_boundingBox.IsInsideBBox( point ) )
   {
-    int intersectionCount = std::count_if(m_lineGuards.begin(), m_lineGuards.end() , [point]( const auto& detector) {
-      return detector.Intersects( point );
-    } );
-    intersectionCount += 0;
-    return (0 != intersectionCount%2);
+    return false;
   }
-  return false;
+  return ( std::count_if(m_lineGuards.begin(), m_lineGuards.end() , [point]( const auto& detector) { return detector.Intersects( point );})%2);
 }
 
 }
