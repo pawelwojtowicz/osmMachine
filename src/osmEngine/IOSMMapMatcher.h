@@ -1,7 +1,7 @@
 #pragma once
 #include <set>
 #include <GeoBase/CGeoPoint.h>
-#include "COSMPosition.h"
+#include <osmCore/COSMPosition.h>
 
 namespace osmMachine
 {

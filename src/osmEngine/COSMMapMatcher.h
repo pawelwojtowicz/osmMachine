@@ -1,7 +1,7 @@
 #pragma once
 #include "IOSMMapMatcher.h"
 #include <osmCore/OSMRoutingNetwork.h>
-#include "COSMPosition.h"
+#include <osmCore/COSMPosition.h>
 
 namespace osmMachine
 {
