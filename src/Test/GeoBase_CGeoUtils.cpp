@@ -86,3 +86,36 @@ TEST( GeoUtils_ProjectPoint2Shape , OffShape2 )
   ASSERT_EQ( round(RAD2DEG(projection.getLat()) * 10000 ), 455046 );
   ASSERT_EQ( round(RAD2DEG(projection.getLon()) * 10000 ), 107322 );
 }
+
+
+TEST( GeoUtils_BearingDEG , North )
+{
+  GeoBase::CGeoPoint begin( DEG2RAD(0) , DEG2RAD(0) );
+  GeoBase::CGeoPoint end( DEG2RAD(15.0), DEG2RAD(0) );
+
+  ASSERT_EQ( GeoBase::GeoUtils::BearingDEG(begin, end ) , 0 );
+}
+
+TEST( GeoUtils_BearingDEG , West )
+{
+  GeoBase::CGeoPoint begin( DEG2RAD(0) , DEG2RAD(0) );
+  GeoBase::CGeoPoint end( DEG2RAD(0), DEG2RAD(15.0) );
+
+  ASSERT_EQ( GeoBase::GeoUtils::BearingDEG(begin, end ) , 90 );
+}
+
+TEST( GeoUtils_BearingDEG , South )
+{
+  GeoBase::CGeoPoint begin( DEG2RAD(0) , DEG2RAD(0) );
+  GeoBase::CGeoPoint end( DEG2RAD(-15.0), DEG2RAD(0.0) );
+
+  ASSERT_EQ( GeoBase::GeoUtils::BearingDEG(begin, end ) , 180 );
+}
+
+TEST( GeoUtils_BearingDEG , East )
+{
+  GeoBase::CGeoPoint begin( DEG2RAD(0) , DEG2RAD(0) );
+  GeoBase::CGeoPoint end( DEG2RAD(0.0), DEG2RAD(-15.0) );
+
+  ASSERT_EQ( GeoBase::GeoUtils::BearingDEG(begin, end ) , -90 );
+}

@@ -15,6 +15,9 @@ public:
 
   static bool ProjectPoint2Shape( const CGeoPoint& point, const CGeoPoint& shapeBegin, const CGeoPoint& shapeEnd, CGeoPoint& projectedPoint, double& distance );
  
+  static double BearingRAD( const CGeoPoint& begin, const CGeoPoint& end);
+  static int BearingDEG( const CGeoPoint& begin, const CGeoPoint& end);
+
 };
 
 }

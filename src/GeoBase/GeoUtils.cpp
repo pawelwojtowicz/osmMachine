@@ -71,4 +71,16 @@ bool GeoUtils::ProjectPoint2Shape( const CGeoPoint& point, const CGeoPoint& shap
   return projectedOnTheLine;
 }
 
+double GeoUtils::BearingRAD( const CGeoPoint& begin, const CGeoPoint& end)
+{
+  const double y = sin(end.getLon() -begin.getLon() ) * cos( end.getLat() );
+  const double x = cos(begin.getLat() )* sin(end.getLat() ) - sin(begin.getLat() )* cos(end.getLat() )* cos(end.getLon()-begin.getLon() );
+  return atan2(y, x);
+}
+
+int GeoUtils::BearingDEG( const CGeoPoint& begin, const CGeoPoint& end )
+{
+  return static_cast<int>(BearingRAD( begin, end )* 180/M_PI) % 360 ;
+}
+
 }
