@@ -27,6 +27,7 @@ struct OSMRoutingNetwork
   tNodeId2WayListsMap nodeId2Ways;
 
   tWayGeoBuckets wayGeoBuckets;
+
 };
 
 }

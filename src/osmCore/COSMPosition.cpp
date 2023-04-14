@@ -4,7 +4,7 @@ namespace osmMachine
 {
 
 COSMPosition::COSMPosition()
-: m_wayId(0)
+: m_ptrWay()
 , m_waySegmentIdex(0)
 , m_distanceOnSegment(0.0)
 , m_rawGeoPoint()
@@ -13,12 +13,12 @@ COSMPosition::COSMPosition()
 
 }
 
-COSMPosition::COSMPosition( const int64_t wayId, 
+COSMPosition::COSMPosition( const tWayShPtr ptrWay, 
                             const int waySegmentIdex, 
                             const double distanceOnSegment, 
                             const double rawFromProjectionDistance, 
                             const GeoBase::CGeoPoint& rawGeoPoint, const GeoBase::CGeoPoint& snappedToMap)
-: m_wayId(wayId)
+: m_ptrWay(ptrWay)
 , m_waySegmentIdex(waySegmentIdex)
 , m_distanceOnSegment(distanceOnSegment)
 , m_rawFromProjectionDistance(rawFromProjectionDistance)

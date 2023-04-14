@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <GeoBase/CGeoPoint.h>
+#include "COSMWay.h"
 
 namespace osmMachine
 {
@@ -8,7 +9,7 @@ class COSMPosition
 {
 public:
   COSMPosition();
-  COSMPosition( const int64_t wayId,
+  COSMPosition( const tWayShPtr ptrWay,
                 const int waySegmentIdex, 
                 const double m_distanceOnSegment, 
                 const double rawFromProjectionDistance,
@@ -20,7 +21,8 @@ public:
 
   bool IsValid() const;
 
-  inline int64_t GetWayId() const { return m_wayId; };
+  inline int64_t GetWayId() const { return m_ptrWay->GetId(); };
+  inline tWayShPtr GetWay() const { return m_ptrWay;};
 
   inline double GetDistanceOnSegment() const { return m_distanceOnSegment; };
 
@@ -30,7 +32,7 @@ public:
   inline bool operator>( const COSMPosition& rhs ) const { return (m_rawFromProjectionDistance > rhs.m_rawFromProjectionDistance); };
 
 private:
-  int64_t m_wayId;
+  tWayShPtr m_ptrWay;
 
   int m_waySegmentIdex;
 

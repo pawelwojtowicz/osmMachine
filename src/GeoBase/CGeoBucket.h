@@ -93,8 +93,8 @@ public:
   {
     tGeoBucketStats geoBucketStats;
     geoBucketStats.zoomLevel = m_zoomLevel;
-    geoBucketStats.min = std::numeric_limits<double>::max();
-    geoBucketStats.max = std::numeric_limits<double>::min();
+    geoBucketStats.min = std::numeric_limits<int>::max();
+    geoBucketStats.max = std::numeric_limits<int>::min();
     geoBucketStats.bucketCount = m_geoIndex2EntityBucket.size();
     geoBucketStats.avrg = 0;
 

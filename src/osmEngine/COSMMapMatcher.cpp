@@ -43,6 +43,7 @@ tMapMatching COSMMapMatcher::FindOSMPosition( const GeoBase::CGeoPoint& point)
     {
       const auto& segments = way->GetWaySegments();
       int segmentCount = segments.size();
+      double distanceOnTheWay = 0;
       
 
       for ( int index = 0 ; index < segmentCount ; ++index)
@@ -57,9 +58,9 @@ tMapMatching COSMMapMatcher::FindOSMPosition( const GeoBase::CGeoPoint& point)
         if ( distance < m_mapMatchingTolerance )
         {
           osmMapMatchings.insert( COSMPosition(
-            way->GetId(),
+            way,
             index,
-            GeoBase::GeoUtils::Point2PointDistance(*(way->GetBeginNode()), projection ),
+            distanceOnTheWay + GeoBase::GeoUtils::Point2PointDistance(*(segments[index].getBeginNode()), projection ),
             distance,
             point,
             projection
@@ -70,6 +71,8 @@ tMapMatching COSMMapMatcher::FindOSMPosition( const GeoBase::CGeoPoint& point)
             osmMapMatchings.erase( --osmMapMatchings.end() );
           }
         }
+
+        distanceOnTheWay += segments[index].getLength();
       }
     }
   }
