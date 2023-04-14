@@ -31,6 +31,8 @@ public:
   inline bool operator<( const COSMPosition& rhs ) const { return (m_rawFromProjectionDistance < rhs.m_rawFromProjectionDistance); };
   inline bool operator>( const COSMPosition& rhs ) const { return (m_rawFromProjectionDistance > rhs.m_rawFromProjectionDistance); };
 
+  const GeoBase::CGeoPoint& GetPositionSnapped2OSM() const { return m_snappedToMap;};
+
 private:
   tWayShPtr m_ptrWay;
 

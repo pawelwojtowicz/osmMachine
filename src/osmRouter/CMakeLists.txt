@@ -1,4 +1,6 @@
 add_library( osmRouter SHARED
+  COSMRoutingPointSet.cpp 
+  COSMRoutingPointSet.h
   COSMRouter.cpp
   COSMRouter.h
   COSMRoutePoint.cpp

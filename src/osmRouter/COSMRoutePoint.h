@@ -4,19 +4,24 @@
 
 namespace osmMachine
 {
-class COSMRoutingPoint;
-using tPtrRoutingPoint = std::shared_ptr<COSMRoutingPoint>; 
+class COSMRoutePoint;
+using tPtrRoutingPoint = std::shared_ptr<COSMRoutePoint>;
 
 class COSMRoutePoint
 {
 public:
-  COSMRoutePoint();
   COSMRoutePoint(tPtrRoutingPoint originPoint, tWayShPtr originWay, tOSMNodeShPtr geoPoint, double score, double toGoHeuristics);
   ~COSMRoutePoint();
 
+  int64_t GetId() { return m_geoPoint->getId(); };
+
+  tWayShPtr GetOriginWay() { return m_originWay;};
+
   void UpdateScore( tPtrRoutingPoint& originPoint, tWayShPtr originWay, double score );
 
-  inline double GetCurrentScore() const { return m_score; };
+  inline double GetScore() const { return m_score; };
+
+  inline double GetFinalScoreHeuristics() const { return m_finalScoreHeuristics; };
 
 private:
   tPtrRoutingPoint m_originRoutingPoint;
@@ -29,6 +34,8 @@ private:
   double m_score;
 
   double m_toGoHeuristics;
+
+  double m_finalScoreHeuristics;
 };
 
 }

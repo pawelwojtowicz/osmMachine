@@ -32,6 +32,8 @@ public:
 
   inline bool IsOneWay() const { return m_isOneWay; };
 
+  inline double GetLength() const {return m_length;};
+
   inline const tWaySegments& GetWaySegments() const { return m_waySegments; };
   
   inline const tOSMNodeShPtr GetBeginNode() const { return m_wayBegin; } ;
