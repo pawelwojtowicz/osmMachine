@@ -7,4 +7,4 @@ add_library( osmEngine SHARED
     OSMConfiguration.h
 )
 
-target_link_libraries( osmEngine PUBLIC osmCore osmReader Logger)
+target_link_libraries( osmEngine PUBLIC osmCore osmReader osmRouter Logger)

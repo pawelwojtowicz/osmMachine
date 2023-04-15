@@ -45,5 +45,9 @@ add_executable( osmRouterTests
   COSMRoutingPointSetTest.cpp
   )
 target_link_libraries(osmRouterTests Logger osmRouter osmReader osmEngine Utils ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} pthread)
-add_dependencies( osmRouterTests Logger osmRouter osmReader osmEngine Utils ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} pthread)
-  
+add_dependencies( osmRouterTests Logger osmRouter osmReader osmEngine Utils )
+
+add_executable( routerFullStackTests
+routerFullStackTests.cpp)
+target_link_libraries(routerFullStackTests Logger osmRouter osmReader osmEngine Utils)
+add_dependencies( routerFullStackTests Logger osmReader osmEngine Utils)

@@ -11,7 +11,6 @@ public:
   COSMRouter(const OSMRoutingNetwork& routingNetwork );
   virtual ~COSMRouter();
 
-private:
   virtual tOSMPath FindOptimalPath( const COSMPosition& start, const COSMPosition& destination) override;
 
 private:

@@ -26,7 +26,7 @@ tOSMPath COSMRouter::FindOptimalPath( const COSMPosition& start, const COSMPosit
   {
     double toGoHeuristics = { GeoBase::GeoUtils::Point2PointDistance(*(start.GetWay()->GetBeginNode()), destination.GetPositionSnapped2OSM() ) };
     double score = start.GetDistanceOnSegment();
-    tPtrRoutingPoint beginRoutingPoint( new COSMRoutePoint({},{},start.GetWay()->GetBeginNode(),score,toGoHeuristics) );
+    tPtrRoutingPoint beginRoutingPoint( new COSMRoutePoint({},start.GetWay(),start.GetWay()->GetBeginNode(),score,toGoHeuristics) );
 
     openedNodesSet.AddRoutingPoint( beginRoutingPoint);
   }
@@ -34,7 +34,7 @@ tOSMPath COSMRouter::FindOptimalPath( const COSMPosition& start, const COSMPosit
   {
     double toGoHeuristics = { GeoBase::GeoUtils::Point2PointDistance(*(start.GetWay()->GetEndNode()), destination.GetPositionSnapped2OSM() ) };
     double score = start.GetWay()->GetLength() - start.GetDistanceOnSegment();
-    tPtrRoutingPoint endRoutingPoint( new COSMRoutePoint({},{},start.GetWay()->GetEndNode(),score,toGoHeuristics) );
+    tPtrRoutingPoint endRoutingPoint( new COSMRoutePoint({},start.GetWay(),start.GetWay()->GetEndNode(),score,toGoHeuristics) );
 
     openedNodesSet.AddRoutingPoint(endRoutingPoint);
   }

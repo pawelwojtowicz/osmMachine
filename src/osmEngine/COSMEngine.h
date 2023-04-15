@@ -4,6 +4,7 @@
 #include <Logger/ILogger.h>
 #include "COSMMapMatcher.h"
 #include "OSMConfiguration.h"
+#include <osmRouter/COSMRouter.h>
 
 namespace osmMachine
 {
@@ -20,10 +21,14 @@ public:
 
   tMapMatching FindOSMLocation( const GeoBase::CGeoPoint& point );
 
+  tOSMPath FindOptimalPath( const GeoBase::CGeoPoint& origin, const GeoBase::CGeoPoint& destination);
+
 private:
   OSMRoutingNetwork m_routingNetwork;
   
   COSMMapMatcher m_mapMatcher;
+
+  COSMRouter m_router;
 
   std::shared_ptr<Logger::ILogger> m_pLogger;
 };
