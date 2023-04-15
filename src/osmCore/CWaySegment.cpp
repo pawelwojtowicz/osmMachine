@@ -15,6 +15,11 @@ CWaySegment::~CWaySegment()
 
 }
 
+void CWaySegment::UpdateDistance()
+{
+  m_length = GeoBase::GeoUtils::Point2PointDistance(*m_beginNode, *m_endNode);
+}
+
 tOSMNodeShPtr CWaySegment::getBeginNode() const
 {
   return m_beginNode;

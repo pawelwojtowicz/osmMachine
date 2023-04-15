@@ -26,6 +26,8 @@ public:
 
   void AddProperty( const std::string& key, const std::string& value );
 
+  void UpdateDistances();
+
   inline int64_t GetId() const { return m_wayId; } ;
 
   inline bool IsUsed() const { return m_isUsed; };

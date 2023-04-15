@@ -17,6 +17,15 @@ COSMWay::~COSMWay()
 {
 }
 
+void COSMWay::UpdateDistances()
+{
+  for ( auto& waySegment : m_waySegments )
+  {
+    waySegment.UpdateDistance();
+    m_length += waySegment.getLength();
+  }
+}
+
 void COSMWay::MarkNotUsed()
 {
   m_isUsed = false;
@@ -63,7 +72,10 @@ void COSMWay::Print()
   {
     std::cout << property.first << "=" << property.second << "|";
   }
+  std::cout << m_length ;
   std::cout << std::endl;
 }
+
+
 
 }

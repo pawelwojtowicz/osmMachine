@@ -23,6 +23,8 @@ public:
 
   inline double GetFinalScoreHeuristics() const { return m_finalScoreHeuristics; };
 
+  inline tPtrRoutingPoint GetPreviousRoutingPoint() const { return m_originRoutingPoint;}; 
+
 private:
   tPtrRoutingPoint m_originRoutingPoint;
 

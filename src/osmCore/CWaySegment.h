@@ -9,7 +9,10 @@ public:
   CWaySegment(  tOSMNodeShPtr beginNode, tOSMNodeShPtr endNode );
   virtual ~CWaySegment();
 
+  void UpdateDistance();
+
   inline double getLength() const { return m_length;};
+
 
   tOSMNodeShPtr getBeginNode() const;
   tOSMNodeShPtr getEndNode() const;
