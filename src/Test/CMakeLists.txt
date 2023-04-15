@@ -27,7 +27,6 @@ add_dependencies( geoZoneMonitorTests GeoBase GeoZoneMonitor)
 
 add_executable( fullStackMatcherTest
    fullStackMatcherTest.cpp)
-
 target_link_libraries(fullStackMatcherTest Logger osmReader osmEngine Utils)
 add_dependencies( fullStackMatcherTest Logger osmReader osmEngine Utils)
 
@@ -40,3 +39,11 @@ add_executable( geobucketTuner
   geoBucketTuner.cpp
 )
 target_link_libraries( geobucketTuner GeoBase osmCore osmReader )
+
+# Link runTests with what we want to test and the GTest and pthread library
+add_executable( osmRouterTests
+  COSMRoutingPointSetTest.cpp
+  )
+target_link_libraries(osmRouterTests Logger osmRouter osmReader osmEngine Utils ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} pthread)
+add_dependencies( osmRouterTests Logger osmRouter osmReader osmEngine Utils ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} pthread)
+  

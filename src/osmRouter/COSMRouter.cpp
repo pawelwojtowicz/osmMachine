@@ -87,7 +87,6 @@ tOSMPath COSMRouter::FindOptimalPath( const COSMPosition& start, const COSMPosit
 
 
   return tOSMPath();
-
 }
 
 tWayList COSMRouter::GetRoutingPointNeighbours( const int64_t osmNodeId )
@@ -101,5 +100,9 @@ tWayList COSMRouter::GetRoutingPointNeighbours( const int64_t osmNodeId )
   return {};
 }
 
+tOSMPath COSMRouter::BuildSolutionPath( tPtrRoutingPoint routingPoint, const COSMPosition& destination )
+{
+  return {};
+}
 
 }
