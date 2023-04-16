@@ -1,9 +1,9 @@
 #pragma once
-#include "IOSMRoutingUtilityFunction.h"
+#include "IRoutingUtilityFunction.h"
 
 namespace osmMachine
 {
-class CSimpleDistanceUtilityFunction : public IOSMRoutingUtilityFunction
+class CSimpleDistanceUtilityFunction : public IRoutingUtilityFunction
 {
 public:
   CSimpleDistanceUtilityFunction() =default ;

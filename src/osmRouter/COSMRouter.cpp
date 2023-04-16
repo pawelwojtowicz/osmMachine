@@ -3,6 +3,7 @@
 #include "COSMRoutingPointSet.h"
 #include <set>
 #include "CSimpleDistanceUtilityFunction.h"
+#include "CSimpleDistanceHeuristics.h"
 
 namespace osmMachine
 {
@@ -19,7 +20,8 @@ COSMRouter::~COSMRouter()
 
 tOSMPath COSMRouter::FindOptimalPath( const COSMPosition& start, const COSMPosition& destination)
 {
-  std::unique_ptr<IOSMRoutingUtilityFunction> utility = std::make_unique<CSimpleDistanceUtilityFunction>();
+  std::unique_ptr<IRoutingUtilityFunction> utility = std::make_unique<CSimpleDistanceUtilityFunction>();
+  std::unique_ptr<IExpectedScoreHeuristics> heuristics = std::make_unique<CSimpleDistanceHeuristics>();
 
   COSMRoutingPointSet openedNodesSet;
   std::set<int64_t> closedNodesSet;
@@ -69,7 +71,7 @@ tOSMPath COSMRouter::FindOptimalPath( const COSMPosition& start, const COSMPosit
 
           if ( !openedNodesSet.Contains( nextOSMNode->getId() ) )
           {
-            double toGoHeuristics = { GeoBase::GeoUtils::Point2PointDistance(*(nextOSMNode), destination.GetPositionSnapped2OSM() ) };
+            double toGoHeuristics = heuristics->CalcuateExpectedScoreThroughPoint(nextOSMNode, destination );
             tPtrRoutingPoint endRoutingPoint( new COSMRoutePoint(routingPoint,nextHopWay,nextOSMNode,nextHopScore,toGoHeuristics) );
             openedNodesSet.AddRoutingPoint(endRoutingPoint);
           }

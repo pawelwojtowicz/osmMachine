@@ -6,9 +6,12 @@ add_library( osmRouter SHARED
   COSMRoutePoint.cpp
   COSMRoutePoint.h
   IOSMRouter.h
-  IOSMRoutingUtilityFunction.h
+  IRoutingUtilityFunction.h
+  IExpectedScoreHeuristics.h
   CSimpleDistanceUtilityFunction.cpp
   CSimpleDistanceUtilityFunction.h
+  CSimpleDistanceHeuristics.cpp
+  CSimpleDistanceHeuristics.h
 )
 
 target_link_libraries( osmRouter PUBLIC GeoBase osmCore )
