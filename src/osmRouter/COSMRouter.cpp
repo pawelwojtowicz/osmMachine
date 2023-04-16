@@ -2,6 +2,7 @@
 #include <GeoBase/GeoUtils.h>
 #include "COSMRoutingPointSet.h"
 #include <set>
+#include "CSimpleDistanceUtilityFunction.h"
 
 namespace osmMachine
 {
@@ -18,6 +19,8 @@ COSMRouter::~COSMRouter()
 
 tOSMPath COSMRouter::FindOptimalPath( const COSMPosition& start, const COSMPosition& destination)
 {
+  std::unique_ptr<IOSMRoutingUtilityFunction> utility = std::make_unique<CSimpleDistanceUtilityFunction>();
+
   COSMRoutingPointSet openedNodesSet;
   std::set<int64_t> closedNodesSet;
 
@@ -54,20 +57,20 @@ tOSMPath COSMRouter::FindOptimalPath( const COSMPosition& start, const COSMPosit
 
     tWayList waysFromNode = GetRoutingPointNeighbours( routingPoint->GetId() );
 
-    for( auto& way : waysFromNode )
+    for( auto& nextHopWay : waysFromNode )
     {
-      if ( way->GetId() != routingPoint->GetOriginWay()->GetId() )
+      if ( nextHopWay->GetId() != routingPoint->GetOriginWay()->GetId() )
       {
-        auto nextOSMNode = routingPoint->GetId() != way->GetBeginNode()->getId() ? way->GetBeginNode() : way->GetEndNode();
+        auto nextOSMNode = routingPoint->GetId() != nextHopWay->GetBeginNode()->getId() ? nextHopWay->GetBeginNode() : nextHopWay->GetEndNode();
 
         if ( closedNodesSet.end() == closedNodesSet.find( nextOSMNode->getId() )  )
         {
-          double nextHopScore = routingPoint->GetScore() + way->GetLength();
+          double nextHopScore = utility->CalculateScore(routingPoint , nextHopWay );
 
           if ( !openedNodesSet.Contains( nextOSMNode->getId() ) )
           {
             double toGoHeuristics = { GeoBase::GeoUtils::Point2PointDistance(*(nextOSMNode), destination.GetPositionSnapped2OSM() ) };
-            tPtrRoutingPoint endRoutingPoint( new COSMRoutePoint(routingPoint,way,nextOSMNode,nextHopScore,toGoHeuristics) );
+            tPtrRoutingPoint endRoutingPoint( new COSMRoutePoint(routingPoint,nextHopWay,nextOSMNode,nextHopScore,toGoHeuristics) );
             openedNodesSet.AddRoutingPoint(endRoutingPoint);
           }
           else
@@ -75,7 +78,7 @@ tOSMPath COSMRouter::FindOptimalPath( const COSMPosition& start, const COSMPosit
             auto nodeToUpdate = openedNodesSet.GetRoutingPointById( nextOSMNode->getId() );
             if ( nodeToUpdate->GetScore() > nextHopScore )
             {
-              nodeToUpdate->UpdateScore( routingPoint, way, nextHopScore);
+              nodeToUpdate->UpdateScore( routingPoint, nextHopWay, nextHopScore);
             }
           }
         } 
