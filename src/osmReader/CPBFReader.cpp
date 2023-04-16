@@ -173,7 +173,7 @@ bool CPBFReader::ReadOSMPrimitives( const tOSMPrimitiveType primitivesToRead )
                   {
                     //extracting ways
                     int wayCount(primitiveGroup.ways_size() );
-                    for( size_t i = 0 ; i < wayCount ; ++i )
+                    for( int i = 0 ; i < wayCount ; ++i )
                     {
                       bool addToModel(false);
                       const auto& pbfWay( primitiveGroup.ways(i));

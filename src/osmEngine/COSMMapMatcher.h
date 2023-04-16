@@ -21,7 +21,7 @@ private:
 
   int m_neighbourhoodSize;
 
-  int m_recomendationSize;
+  uint32_t m_recomendationSize;
 
   double m_mapMatchingTolerance;
 };

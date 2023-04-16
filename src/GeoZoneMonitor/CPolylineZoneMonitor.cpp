@@ -16,7 +16,7 @@ CPolylineZoneMonitor::~CPolylineZoneMonitor()
 
 void CPolylineZoneMonitor::PreprocessGeoZoneDefinition( const std::vector<GeoBase::CGeoPoint>& definition)
 {
-  auto polylineSize = definition.size();
+  int polylineSize = definition.size();
   if ( polylineSize > 2 )
   {
     m_boundingBox.IncludeGeoPoint( definition[0] );

@@ -86,8 +86,6 @@ tOSMPath COSMRouter::FindOptimalPath( const COSMPosition& start, const COSMPosit
         } 
       }
     }
-
-
   }
 
 
