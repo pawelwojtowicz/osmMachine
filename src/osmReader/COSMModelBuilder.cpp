@@ -213,7 +213,7 @@ void COSMModelBuilder::BuildRoutingNetwork()
   for ( auto wayIter : m_routingNetwork.id2WayMap )
   {
     auto wayPtr = wayIter.second;
-    wayPtr->UpdateDistances();
+    wayPtr->UpdateGeometry();
     if (wayPtr->IsUsed() )
     {
       addWayToNodeRecord( wayPtr->GetBeginNode()->getId(), wayPtr );
@@ -227,7 +227,7 @@ void COSMModelBuilder::BuildRoutingNetwork()
   for ( auto wayIter : m_routingNetwork.helperWayId2MapWay )
   {
     auto wayPtr = wayIter.second;
-    wayPtr->UpdateDistances();
+    wayPtr->UpdateGeometry();
     if (wayPtr->IsUsed() )
     {
       addWayToNodeRecord( wayPtr->GetBeginNode()->getId(), wayPtr );

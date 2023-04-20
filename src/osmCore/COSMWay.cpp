@@ -17,11 +17,11 @@ COSMWay::~COSMWay()
 {
 }
 
-void COSMWay::UpdateDistances()
+void COSMWay::UpdateGeometry()
 {
   for ( auto& waySegment : m_waySegments )
   {
-    waySegment.UpdateDistance();
+    waySegment.UpdateGeometry();
     m_length += waySegment.getLength();
   }
 }

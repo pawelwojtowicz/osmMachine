@@ -26,7 +26,7 @@ public:
 
   void AddProperty( const std::string& key, const std::string& value );
 
-  void UpdateDistances();
+  void UpdateGeometry();
 
   inline int64_t GetId() const { return m_wayId; } ;
 

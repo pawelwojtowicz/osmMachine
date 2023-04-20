@@ -9,7 +9,7 @@ public:
   CWaySegment(  tOSMNodeShPtr beginNode, tOSMNodeShPtr endNode );
   virtual ~CWaySegment();
 
-  void UpdateDistance();
+  void UpdateGeometry();
 
   inline double getLength() const { return m_length;};
 
@@ -19,6 +19,8 @@ public:
 
 private:
   double m_length;
+
+  double m_heading;
 
   tOSMNodeShPtr m_beginNode;
   tOSMNodeShPtr m_endNode;

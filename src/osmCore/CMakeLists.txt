@@ -7,6 +7,8 @@ add_library( osmCore SHARED
   COSMNode.h
   COSMWay.cpp
   COSMWay.h
+  CRoutingPathSegment.cpp
+  CRoutingPathSegment.h
   CWaySegment.cpp
   CWaySegment.h
   OSMRoutingNetwork.h
