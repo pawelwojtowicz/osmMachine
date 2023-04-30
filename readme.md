@@ -11,7 +11,7 @@
   gtest installation:
   
   ```
-    sudo apt-get install zlib1g-dev libprotobuf-dev protobuf-compiler libgtest-dev libosmpbf-dev
+    sudo apt-get install zlib1g-dev libprotobuf-dev protobuf-compiler libgtest-dev nlohmann-json3-dev
 
     sudo apt-get install cmake
     cd /usr/src/gtest

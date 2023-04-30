@@ -1,5 +1,7 @@
-#pragma once
+#include "CGeoJSON.h"
 
+namespace Utils
+{
 constexpr char sTxtType[] = {"type"};
 constexpr char sTxtFeatures[] = {"features"};
 constexpr char sTxtGeometry[] = {"geometry"};
@@ -23,22 +25,17 @@ constexpr char sTxtType_Polygon[]={"Polygon"};
 constexpr char sTxtType_MultiPolygon[]={"MultiPolygon"};
 constexpr char sTxtType_GeometryCollection[]={"GeometryCollection"};
 
-using tGeoJsonElementType = enum 
-{
-ePoint,
-eMultipoint,
-eLineString,
-eMultiLineString,
-ePolygon,
-eMultiPolygon,
-eGeometryCollection
-};
 
-/**
- * GeoJSON object has a member "type"
- * GeoJSON may have member "bbox"
- * coordinates is [lon , lat]
- * Feature has type,geometry,properties
- * GeoMetryCollection has "geometries"
- * geometry has type and "coordinates"
-*/
+
+CGeoJSON::CGeoJSON( tGeoJsonType geoJsonType)
+: m_geoJsonType(geoJsonType)
+{
+
+}
+
+CGeoJSON::~CGeoJSON()
+{
+
+}
+
+}
