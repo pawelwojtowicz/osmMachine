@@ -1,6 +1,7 @@
 #pragma once
 #include "GeoJSONTypes.h"
-namespace Utils
+
+namespace GeoJSON
 {
 /**
  * GeoJSON object has a member "type"
@@ -16,14 +17,9 @@ class CGeoJSON
 public:
   CGeoJSON( tGeoJsonType geoJsonType = tGeoJsonType::eFeatureCollection  );
   virtual ~CGeoJSON();
-
   
-
-
 private:
   tGeoJsonType m_geoJsonType;
-
-
 };
 
 }

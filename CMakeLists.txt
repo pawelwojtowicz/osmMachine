@@ -13,6 +13,7 @@ set( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wall -O3 -fPIC" )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/src )
 
 add_subdirectory( src/GeoBase )
+add_subdirectory( src/GeoJSON )
 add_subdirectory( src/GeoZoneMonitor )
 add_subdirectory( src/Logger )
 add_subdirectory( src/osmCore )
