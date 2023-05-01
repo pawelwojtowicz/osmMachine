@@ -41,9 +41,8 @@ add_executable( geobucketTuner
 target_link_libraries( geobucketTuner GeoBase osmCore osmReader )
 
 # Link runTests with what we want to test and the GTest and pthread library
-add_executable( osmRouterTests
-  COSMRoutingPointSetTest.cpp
-  )
+add_executable( osmRouterTests COSMRoutingPointSetTest.cpp )
+
 target_link_libraries(osmRouterTests Logger osmRouter osmReader osmEngine Utils ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} pthread)
 add_dependencies( osmRouterTests Logger osmRouter osmReader osmEngine Utils )
 
@@ -52,5 +51,5 @@ routerFullStackTests.cpp)
 target_link_libraries(routerFullStackTests Logger osmRouter osmReader osmEngine Utils)
 add_dependencies( routerFullStackTests Logger osmReader osmEngine Utils)
 
-add_executable( geoJSONTest featureTests.cpp)
+add_executable( geoJSONTest GeoJSON_CGeoJSONFeatureTest.cpp)
 target_link_libraries(geoJSONTest GeoJSON ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} pthread )
