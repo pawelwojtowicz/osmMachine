@@ -1,4 +1,6 @@
 add_library( GeoJSON SHARED
+    CGeoJSONUtils.cpp
+    CGeoJSONUtils.h
     CGeoJSONFeature.cpp
     CGeoJSONFeature.h
     CGeoJSON.cpp

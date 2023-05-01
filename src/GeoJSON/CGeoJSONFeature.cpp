@@ -1,4 +1,6 @@
 #include "CGeoJSONFeature.h"
+#include "CGeoJSONUtils.h"
+#include <iostream>
 
 namespace GeoJSON
 {
@@ -14,7 +16,6 @@ CGeoJSONFeature::CGeoJSONFeature( tGeoJsonElementType type, const tGeometry geom
 {
 
 }
-
 
 CGeoJSONFeature::CGeoJSONFeature( tGeoJsonElementType type, const tGeometry geometry, const tProperties properties)
 : m_type(type)
@@ -56,29 +57,7 @@ json CGeoJSONFeature::BuildJSONModel() const
   jsonFeatureStructure[sTxtType] = sTxtType_Feature;
   json jsonGeometryStructure;
 
-  switch( m_type )
-  {
-  case tGeoJsonElementType::ePoint:
-    jsonGeometryStructure[sTxtType] = sTxtType_Point;
-    break;
-  case tGeoJsonElementType::eMultipoint:
-    jsonGeometryStructure[sTxtType] = sTxtType_MultiPoint;
-    break;
-  case tGeoJsonElementType::eLineString:
-    jsonGeometryStructure[sTxtType] = sTxtType_LineString;
-    break;
-  case tGeoJsonElementType::eMultiLineString:
-    jsonGeometryStructure[sTxtType] = sTxtType_MultiLineString;
-    break;
-  case tGeoJsonElementType::ePolygon:
-    jsonGeometryStructure[sTxtType] = sTxtType_Polygon;
-    break;
-  case tGeoJsonElementType::eMultiPolygon:
-    jsonGeometryStructure[sTxtType] = sTxtType_MultiPolygon;
-    break;
-  default:
-    jsonGeometryStructure[sTxtType] = sTxtType_GeometryCollection;
-  }
+  jsonGeometryStructure[sTxtType] = CGeoJSONUtils::GeoJSONElementTypeEnum2String(m_type);
 
   if ( tGeoJsonElementType::ePoint == m_type)
   {
@@ -130,31 +109,9 @@ bool CGeoJSONFeature::Parse( const std::string& geoJsonString)
 
     const std::string geometryType = geometryStructure[sTxtType];
 
-    if ( geometryType == sTxtType_Point )
-    {
-      m_type = tGeoJsonElementType::ePoint;
-    } 
-    else if ( geometryType == sTxtType_MultiPoint )
-    {
-      m_type = tGeoJsonElementType::eMultipoint;
-    } 
-    else if ( geometryType == sTxtType_LineString )
-    {
-      m_type = tGeoJsonElementType::eLineString;
-    } 
-    else if ( geometryType == sTxtType_Polygon )
-    {
-      m_type = tGeoJsonElementType::ePolygon;
-    } 
-    else if ( geometryType == sTxtType_MultiPolygon)
-    {
-      m_type = tGeoJsonElementType::eMultiPolygon;
-    } 
-    else if ( geometryType == sTxtType_MultiLineString)
-    {
-      m_type = tGeoJsonElementType::eMultiLineString;
-    }
-    else
+    m_type = CGeoJSONUtils::GeoJSONElementTypeString2EnumType( geometryType );
+
+    if ( tGeoJsonElementType::eInvalid == m_type )
     {
       return false;
     }
@@ -173,11 +130,15 @@ bool CGeoJSONFeature::Parse( const std::string& geoJsonString)
       }
     }
 
-    if ( geoJsonStructure.contains(sTxtProperties) )
+    if ( geoJsonStructure.contains( sTxtProperties ) )
     {
       const auto& properties = geoJsonStructure[sTxtProperties];
-    }
 
+      for ( auto property : properties.items() )
+      {
+        m_properties[property.key()] = property.value();
+      }
+    }
     return true;
   }
   return false;

@@ -32,6 +32,8 @@ TEST( CGeoJSON, SerializeDeserializeBasic )
 
   std::string jsonString = point.ToJSON();
 
+  std::cout << jsonString << std::endl;
+
   GeoJSON::CGeoJSONFeature newEntry;
 
   EXPECT_FALSE( newEntry.IsValid() );
