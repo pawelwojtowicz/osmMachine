@@ -17,6 +17,7 @@ enum class tGeoJsonType {
 
 enum class tGeoJsonElementType 
 {
+eInvalid,
 ePoint,
 eMultipoint,
 eLineString,
