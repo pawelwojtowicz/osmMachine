@@ -51,5 +51,5 @@ routerFullStackTests.cpp)
 target_link_libraries(routerFullStackTests Logger osmRouter osmReader osmEngine Utils)
 add_dependencies( routerFullStackTests Logger osmReader osmEngine Utils)
 
-add_executable( geoJSONTest GeoJSON_CGeoJSONFeatureTest.cpp)
+add_executable( geoJSONTest GeoJSON_CGeoJSONFeatureTest.cpp GeoJSON_CGeometryTests.cpp)
 target_link_libraries(geoJSONTest GeoJSON ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} pthread )

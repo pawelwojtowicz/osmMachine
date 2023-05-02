@@ -1,7 +1,7 @@
 #pragma once
 #include <nlohmann/json.hpp>
 #include <map>
-#include <list>
+#include <vector>
 #include <string>
 #include <GeoBase/CGeoPoint.h>
 
@@ -11,11 +11,12 @@ namespace GeoJSON
 {
 enum class tGeoJsonType {
   eFeatureCollection,
+  eGeometryCollection,
   eFeature,
   eCollection
 };
 
-enum class tGeoJsonElementType 
+enum class tGeometryType 
 {
 eInvalid,
 ePoint,
@@ -24,7 +25,6 @@ eLineString,
 eMultiLineString,
 ePolygon,
 eMultiPolygon,
-eGeometryCollection
 };
 
 constexpr char sTxtType[] = {"type"};
@@ -52,5 +52,6 @@ constexpr char sTxtType_GeometryCollection[]={"GeometryCollection"};
 
 
 using tProperties = std::map<std::string, std::string>;
-using tGeometry = std::list<GeoBase::CGeoPoint>;
+using tGeometry = std::vector<GeoBase::CGeoPoint>;
+using tMultiGeometry = std::vector<tGeometry>;
 }

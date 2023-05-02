@@ -3,63 +3,60 @@
 namespace GeoJSON
 {
 
-tGeoJsonElementType CGeoJSONUtils::GeoJSONElementTypeString2EnumType(  const std::string& geometryTypeString )
+tGeometryType CGeoJSONUtils::GeoJSONElementTypeString2EnumType(  const std::string& geometryTypeString )
 {
-  tGeoJsonElementType type( tGeoJsonElementType::eInvalid );
+  tGeometryType type( tGeometryType::eInvalid );
   if ( geometryTypeString == sTxtType_Point )
   {
-    type = tGeoJsonElementType::ePoint;
+    type = tGeometryType::ePoint;
   } 
   else if ( geometryTypeString == sTxtType_MultiPoint )
   {
-    type = tGeoJsonElementType::eMultipoint;
+    type = tGeometryType::eMultipoint;
   } 
   else if ( geometryTypeString == sTxtType_LineString )
   {
-    type = tGeoJsonElementType::eLineString;
+    type = tGeometryType::eLineString;
   } 
   else if ( geometryTypeString == sTxtType_Polygon )
   {
-    type = tGeoJsonElementType::ePolygon;
+    type = tGeometryType::ePolygon;
   } 
   else if ( geometryTypeString == sTxtType_MultiPolygon)
   {
-    type = tGeoJsonElementType::eMultiPolygon;
+    type = tGeometryType::eMultiPolygon;
   } 
   else if ( geometryTypeString == sTxtType_MultiLineString)
   {
-    type = tGeoJsonElementType::eMultiLineString;
+    type = tGeometryType::eMultiLineString;
   }
 
   return type;
 }
 
-std::string CGeoJSONUtils::GeoJSONElementTypeEnum2String(  const tGeoJsonElementType geometryType )
+std::string CGeoJSONUtils::GeoJSONElementTypeEnum2String(  const tGeometryType geometryType )
 {
   std::string stringMapping;
 
   switch( geometryType )
   {
-  case tGeoJsonElementType::ePoint:
+  case tGeometryType::ePoint:
     stringMapping = sTxtType_Point;
     break;
-  case tGeoJsonElementType::eMultipoint:
+  case tGeometryType::eMultipoint:
     stringMapping = sTxtType_MultiPoint;
     break;
-  case tGeoJsonElementType::eLineString:
+  case tGeometryType::eLineString:
     stringMapping = sTxtType_LineString;
     break;
-  case tGeoJsonElementType::eMultiLineString:
+  case tGeometryType::eMultiLineString:
     stringMapping = sTxtType_MultiLineString;
     break;
-  case tGeoJsonElementType::ePolygon:
+  case tGeometryType::ePolygon:
     stringMapping = sTxtType_Polygon;
     break;
-  case tGeoJsonElementType::eMultiPolygon:
+  case tGeometryType::eMultiPolygon:
     stringMapping = sTxtType_MultiPolygon;
-    break;
-  case tGeoJsonElementType::eGeometryCollection:
-    stringMapping = sTxtType_GeometryCollection;
     break;
   default:;
   }

@@ -5,19 +5,19 @@
 namespace GeoJSON
 {
 CGeoJSONFeature::CGeoJSONFeature( )
-: m_type(tGeoJsonElementType::eInvalid)
+: m_type(tGeometryType::eInvalid)
 {
 
 }
 
-CGeoJSONFeature::CGeoJSONFeature( tGeoJsonElementType type, const tGeometry geometry)
+CGeoJSONFeature::CGeoJSONFeature( tGeometryType type, const tGeometry geometry)
 : m_type(type)
 , m_geometry(geometry)
 {
 
 }
 
-CGeoJSONFeature::CGeoJSONFeature( tGeoJsonElementType type, const tGeometry geometry, const tProperties properties)
+CGeoJSONFeature::CGeoJSONFeature( tGeometryType type, const tGeometry geometry, const tProperties properties)
 : m_type(type)
 , m_geometry(geometry)
 , m_properties(properties)
@@ -59,7 +59,7 @@ json CGeoJSONFeature::BuildJSONModel() const
 
   jsonGeometryStructure[sTxtType] = CGeoJSONUtils::GeoJSONElementTypeEnum2String(m_type);
 
-  if ( tGeoJsonElementType::ePoint == m_type)
+  if ( tGeometryType::ePoint == m_type)
   {
     json jsonCoordinates( { RAD2DEG(m_geometry.begin()->getLat()), RAD2DEG(m_geometry.begin()->getLon() ) } );
     jsonGeometryStructure[sTxtCoordinates] = jsonCoordinates;
@@ -111,14 +111,14 @@ bool CGeoJSONFeature::Parse( const std::string& geoJsonString)
 
     m_type = CGeoJSONUtils::GeoJSONElementTypeString2EnumType( geometryType );
 
-    if ( tGeoJsonElementType::eInvalid == m_type )
+    if ( tGeometryType::eInvalid == m_type )
     {
       return false;
     }
 
     const auto& coordinates = geometryStructure[sTxtCoordinates];
     
-    if ( tGeoJsonElementType::ePoint == m_type )
+    if ( tGeometryType::ePoint == m_type )
     {
       m_geometry.push_back( GeoBase::CGeoPoint(DEG2RAD(coordinates[0].get<double>()), DEG2RAD(coordinates[1].get<double>())));
     }
@@ -126,7 +126,7 @@ bool CGeoJSONFeature::Parse( const std::string& geoJsonString)
     {
       for ( const auto& point : coordinates )
       {
-        m_geometry.push_back( GeoBase::CGeoPoint(DEG2RAD(std::stod(point[0].get<std::string>())), DEG2RAD(std::stod(point[1].get<std::string>()))));
+        m_geometry.push_back( GeoBase::CGeoPoint(DEG2RAD(point[0].get<double>()), DEG2RAD(point[1].get<double>())));
       }
     }
 

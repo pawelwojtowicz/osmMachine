@@ -7,17 +7,20 @@ class CGeoJSONFeature
 {
 public:
   CGeoJSONFeature( );
-  CGeoJSONFeature( tGeoJsonElementType type, const tGeometry geometry);
-  CGeoJSONFeature( tGeoJsonElementType type, const tGeometry geometry, const tProperties properties);
+  CGeoJSONFeature( tGeometryType type, const tGeometry geometry);
+  CGeoJSONFeature( tGeometryType type, const tGeometry geometry, const tProperties properties);
   virtual ~CGeoJSONFeature();
+
+  const bool IsValid() const { return (tGeometryType::eInvalid != m_type ); };
+  const tGeometryType getType() const { return m_type; };
+  const std::string GetProperty( const std::string& propertyName) const ;
 
   void AddProperty( const std::string& key, const std::string& value);
 
-  const bool IsValid() const { return (tGeoJsonElementType::eInvalid != m_type );};
-  const tGeoJsonElementType getType() const { return m_type; };
-  const tGeometry& getGeometry() const {return m_geometry;};
-  const std::string GetProperty( const std::string& propertyName) const ;
 
+
+  const tGeometry& getGeometry() const {return m_geometry;};
+  
   bool Parse( const std::string& geoJson);
   std::string ToJSON() const;
 
@@ -25,7 +28,7 @@ private:
   json BuildJSONModel() const;
 
 private:
-  tGeoJsonElementType m_type;
+  tGeometryType m_type;
 
   tGeometry m_geometry;
 
