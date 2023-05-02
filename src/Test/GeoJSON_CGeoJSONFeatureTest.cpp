@@ -86,9 +86,8 @@ TEST( CGeoJSON, MultiPoint_SerializeDeserialize )
   EXPECT_TRUE( CompareRescaled( *(geometryIter++), *(deserializedGeometryIter++) ) );
   EXPECT_TRUE( CompareRescaled( *(geometryIter++), *(deserializedGeometryIter++) ) );
   EXPECT_EQ( point.GetProperty("Test"), pointDeserialized.GetProperty("Test"));
+  EXPECT_EQ( point.getType(), pointDeserialized.getType() );
 }
-
-/**
 
 TEST( CGeoJSON, LineString_SerializeDeserialize ) 
 {
@@ -96,10 +95,17 @@ TEST( CGeoJSON, LineString_SerializeDeserialize )
   geometry.push_back( GeoBase::CGeoPoint( DEG2RAD(44.49123846721492 ), DEG2RAD( 12.291511428168814 )));
   geometry.push_back( GeoBase::CGeoPoint( DEG2RAD(45.50539065737886 ), DEG2RAD( 10.730993854520705 )));
   geometry.push_back( GeoBase::CGeoPoint( DEG2RAD(47.68089434017784 ), DEG2RAD( 8.617075451932875 )));
-  GeoJSON::CGeoJSONFeature point(GeoJSON::tGeometryType::eLineString, geometry );
+
+  GeoJSON::tGeometryPtr linestringGeometry = std::make_shared<GeoJSON::CMultiPointGeometry>(GeoJSON::tGeometryType::eLineString, geometry);
+
+
+  GeoJSON::CGeoJSONFeature point( linestringGeometry );
   point.AddProperty( "Test", "Property");
 
   std::string jsonString = point.ToJSON();
+
+  std::cout << jsonString << std::endl;
+
 
   GeoJSON::CGeoJSONFeature pointDeserialized;
 
@@ -107,24 +113,45 @@ TEST( CGeoJSON, LineString_SerializeDeserialize )
   EXPECT_TRUE( pointDeserialized.Parse(jsonString));
   EXPECT_TRUE( pointDeserialized.IsValid() );
 
-  auto geometryIter = point.getGeometry().begin();
-  auto deserializedGeometryIter = pointDeserialized.getGeometry().begin();
+  auto geometryIter = point.getGeometry().GetPoints().begin();
+  auto deserializedGeometryIter = pointDeserialized.getGeometry().GetPoints().begin();
   EXPECT_TRUE( CompareRescaled( *(geometryIter++), *(deserializedGeometryIter++) ) );
   EXPECT_TRUE( CompareRescaled( *(geometryIter++), *(deserializedGeometryIter++) ) );
   EXPECT_TRUE( CompareRescaled( *(geometryIter++), *(deserializedGeometryIter++) ) );
   EXPECT_EQ( point.GetProperty("Test"), pointDeserialized.GetProperty("Test"));
+  EXPECT_EQ( point.getType(), pointDeserialized.getType() );
 }
+
 
 TEST( CGeoJSON, Polygon_SerializeDeserialize ) 
 {
+  GeoJSON::tMultiGeometry multigeometry;
   GeoJSON::tGeometry geometry;
+  geometry.push_back( GeoBase::CGeoPoint( DEG2RAD(51.07496299882824 ), DEG2RAD( 17.014924090827126 )));
   geometry.push_back( GeoBase::CGeoPoint( DEG2RAD(44.49123846721492 ), DEG2RAD( 12.291511428168814 )));
   geometry.push_back( GeoBase::CGeoPoint( DEG2RAD(45.50539065737886 ), DEG2RAD( 10.730993854520705 )));
   geometry.push_back( GeoBase::CGeoPoint( DEG2RAD(47.68089434017784 ), DEG2RAD( 8.617075451932875 )));
-  GeoJSON::CGeoJSONFeature point(GeoJSON::tGeometryType::ePolygon, geometry );
+  geometry.push_back( GeoBase::CGeoPoint( DEG2RAD(51.07496299882824 ), DEG2RAD( 17.014924090827126 )));
+  multigeometry.push_back(geometry);
+
+  geometry.clear();
+
+  geometry.push_back( GeoBase::CGeoPoint( DEG2RAD(45.68089434017784 ), DEG2RAD( 9.617075451932875 )));
+  geometry.push_back( GeoBase::CGeoPoint( DEG2RAD(45.50539065737886 ), DEG2RAD( 1130993854520705 )));
+  geometry.push_back( GeoBase::CGeoPoint( DEG2RAD(44.408120857025125 ), DEG2RAD( 8.964290279635103 )));
+  geometry.push_back( GeoBase::CGeoPoint( DEG2RAD(46.49123846721492 ), DEG2RAD( 12.191511428168814 )));
+  geometry.push_back( GeoBase::CGeoPoint( DEG2RAD(45.68089434017784 ), DEG2RAD( 9.617075451932875 )));
+  multigeometry.push_back(geometry);
+
+
+  GeoJSON::tGeometryPtr polygonGeometry = std::make_shared<GeoJSON::CMultiShapeGeometry>( GeoJSON::tGeometryType::ePolygon, multigeometry);
+
+  GeoJSON::CGeoJSONFeature point(polygonGeometry );
   point.AddProperty( "Test", "Property");
 
   std::string jsonString = point.ToJSON();
+
+  std::cout << jsonString << std::endl;
 
   GeoJSON::CGeoJSONFeature pointDeserialized;
 
@@ -132,13 +159,31 @@ TEST( CGeoJSON, Polygon_SerializeDeserialize )
   EXPECT_TRUE( pointDeserialized.Parse(jsonString));
   EXPECT_TRUE( pointDeserialized.IsValid() );
 
-  auto geometryIter = point.getGeometry().begin();
-  auto deserializedGeometryIter = pointDeserialized.getGeometry().begin();
-  EXPECT_TRUE( CompareRescaled( *(geometryIter++), *(deserializedGeometryIter++) ) );
-  EXPECT_TRUE( CompareRescaled( *(geometryIter++), *(deserializedGeometryIter++) ) );
-  EXPECT_TRUE( CompareRescaled( *(geometryIter++), *(deserializedGeometryIter++) ) );
   EXPECT_EQ( point.GetProperty("Test"), pointDeserialized.GetProperty("Test"));
+  EXPECT_EQ( point.getType(), pointDeserialized.getType());
+
+  auto multiGeometryIter = point.getGeometry().GetMultiGeometry().begin();
+  auto deserializedMultiGeometryIter = pointDeserialized.getGeometry().GetMultiGeometry().begin();
+
+  auto geometryIter = (*multiGeometryIter++).begin();
+  auto deserializedGeometryIter = (*deserializedMultiGeometryIter++).begin();
+
+  EXPECT_TRUE( CompareRescaled( *(geometryIter++), *(deserializedGeometryIter++) ) );
+  EXPECT_TRUE( CompareRescaled( *(geometryIter++), *(deserializedGeometryIter++) ) );
+  EXPECT_TRUE( CompareRescaled( *(geometryIter++), *(deserializedGeometryIter++) ) );
+  EXPECT_TRUE( CompareRescaled(*(geometryIter++), *(deserializedGeometryIter++) ) );
+  EXPECT_TRUE( CompareRescaled(*(geometryIter++), *(deserializedGeometryIter++) ) );
+
+  geometryIter = (*multiGeometryIter).begin();
+  deserializedGeometryIter = (*deserializedMultiGeometryIter).begin();
+
+  EXPECT_TRUE( CompareRescaled( *(geometryIter++), *(deserializedGeometryIter++) ) );
+  EXPECT_TRUE( CompareRescaled(*(geometryIter++), *(deserializedGeometryIter++) ) );
+  EXPECT_TRUE( CompareRescaled(*(geometryIter++), *(deserializedGeometryIter++) ) );
+
+
+
+
 }
 
 
-**/
