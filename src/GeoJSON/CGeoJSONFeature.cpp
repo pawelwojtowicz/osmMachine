@@ -4,25 +4,20 @@
 
 namespace GeoJSON
 {
-CGeoJSONFeature::CGeoJSONFeature( )
-: m_type(tGeometryType::eInvalid)
+CGeoJSONFeature::CGeoJSONFeature()
 {
 
 }
 
-CGeoJSONFeature::CGeoJSONFeature( tGeometryType type, const tGeometry geometry)
-: m_type(type)
-, m_geometry(geometry)
+CGeoJSONFeature::CGeoJSONFeature( tGeometryPtr geometry )
 {
-
+  m_geometry = geometry;
 }
 
-CGeoJSONFeature::CGeoJSONFeature( tGeometryType type, const tGeometry geometry, const tProperties properties)
-: m_type(type)
-, m_geometry(geometry)
-, m_properties(properties)
+CGeoJSONFeature::CGeoJSONFeature( tGeometryPtr geometry,const tProperties properties)
+: m_properties(properties)
 {
-
+  m_geometry = geometry;
 }
 
 CGeoJSONFeature::~CGeoJSONFeature()
@@ -48,32 +43,14 @@ const std::string CGeoJSONFeature::GetProperty( const std::string& propertyName)
 
 std::string CGeoJSONFeature::ToJSON() const
 {
-  return BuildJSONModel().dump();
+  return BuildJSONTree().dump();
 }
 
-json CGeoJSONFeature::BuildJSONModel() const
+json CGeoJSONFeature::BuildJSONTree() const
 {
   json jsonFeatureStructure;
   jsonFeatureStructure[sTxtType] = sTxtType_Feature;
-  json jsonGeometryStructure;
-
-  jsonGeometryStructure[sTxtType] = CGeoJSONUtils::GeoJSONElementTypeEnum2String(m_type);
-
-  if ( tGeometryType::ePoint == m_type)
-  {
-    json jsonCoordinates( { RAD2DEG(m_geometry.begin()->getLat()), RAD2DEG(m_geometry.begin()->getLon() ) } );
-    jsonGeometryStructure[sTxtCoordinates] = jsonCoordinates;
-  }
-  else
-  {
-    json jsonCoordinates(json::value_t::array);
-    for ( const auto& geoPoint : m_geometry)
-    {
-      jsonCoordinates.push_back( { RAD2DEG(geoPoint.getLat()), RAD2DEG(geoPoint.getLon() ) } );
-    }
-    jsonGeometryStructure[sTxtCoordinates] = jsonCoordinates;
-  }
-  jsonFeatureStructure[sTxtGeometry] = jsonGeometryStructure;
+  jsonFeatureStructure[sTxtGeometry] = m_geometry->BuildJSONTree() ;
 
   if ( m_properties.size() )
   {
@@ -87,52 +64,48 @@ json CGeoJSONFeature::BuildJSONModel() const
   return jsonFeatureStructure;
 }
 
-bool CGeoJSONFeature::Parse( const std::string& geoJsonString)
+bool CGeoJSONFeature::Parse( const std::string& geoJsonString )
 {
-  json geoJsonStructure = json::parse(geoJsonString); 
+  json geoJsonStructure = json::parse(geoJsonString);
 
-  if ( geoJsonStructure.is_discarded() || !geoJsonStructure.contains(sTxtType) || !geoJsonStructure.contains(sTxtGeometry))
+  if (!geoJsonStructure.is_discarded())
+  {
+    return RebuildFromJSON( geoJsonStructure );
+  }
+  return false;
+}
+
+bool CGeoJSONFeature::RebuildFromJSON( const json& featureJsonStructure )
+{
+    if ( !featureJsonStructure.contains(sTxtType) || !featureJsonStructure.contains(sTxtGeometry))
   {
     return false;
   }
 
-  const std::string& type = geoJsonStructure[sTxtType];
+  const std::string& type = featureJsonStructure[sTxtType];
 
   if ( type == sTxtType_Feature )
   {
-    const auto& geometryStructure = geoJsonStructure[sTxtGeometry];
+    const auto& geometryStructure = featureJsonStructure[sTxtGeometry];
 
-    if ( !geometryStructure.contains( sTxtType) || !geometryStructure.contains( sTxtCoordinates) )
+    if ( !geometryStructure.contains( sTxtType) )
     {
       return false;
     }
 
     const std::string geometryType = geometryStructure[sTxtType];
 
-    m_type = CGeoJSONUtils::GeoJSONElementTypeString2EnumType( geometryType );
-
-    if ( tGeometryType::eInvalid == m_type )
+    m_geometry = CGeoJSONUtils::CreateGeometryFromStringType(geometryType);
+    if (!m_geometry)
     {
       return false;
     }
 
-    const auto& coordinates = geometryStructure[sTxtCoordinates];
-    
-    if ( tGeometryType::ePoint == m_type )
-    {
-      m_geometry.push_back( GeoBase::CGeoPoint(DEG2RAD(coordinates[0].get<double>()), DEG2RAD(coordinates[1].get<double>())));
-    }
-    else
-    {
-      for ( const auto& point : coordinates )
-      {
-        m_geometry.push_back( GeoBase::CGeoPoint(DEG2RAD(point[0].get<double>()), DEG2RAD(point[1].get<double>())));
-      }
-    }
+    m_geometry->RebuildFromJSON( geometryStructure );
 
-    if ( geoJsonStructure.contains( sTxtProperties ) )
+    if ( featureJsonStructure.contains( sTxtProperties ) )
     {
-      const auto& properties = geoJsonStructure[sTxtProperties];
+      const auto& properties = featureJsonStructure[sTxtProperties];
 
       for ( auto property : properties.items() )
       {

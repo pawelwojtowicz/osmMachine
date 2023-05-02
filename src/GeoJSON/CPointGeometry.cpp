@@ -28,7 +28,7 @@ bool CPointGeometry::RebuildFromJSON( const json& jsonTree )
     if (jsonTree.contains( sTxtCoordinates ) )
     {
       const auto& coordinates = jsonTree[sTxtCoordinates];
-      m_point = GeoBase::CGeoPoint( GeoBase::CGeoPoint(DEG2RAD(coordinates[0].get<double>()), DEG2RAD(coordinates[1].get<double>())));
+      m_point = GeoBase::CGeoPoint( GeoBase::CGeoPoint( DEG2RAD(coordinates[1].get<double>()), DEG2RAD(coordinates[0].get<double>())));
       return true;
     }
   }
@@ -38,7 +38,7 @@ bool CPointGeometry::RebuildFromJSON( const json& jsonTree )
 json CPointGeometry::BuildJSONTree()
 {
   json pointJSONStructure = CGeometry::BuildJSONTree();
-  json jsonCoordinates( { RAD2DEG( m_point.getLat() ), RAD2DEG( m_point.getLon() ) } );
+  json jsonCoordinates( { RAD2DEG( m_point.getLon() ), RAD2DEG( m_point.getLat() ) } );
   pointJSONStructure[sTxtCoordinates] = jsonCoordinates;
 
   return pointJSONStructure;

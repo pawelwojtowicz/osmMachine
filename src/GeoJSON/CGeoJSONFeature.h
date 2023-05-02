@@ -1,5 +1,7 @@
 #pragma once
+#include <memory>
 #include "GeoJSONTypes.h"
+#include "CGeometry.h"
 
 namespace GeoJSON
 {
@@ -7,30 +9,29 @@ class CGeoJSONFeature
 {
 public:
   CGeoJSONFeature( );
-  CGeoJSONFeature( tGeometryType type, const tGeometry geometry);
-  CGeoJSONFeature( tGeometryType type, const tGeometry geometry, const tProperties properties);
+  CGeoJSONFeature( tGeometryPtr geometry);
+  CGeoJSONFeature( tGeometryPtr geometry, const tProperties properties);
   virtual ~CGeoJSONFeature();
 
-  const bool IsValid() const { return (tGeometryType::eInvalid != m_type ); };
-  const tGeometryType getType() const { return m_type; };
+  const bool IsValid() const { return (m_geometry && tGeometryType::eInvalid != m_geometry->GetType() ); };
+
+  const tGeometryType getType() const { return m_geometry ? m_geometry->GetType() : tGeometryType::eInvalid; };
   const std::string GetProperty( const std::string& propertyName) const ;
 
   void AddProperty( const std::string& key, const std::string& value);
 
-
-
-  const tGeometry& getGeometry() const {return m_geometry;};
+  const CGeometry& getGeometry() const { return *m_geometry; };
   
   bool Parse( const std::string& geoJson);
   std::string ToJSON() const;
 
 private:
-  json BuildJSONModel() const;
+  virtual bool RebuildFromJSON( const json& jsonTree );
+  virtual json BuildJSONTree() const;
+
 
 private:
-  tGeometryType m_type;
-
-  tGeometry m_geometry;
+  tGeometryPtr m_geometry;
 
   tProperties m_properties;
 };

@@ -37,7 +37,7 @@ bool CMultiPointGeometry::RebuildFromJSON( const json& jsonTree )
 
       for ( const auto& point : coordinates )
       {
-        m_geometry.push_back( GeoBase::CGeoPoint(DEG2RAD(point[0].get<double>()), DEG2RAD(point[1].get<double>())));
+        m_geometry.push_back( GeoBase::CGeoPoint(DEG2RAD(point[1].get<double>()) , DEG2RAD(point[0].get<double>())  ));
       }
 
       return true;
@@ -53,7 +53,7 @@ json CMultiPointGeometry::BuildJSONTree()
   json jsonCoordinates( json::value_t::array );
   for ( const auto& geoPoint : m_geometry)
   {
-    jsonCoordinates.push_back( { RAD2DEG(geoPoint.getLat()), RAD2DEG(geoPoint.getLon() ) } );
+    jsonCoordinates.push_back( { RAD2DEG(geoPoint.getLon() ) , RAD2DEG(geoPoint.getLat()) } );
   }
   multiPointJSONStructure[sTxtCoordinates] = jsonCoordinates;
 

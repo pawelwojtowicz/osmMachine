@@ -39,7 +39,7 @@ bool CMultiShapeGeometry::RebuildFromJSON( const json& jsonTree )
         tGeometry geometryPoints;
         for ( const auto& point : shapePoints)
         {
-          geometryPoints.push_back( GeoBase::CGeoPoint(DEG2RAD(point[0].get<double>()), DEG2RAD(point[1].get<double>())));
+          geometryPoints.push_back( GeoBase::CGeoPoint(DEG2RAD(point[1].get<double>()) , DEG2RAD(point[0].get<double>()) ));
         }      
         m_geometry.push_back(geometryPoints);
       }
@@ -59,7 +59,7 @@ json CMultiShapeGeometry::BuildJSONTree()
     json shapeJsonArray(json::value_t::array );
     for ( const auto& geoPoint : shape)
     {
-      shapeJsonArray.push_back( { RAD2DEG(geoPoint.getLat()), RAD2DEG(geoPoint.getLon() ) } );
+      shapeJsonArray.push_back( { RAD2DEG(geoPoint.getLon() ), RAD2DEG(geoPoint.getLat()) } );
     }
     jsonCoordinates.push_back(shapeJsonArray);
   }

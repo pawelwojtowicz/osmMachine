@@ -1,4 +1,7 @@
 #include "CGeoJSONUtils.h"
+#include "CPointGeometry.h"
+#include "CMultiPointGeometry.h"
+#include "CMultiShapeGeometry.h"
 
 namespace GeoJSON
 {
@@ -63,5 +66,30 @@ std::string CGeoJSONUtils::GeoJSONElementTypeEnum2String(  const tGeometryType g
 
   return stringMapping;
 }
+
+tGeometryPtr CGeoJSONUtils::CreateGeometryFromType( const tGeometryType geometryType )
+{
+  switch( geometryType )
+  {
+  case tGeometryType::ePoint:
+    return std::make_shared<CPointGeometry>();
+  case tGeometryType::eMultipoint:
+  case tGeometryType::eLineString:
+    return std::make_shared<CMultiPointGeometry>();
+  case tGeometryType::eMultiLineString:
+  case tGeometryType::ePolygon:
+  case tGeometryType::eMultiPolygon:
+    return std::make_shared<CMultiShapeGeometry>();
+  default:;
+  }
+  return {};
+}
+
+
+tGeometryPtr CGeoJSONUtils::CreateGeometryFromStringType( const std::string& type )
+{
+  return CGeoJSONUtils::CreateGeometryFromType( GeoJSONElementTypeString2EnumType(  type ) );
+}
+
 
 }

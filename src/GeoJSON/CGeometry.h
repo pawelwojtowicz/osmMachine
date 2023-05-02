@@ -1,6 +1,7 @@
 #pragma once
 #include "IGeoJSONElement.h"
 #include "GeoJSONTypes.h"
+#include <memory>
 
 namespace GeoJSON
 {
@@ -26,5 +27,7 @@ private:
   tGeometryType m_geometryType;
 
 };
+
+using tGeometryPtr = std::shared_ptr<CGeometry>;
 
 }
