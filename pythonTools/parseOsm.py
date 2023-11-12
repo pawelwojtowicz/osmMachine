@@ -2,8 +2,8 @@ import xml.etree.ElementTree as ET
 
 def isOfInterest( highwayType ):
   if ( "motorway" == highwayType or "trunk" == highwayType or "primary" == highwayType or "secondary" == highwayType or "tertiary" == highwayType or "residential" == highwayType or "motorway_link" == highwayType or "trunk_link" == highwayType or "primary_link" == highwayType or "secondary_link" == highwayType or "tertiary_link" == highwayType or "give_way" == highwayType):
-    return true
-  return false
+    return True
+  return False
 
 def findBoundingBox( ):
   mapTree = ET.parse('mapData/map.osm')
@@ -35,7 +35,7 @@ def readWays( root, nodes ):
     for tag in way.findall('tag'):
       key = tag.get('k')
       value = tag.get('v')
-      if ( ( key == "highway" ) and ( isOfInterest(value) ):
+      if ( ( key == "highway" ) and ( isOfInterest(value) ) ):
         for segment in way.findall('nd'):
           ndId = int( segment.get('ref') )
           waypoints.append( nodes.get( ndId ) )
