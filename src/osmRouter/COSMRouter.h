@@ -11,9 +11,11 @@ public:
   COSMRouter(const OSMRoutingNetwork& routingNetwork );
   virtual ~COSMRouter();
 
-  virtual tOSMPath FindOptimalPath( const COSMPosition& start, const COSMPosition& destination) override;
+  virtual tOSMPath FindOptimalPath( const std::list<COSMPosition>& viaPoints );
 
 private:
+  virtual tOSMPath FindOptimalPath( const int64_t originNodeId, const COSMPosition& start, const COSMPosition& destination);
+
   tOSMPath BuildSolutionPath( tPtrRoutingPoint routingPoint, const COSMPosition& destination );
 
 private:

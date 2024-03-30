@@ -30,9 +30,12 @@ int main( int argc, char** argv)
     LOG(INFO,("Loaded [%s]",osmFileName.c_str()));
 
     GeoBase::CGeoPoint origin( DEG2RAD(51.121398),DEG2RAD(15.906612)); // wayID = 229214577
-    GeoBase::CGeoPoint destination( DEG2RAD(51.1237259939271),DEG2RAD(15.915939244701315)); // wayID = 234858257 
+    GeoBase::CGeoPoint destination1( DEG2RAD(51.1237259939271),DEG2RAD(15.915939244701315)); // wayID = 234858257
+    GeoBase::CGeoPoint destination2( DEG2RAD(51.1267799),DEG2RAD(15.9230522) );
 
-    engine.FindOptimalPath(origin, destination);
+    std::list< GeoBase::CGeoPoint > viaList = { origin , destination1, destination2 };
+
+    engine.FindOptimalPath(viaList);
   }
 
   return 0;

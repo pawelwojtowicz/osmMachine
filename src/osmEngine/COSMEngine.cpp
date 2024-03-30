@@ -53,12 +53,15 @@ tMapMatching COSMEngine::FindOSMLocation( const GeoBase::CGeoPoint& point )
   return m_mapMatcher.FindOSMPosition( point);
 }
 
-tOSMPath COSMEngine::FindOptimalPath( const GeoBase::CGeoPoint& origin, const GeoBase::CGeoPoint& destination)
+tOSMPath COSMEngine::FindOptimalPath( const std::list< GeoBase::CGeoPoint > viaPointList)
 {
-  tMapMatching originMatching = m_mapMatcher.FindOSMPosition( origin );
-  tMapMatching destinationMatching = m_mapMatcher.FindOSMPosition( destination );
-
-  return m_router.FindOptimalPath(*originMatching.begin(), *destinationMatching.begin());
+  std::list<COSMPosition> viaPoints;
+  for( const auto& geoPoint : viaPointList )
+  {
+    tMapMatching geoPointMatching = m_mapMatcher.FindOSMPosition( geoPoint );
+    viaPoints.push_back( *geoPointMatching.begin() );
+  }
+  return m_router.FindOptimalPath(viaPoints);
 }
 
 }

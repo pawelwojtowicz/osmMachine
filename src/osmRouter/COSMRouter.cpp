@@ -18,7 +18,28 @@ COSMRouter::~COSMRouter()
   
 }
 
-tOSMPath COSMRouter::FindOptimalPath( const COSMPosition& start, const COSMPosition& destination)
+tOSMPath COSMRouter::FindOptimalPath( const std::list<COSMPosition>& viaPoints )
+{
+  tOSMPath path = {} ;
+  auto origin = viaPoints.begin();
+  auto destination = origin;
+  ++destination;
+
+  int64_t originNodeId = { 0 };
+
+  while( viaPoints.end() != destination )
+  {
+    FindOptimalPath( originNodeId, *origin, *destination);
+
+    origin = destination;
+    ++destination;
+  }
+
+  return path;
+}
+
+
+tOSMPath COSMRouter::FindOptimalPath( const int64_t originNodeId, const COSMPosition& start, const COSMPosition& destination)
 {
   std::unique_ptr<IRoutingUtilityFunction> utility = std::make_unique<CSimpleDistanceUtilityFunction>();
   std::unique_ptr<IExpectedScoreHeuristics> heuristics = std::make_unique<CSimpleDistanceHeuristics>();
@@ -27,7 +48,7 @@ tOSMPath COSMRouter::FindOptimalPath( const COSMPosition& start, const COSMPosit
   std::set<int64_t> closedNodesSet;
 
 
-  if ( !start.GetWay()->IsOneWay() )
+  if ( !start.GetWay()->IsOneWay() && ( originNodeId != start.GetWay()->GetBeginNode()->getId()  ) )
   {
     double toGoHeuristics = { GeoBase::GeoUtils::Point2PointDistance(*(start.GetWay()->GetBeginNode()), destination.GetPositionSnapped2OSM() ) };
     double score = start.GetDistanceOnSegment();
@@ -36,6 +57,7 @@ tOSMPath COSMRouter::FindOptimalPath( const COSMPosition& start, const COSMPosit
     openedNodesSet.AddRoutingPoint( beginRoutingPoint);
   }
 
+  if ( ( originNodeId != start.GetWay()->GetEndNode()->getId()  ) )
   {
     double toGoHeuristics = { GeoBase::GeoUtils::Point2PointDistance(*(start.GetWay()->GetEndNode()), destination.GetPositionSnapped2OSM() ) };
     double score = start.GetWay()->GetLength() - start.GetDistanceOnSegment();

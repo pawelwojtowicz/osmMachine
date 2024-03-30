@@ -10,6 +10,6 @@ using tOSMPath = std::list<tWayShPtr>;
 class IOSMRouter
 {
 public:
-  virtual tOSMPath FindOptimalPath( const COSMPosition& start, const COSMPosition& destination) = 0;
+  virtual tOSMPath FindOptimalPath( const std::list<COSMPosition>& viaPoints ) = 0;
 };
 }
