@@ -7,6 +7,8 @@ add_library( osmCore SHARED
   COSMNode.h
   COSMWay.cpp
   COSMWay.h
+  CShapePoint.cpp
+  CShapePoint.h
   CWaySegment.cpp
   CWaySegment.h
   OSMRoutingNetwork.h

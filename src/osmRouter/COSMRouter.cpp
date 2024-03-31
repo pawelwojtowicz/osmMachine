@@ -18,9 +18,9 @@ COSMRouter::~COSMRouter()
   
 }
 
-tOSMPath COSMRouter::FindOptimalPath( const std::list<COSMPosition>& viaPoints )
+tOSMShapePath COSMRouter::FindOptimalPath( const std::list<COSMPosition>& viaPoints )
 {
-  tOSMPath path = {} ;
+  tOSMShapePath path = {} ;
   auto origin = viaPoints.begin();
   auto destination = origin;
   ++destination;
@@ -39,7 +39,7 @@ tOSMPath COSMRouter::FindOptimalPath( const std::list<COSMPosition>& viaPoints )
 }
 
 
-tOSMPath COSMRouter::FindOptimalPath( const int64_t originNodeId, const COSMPosition& start, const COSMPosition& destination)
+tOSMShapePath COSMRouter::FindOptimalPath( const int64_t originNodeId, const COSMPosition& start, const COSMPosition& destination)
 {
   std::unique_ptr<IRoutingUtilityFunction> utility = std::make_unique<CSimpleDistanceUtilityFunction>();
   std::unique_ptr<IExpectedScoreHeuristics> heuristics = std::make_unique<CSimpleDistanceHeuristics>();
@@ -111,7 +111,7 @@ tOSMPath COSMRouter::FindOptimalPath( const int64_t originNodeId, const COSMPosi
   }
 
 
-  return tOSMPath();
+  return tOSMShapePath();
 }
 
 tWayList COSMRouter::GetRoutingPointNeighbours( const int64_t osmNodeId )
@@ -125,21 +125,21 @@ tWayList COSMRouter::GetRoutingPointNeighbours( const int64_t osmNodeId )
   return {};
 }
 
-tOSMPath COSMRouter::BuildSolutionPath( tPtrRoutingPoint routingPoint, const COSMPosition& destination )
+tOSMShapePath COSMRouter::BuildSolutionPath( tPtrRoutingPoint routingPoint, const COSMPosition& destination )
 {
   tPtrRoutingPoint iterajszn(routingPoint);
 
-  tOSMPath path;
+  tOSMShapePath path;
 
   while ( iterajszn )
   {
-    path.push_front( iterajszn->GetOriginWay() );
+ //   path.push_front( iterajszn->GetOriginWay() );
     iterajszn = iterajszn->GetPreviousRoutingPoint();
   }
 
   for ( auto way : path)
   {
-    way->Print();
+   // way->Print();
   }
   destination.GetWay()->Print();
 

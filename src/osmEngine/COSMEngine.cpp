@@ -53,7 +53,7 @@ tMapMatching COSMEngine::FindOSMLocation( const GeoBase::CGeoPoint& point )
   return m_mapMatcher.FindOSMPosition( point);
 }
 
-tOSMPath COSMEngine::FindOptimalPath( const std::list< GeoBase::CGeoPoint > viaPointList)
+tOSMShapePath COSMEngine::FindOptimalPath( const std::list< GeoBase::CGeoPoint > viaPointList)
 {
   std::list<COSMPosition> viaPoints;
   for( const auto& geoPoint : viaPointList )
