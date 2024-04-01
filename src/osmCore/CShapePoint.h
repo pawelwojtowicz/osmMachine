@@ -13,6 +13,8 @@ public:
   ePOI
   };
 
+  CShapePoint( tViaPointType type, tOSMNodeShPtr rawPosition, tOSMNodeShPtr snappedPosition, const double& length, const double& heading );
+
 private:
   tViaPointType m_type;
   tOSMNodeShPtr m_rawPosition;

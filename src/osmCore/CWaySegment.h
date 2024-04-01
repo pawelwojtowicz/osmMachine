@@ -12,6 +12,7 @@ public:
   void UpdateGeometry();
 
   inline double getLength() const { return m_length;};
+  inline double getHeading() const { return m_heading;};
 
 
   tOSMNodeShPtr getBeginNode() const;
