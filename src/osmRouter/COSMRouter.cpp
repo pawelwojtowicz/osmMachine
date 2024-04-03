@@ -4,6 +4,7 @@
 #include <set>
 #include "CSimpleDistanceUtilityFunction.h"
 #include "CSimpleDistanceHeuristics.h"
+#include <iostream>
 
 namespace osmMachine
 {
@@ -29,7 +30,32 @@ tOSMShapePath COSMRouter::FindOptimalPath( const std::list<COSMPosition>& viaPoi
 
   while( viaPoints.end() != destination )
   {
-    FindOptimalPath( originNodeId, *origin, *destination);
+    tOSMShapePath intermediatePath = FindOptimalPath( originNodeId, *origin, *destination);
+
+    std::cout << "rozmiar wektura " << intermediatePath.size() << std::endl << std::endl;
+
+    auto pathEnd = intermediatePath.rbegin();
+    auto pathBegin = intermediatePath.begin();
+
+    if ( pathEnd->GetOsmNodeId() == destination->GetWay()->GetBeginNode()->getId() )
+    {
+      std::cout << "koniec na beginie" << std::endl;
+    }
+
+    if ( pathEnd->GetOsmNodeId() == destination->GetWay()->GetEndNode()->getId() )
+    {
+      std::cout << "koniec na endzie" << std::endl;
+    }
+
+    if ( pathBegin->GetOsmNodeId() == origin->GetWay()->GetBeginNode()->getId() )
+    {
+      std::cout << "start na beginie" << std::endl;
+    }
+
+    if ( pathBegin->GetOsmNodeId() == origin->GetWay()->GetEndNode()->getId() )
+    {
+      std::cout << "start na endzie" << std::endl;
+    }
 
     origin = destination;
     ++destination;
@@ -125,25 +151,81 @@ tWayList COSMRouter::GetRoutingPointNeighbours( const int64_t osmNodeId )
   return {};
 }
 
-tOSMShapePath COSMRouter::BuildSolutionPath( tPtrRoutingPoint routingPoint, const COSMPosition& destination )
+tOSMShapePath COSMRouter::BuildSolutionPath( tPtrRoutingPoint finalGeoPoint, const COSMPosition& destination )
 {
-  tPtrRoutingPoint iterajszn(routingPoint);
+  tOSMShapePath path = {};
+  tPtrRoutingPoint currentRoutingSegment(finalGeoPoint);
 
-  tOSMShapePath path;
+  int64_t originNodeId(-1);
 
-  while ( iterajszn )
+  if ( currentRoutingSegment->GetOriginWay()->GetBeginNode()->getId() == destination.GetWay()->GetBeginNode()->getId() ||
+       currentRoutingSegment->GetOriginWay()->GetEndNode()->getId() == destination.GetWay()->GetBeginNode()->getId() )
   {
- //   path.push_front( iterajszn->GetOriginWay() );
-    iterajszn = iterajszn->GetPreviousRoutingPoint();
+    originNodeId = destination.GetWay()->GetBeginNode()->getId();
+    path.push_back(CShapePoint( CShapePoint::tViaPointType::eSimple, 
+                                 destination.GetWay()->GetBeginNode(), 
+                                 destination.GetWay()->GetBeginNode(),
+                                 0,
+                                 0 ));
+  }
+  
+  if ( currentRoutingSegment->GetOriginWay()->GetBeginNode()->getId() == destination.GetWay()->GetEndNode()->getId() ||
+       currentRoutingSegment->GetOriginWay()->GetEndNode()->getId() == destination.GetWay()->GetEndNode()->getId() )
+  {
+    originNodeId = destination.GetWay()->GetEndNode()->getId();
+    path.push_back(CShapePoint( CShapePoint::tViaPointType::eSimple, 
+                                 destination.GetWay()->GetEndNode(), 
+                                 destination.GetWay()->GetEndNode(),
+                                 0,
+                                 0 ));
   }
 
-  for ( auto way : path)
+  while( currentRoutingSegment )
   {
-   // way->Print();
-  }
-  destination.GetWay()->Print();
+    if ( currentRoutingSegment->GetOriginWay()->GetBeginNode()->getId() == originNodeId )
+    {
+      ConvertWayFromEnd2Begin( currentRoutingSegment, path);
+    }
 
-  return {};
+    if ( currentRoutingSegment->GetOriginWay()->GetEndNode()->getId() == originNodeId )
+    {
+      ConvertWayFromBegin2End( currentRoutingSegment, path);
+    }
+
+    originNodeId = path.begin()->GetOsmNodeId();
+    currentRoutingSegment = currentRoutingSegment->GetPreviousRoutingPoint();
+  }
+
+  return path;
 }
+
+void COSMRouter::ConvertWayFromBegin2End( tPtrRoutingPoint& routingSegment, tOSMShapePath& path )
+{
+  const auto& way = *routingSegment->GetOriginWay();
+
+  for ( auto waysegmentIterator = way.GetWaySegments().rbegin(); waysegmentIterator != way.GetWaySegments().rend(); ++waysegmentIterator)
+  {
+    path.push_front( CShapePoint( CShapePoint::tViaPointType::eSimple, 
+                                 waysegmentIterator->getBeginNode(), 
+                                 waysegmentIterator->getBeginNode(),
+                                 waysegmentIterator->getLength(),
+                                 waysegmentIterator->getHeading() +180 ) );
+  }
+}
+
+void COSMRouter::ConvertWayFromEnd2Begin( tPtrRoutingPoint& routingSegment, tOSMShapePath& path )
+{
+  const auto& way = *routingSegment->GetOriginWay();
+
+  for( auto waysegmentIterator = way.GetWaySegments().begin(); waysegmentIterator != way.GetWaySegments().end() ; ++waysegmentIterator )
+  {
+    path.push_front( CShapePoint( CShapePoint::tViaPointType::eSimple,
+                                  waysegmentIterator->getEndNode(), 
+                                  waysegmentIterator->getEndNode(),
+                                  waysegmentIterator->getLength(),
+                                  waysegmentIterator->getHeading()));
+  }
+}
+
 
 }

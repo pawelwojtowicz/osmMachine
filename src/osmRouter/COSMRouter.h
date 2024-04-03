@@ -16,7 +16,10 @@ public:
 private:
   virtual tOSMShapePath FindOptimalPath( const int64_t originNodeId, const COSMPosition& start, const COSMPosition& destination);
 
-  tOSMShapePath BuildSolutionPath( tPtrRoutingPoint routingPoint, const COSMPosition& destination );
+  tOSMShapePath BuildSolutionPath( tPtrRoutingPoint finalGeoPoint, const COSMPosition& destination );
+
+  void ConvertWayFromBegin2End( tPtrRoutingPoint& routingSegment, tOSMShapePath& path );
+  void ConvertWayFromEnd2Begin( tPtrRoutingPoint& routingSegment, tOSMShapePath& path );
 
 private:
   double ToGoHeuristics( const GeoBase::CGeoPoint& begin, const GeoBase::CGeoPoint& end);

@@ -15,10 +15,16 @@ public:
 
   CShapePoint( tViaPointType type, tOSMNodeShPtr rawPosition, tOSMNodeShPtr snappedPosition, const double& length, const double& heading );
 
+  const int64_t GetOsmNodeId() const;
+
+  const GeoBase::CGeoPoint& getOSMPosition() const;
+
 private:
   tViaPointType m_type;
-  tOSMNodeShPtr m_rawPosition;
-  tOSMNodeShPtr m_snappedPosition;
+  int64_t m_osmNodeId;
+  int64_t m_osmWayId;
+  GeoBase::CGeoPoint m_rawPosition; 
+  GeoBase::CGeoPoint m_snappedPosition;
 
   double m_length;
 
