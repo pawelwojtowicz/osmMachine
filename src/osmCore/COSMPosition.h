@@ -11,7 +11,7 @@ public:
   COSMPosition();
   COSMPosition( const tWayShPtr ptrWay,
                 const int waySegmentIdex, 
-                const double m_distanceOnSegment, 
+                const double distanceOnSegment, 
                 const double rawFromProjectionDistance,
                 const GeoBase::CGeoPoint& rawGeoPoint, 
                 const GeoBase::CGeoPoint& snappedToMap);
@@ -25,6 +25,7 @@ public:
   inline tWayShPtr GetWay() const { return m_ptrWay;};
 
   inline double GetDistanceOnSegment() const { return m_distanceOnSegment; };
+  inline int GetWaySegmentIndex() const { return m_waySegmentIdex;};
 
   inline double GetRaw2ProjectionDistance() const { return m_rawFromProjectionDistance;} ;
 
@@ -32,6 +33,7 @@ public:
   inline bool operator>( const COSMPosition& rhs ) const { return (m_rawFromProjectionDistance > rhs.m_rawFromProjectionDistance); };
 
   const GeoBase::CGeoPoint& GetPositionSnapped2OSM() const { return m_snappedToMap;};
+  const GeoBase::CGeoPoint& GetRawPosition() const { return m_rawGeoPoint;};
 
 private:
   tWayShPtr m_ptrWay;

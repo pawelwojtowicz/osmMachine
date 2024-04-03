@@ -32,30 +32,104 @@ tOSMShapePath COSMRouter::FindOptimalPath( const std::list<COSMPosition>& viaPoi
   {
     tOSMShapePath intermediatePath = FindOptimalPath( originNodeId, *origin, *destination);
 
-    std::cout << "rozmiar wektura " << intermediatePath.size() << std::endl << std::endl;
-
     auto pathEnd = intermediatePath.rbegin();
     auto pathBegin = intermediatePath.begin();
 
-    if ( pathEnd->GetOsmNodeId() == destination->GetWay()->GetBeginNode()->getId() )
-    {
-      std::cout << "koniec na beginie" << std::endl;
-    }
-
-    if ( pathEnd->GetOsmNodeId() == destination->GetWay()->GetEndNode()->getId() )
-    {
-      std::cout << "koniec na endzie" << std::endl;
-    }
-
     if ( pathBegin->GetOsmNodeId() == origin->GetWay()->GetBeginNode()->getId() )
     {
-      std::cout << "start na beginie" << std::endl;
+      const auto& entrySegments = origin->GetWay()->GetWaySegments();
+
+      for ( int i = 0 ; i < origin->GetWaySegmentIndex() ; ++i )
+      {
+        intermediatePath.push_front( CShapePoint( CShapePoint::tViaPointType::eEntry,
+                                                  entrySegments[i].getEndNode(),
+                                                  entrySegments[i].getEndNode(),
+                                                  entrySegments[i].getLength(),
+                                                  entrySegments[i].getHeading() ) );
+      }
+
+      double heading = GeoBase::GeoUtils::BearingDEG( origin->GetPositionSnapped2OSM(), *(entrySegments[origin->GetWaySegmentIndex()].getBeginNode()) );
+      double length = GeoBase::GeoUtils::Point2PointDistance( origin->GetPositionSnapped2OSM(), *entrySegments[origin->GetWaySegmentIndex()].getBeginNode() );
+      intermediatePath.push_front( CShapePoint( CShapePoint::tViaPointType::ePOI,
+                                    origin->GetRawPosition(),
+                                    origin->GetPositionSnapped2OSM(),
+                                    length,
+                                    heading));
+    } 
+    else if ( pathBegin->GetOsmNodeId() == origin->GetWay()->GetEndNode()->getId() )
+    {
+      const auto& entrySegments = origin->GetWay()->GetWaySegments();
+      int lastWaySegment = entrySegments.size() -1;
+
+      for ( int i = lastWaySegment ; i >  origin->GetWaySegmentIndex() ; --i)
+      {
+        intermediatePath.push_front( CShapePoint( CShapePoint::tViaPointType::eEntry,
+                                                  entrySegments[i].getBeginNode(),
+                                                  entrySegments[i].getBeginNode(),
+                                                  entrySegments[i].getLength(),
+                                                  entrySegments[i].getHeading() ) );
+
+      }
+
+      double heading = GeoBase::GeoUtils::BearingDEG( origin->GetPositionSnapped2OSM(), *(entrySegments[origin->GetWaySegmentIndex()].getEndNode()) );
+      double length = GeoBase::GeoUtils::Point2PointDistance( origin->GetPositionSnapped2OSM(), *entrySegments[origin->GetWaySegmentIndex()].getEndNode() );
+      intermediatePath.push_front( CShapePoint( CShapePoint::tViaPointType::ePOI,
+                                    origin->GetRawPosition(),
+                                    origin->GetPositionSnapped2OSM(),
+                                    length,
+                                    heading));
+
+    } 
+    else 
+    {
+      std::cout << "Fck fck fck" << std::endl;
     }
 
-    if ( pathBegin->GetOsmNodeId() == origin->GetWay()->GetEndNode()->getId() )
+    if (pathEnd->GetOsmNodeId() == destination->GetWay()->GetBeginNode()->getId() )
     {
-      std::cout << "start na endzie" << std::endl;
+      //intermediatePath.erase(pathEnd);
+      const auto& exitSegments = destination->GetWay()->GetWaySegments();
+
+      for ( int i = 0 ; i < destination->GetWaySegmentIndex() ; ++i )
+      {
+        intermediatePath.push_back( CShapePoint( CShapePoint::tViaPointType::eExit,
+                                                  exitSegments[i].getBeginNode(),
+                                                  exitSegments[i].getBeginNode(),
+                                                  exitSegments[i].getLength(),
+                                                  exitSegments[i].getHeading() ) );
+      }
+
+      double heading = GeoBase::GeoUtils::BearingDEG( *(exitSegments[destination->GetWaySegmentIndex()].getBeginNode()), destination->GetPositionSnapped2OSM() );
+      double length = GeoBase::GeoUtils::Point2PointDistance( *exitSegments[destination->GetWaySegmentIndex()].getBeginNode(), destination->GetPositionSnapped2OSM() );
+      intermediatePath.push_back( CShapePoint( CShapePoint::tViaPointType::ePOI,
+                                    destination->GetRawPosition(),
+                                    destination->GetPositionSnapped2OSM(),
+                                    length,
+                                    heading));
+
+
+
+    } 
+    else if ( pathEnd->GetOsmNodeId() == destination->GetWay()->GetEndNode()->getId() )
+    {
+      const auto& exitSegments = destination->GetWay()->GetWaySegments();
+      int lastSegment = exitSegments.size() - 1;
+
+      for ( int i = lastSegment ; i > destination->GetWaySegmentIndex() ; --i)
+      {
+
+      }
+
+
+    } 
+    else
+    {
+      std::cout << "Fck fck fck" << std::endl;
     }
+
+    originNodeId = pathEnd->GetOsmNodeId();
+
+    path.splice(path.end(), intermediatePath);
 
     origin = destination;
     ++destination;

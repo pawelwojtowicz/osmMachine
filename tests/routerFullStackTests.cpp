@@ -4,6 +4,9 @@
 #include <Logger/CSimpleLogger.h>
 #include <Utils/CTimespanMeter.h>
 
+#include <iostream>
+#include <iomanip>
+
 using namespace std;
 
 int main( int argc, char** argv)
@@ -33,9 +36,16 @@ int main( int argc, char** argv)
     GeoBase::CGeoPoint destination1( DEG2RAD(51.1237259939271),DEG2RAD(15.915939244701315)); // wayID = 234858257
     GeoBase::CGeoPoint destination2( DEG2RAD(51.1267799),DEG2RAD(15.9230522) );
 
-    std::list< GeoBase::CGeoPoint > viaList = { destination1, origin  };//, destination2 };
+    std::list< GeoBase::CGeoPoint > viaList = {  destination2, destination1 };// , origin };
 
-    engine.FindOptimalPath(viaList);
+    auto path = engine.FindOptimalPath(viaList);
+
+    int i = 0;
+
+    for( const auto& point : path)
+    {
+      std::cout << ++i << "|" << std::setprecision (15) << RAD2DEG(point.getOSMPosition().getLon()) << "|"<<  std::setprecision (15)<< RAD2DEG(point.getOSMPosition().getLat()) << "|"<< point.GetOsmNodeId() << "|" << static_cast<int>(point.GetType()) << std::endl; 
+    }
   }
 
   return 0;
