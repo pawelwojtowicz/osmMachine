@@ -36,7 +36,7 @@ int main( int argc, char** argv)
     GeoBase::CGeoPoint destination1( DEG2RAD(51.1237259939271),DEG2RAD(15.915939244701315)); // wayID = 234858257
     GeoBase::CGeoPoint destination2( DEG2RAD(51.1267799),DEG2RAD(15.9230522) );
 
-    std::list< GeoBase::CGeoPoint > viaList = {  destination2, destination1 };// , origin };
+    std::list< GeoBase::CGeoPoint > viaList = {  origin, destination1 , destination2 };
 
     auto path = engine.FindOptimalPath(viaList);
 

@@ -18,8 +18,6 @@ private:
 
   tOSMShapePath BuildSolutionPath( tPtrRoutingPoint finalGeoPoint, const COSMPosition& destination );
 
-  void ConvertWayFromBegin2End( tPtrRoutingPoint& routingSegment, tOSMShapePath& path );
-  void ConvertWayFromEnd2Begin( tPtrRoutingPoint& routingSegment, tOSMShapePath& path );
 
 private:
   double ToGoHeuristics( const GeoBase::CGeoPoint& begin, const GeoBase::CGeoPoint& end);

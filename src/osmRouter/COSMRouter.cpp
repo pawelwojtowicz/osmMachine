@@ -5,6 +5,7 @@
 #include "CSimpleDistanceUtilityFunction.h"
 #include "CSimpleDistanceHeuristics.h"
 #include <iostream>
+#include "CRoutePathBuilder.h"
 
 namespace osmMachine
 {
@@ -37,48 +38,11 @@ tOSMShapePath COSMRouter::FindOptimalPath( const std::list<COSMPosition>& viaPoi
 
     if ( pathBegin->GetOsmNodeId() == origin->GetWay()->GetBeginNode()->getId() )
     {
-      const auto& entrySegments = origin->GetWay()->GetWaySegments();
-
-      for ( int i = 0 ; i < origin->GetWaySegmentIndex() ; ++i )
-      {
-        intermediatePath.push_front( CShapePoint( CShapePoint::tViaPointType::eEntry,
-                                                  entrySegments[i].getEndNode(),
-                                                  entrySegments[i].getEndNode(),
-                                                  entrySegments[i].getLength(),
-                                                  entrySegments[i].getHeading() ) );
-      }
-
-      double heading = GeoBase::GeoUtils::BearingDEG( origin->GetPositionSnapped2OSM(), *(entrySegments[origin->GetWaySegmentIndex()].getBeginNode()) );
-      double length = GeoBase::GeoUtils::Point2PointDistance( origin->GetPositionSnapped2OSM(), *entrySegments[origin->GetWaySegmentIndex()].getBeginNode() );
-      intermediatePath.push_front( CShapePoint( CShapePoint::tViaPointType::ePOI,
-                                    origin->GetRawPosition(),
-                                    origin->GetPositionSnapped2OSM(),
-                                    length,
-                                    heading));
+      CRoutePathBuilder::ConvertEntryToBegin( *origin, intermediatePath );
     } 
     else if ( pathBegin->GetOsmNodeId() == origin->GetWay()->GetEndNode()->getId() )
     {
-      const auto& entrySegments = origin->GetWay()->GetWaySegments();
-      int lastWaySegment = entrySegments.size() -1;
-
-      for ( int i = lastWaySegment ; i >  origin->GetWaySegmentIndex() ; --i)
-      {
-        intermediatePath.push_front( CShapePoint( CShapePoint::tViaPointType::eEntry,
-                                                  entrySegments[i].getBeginNode(),
-                                                  entrySegments[i].getBeginNode(),
-                                                  entrySegments[i].getLength(),
-                                                  entrySegments[i].getHeading() ) );
-
-      }
-
-      double heading = GeoBase::GeoUtils::BearingDEG( origin->GetPositionSnapped2OSM(), *(entrySegments[origin->GetWaySegmentIndex()].getEndNode()) );
-      double length = GeoBase::GeoUtils::Point2PointDistance( origin->GetPositionSnapped2OSM(), *entrySegments[origin->GetWaySegmentIndex()].getEndNode() );
-      intermediatePath.push_front( CShapePoint( CShapePoint::tViaPointType::ePOI,
-                                    origin->GetRawPosition(),
-                                    origin->GetPositionSnapped2OSM(),
-                                    length,
-                                    heading));
-
+      CRoutePathBuilder::ConvertEntryToEnd( *origin, intermediatePath);
     } 
     else 
     {
@@ -87,40 +51,11 @@ tOSMShapePath COSMRouter::FindOptimalPath( const std::list<COSMPosition>& viaPoi
 
     if (pathEnd->GetOsmNodeId() == destination->GetWay()->GetBeginNode()->getId() )
     {
-      //intermediatePath.erase(pathEnd);
-      const auto& exitSegments = destination->GetWay()->GetWaySegments();
-
-      for ( int i = 0 ; i < destination->GetWaySegmentIndex() ; ++i )
-      {
-        intermediatePath.push_back( CShapePoint( CShapePoint::tViaPointType::eExit,
-                                                  exitSegments[i].getBeginNode(),
-                                                  exitSegments[i].getBeginNode(),
-                                                  exitSegments[i].getLength(),
-                                                  exitSegments[i].getHeading() ) );
-      }
-
-      double heading = GeoBase::GeoUtils::BearingDEG( *(exitSegments[destination->GetWaySegmentIndex()].getBeginNode()), destination->GetPositionSnapped2OSM() );
-      double length = GeoBase::GeoUtils::Point2PointDistance( *exitSegments[destination->GetWaySegmentIndex()].getBeginNode(), destination->GetPositionSnapped2OSM() );
-      intermediatePath.push_back( CShapePoint( CShapePoint::tViaPointType::ePOI,
-                                    destination->GetRawPosition(),
-                                    destination->GetPositionSnapped2OSM(),
-                                    length,
-                                    heading));
-
-
-
+      CRoutePathBuilder::ConvertExitFromBegin(*destination, intermediatePath );
     } 
     else if ( pathEnd->GetOsmNodeId() == destination->GetWay()->GetEndNode()->getId() )
     {
-      const auto& exitSegments = destination->GetWay()->GetWaySegments();
-      int lastSegment = exitSegments.size() - 1;
-
-      for ( int i = lastSegment ; i > destination->GetWaySegmentIndex() ; --i)
-      {
-
-      }
-
-
+      CRoutePathBuilder::ConvertExitFromEnd(*destination, intermediatePath);
     } 
     else
     {
@@ -129,11 +64,19 @@ tOSMShapePath COSMRouter::FindOptimalPath( const std::list<COSMPosition>& viaPoi
 
     originNodeId = pathEnd->GetOsmNodeId();
 
-    path.splice(path.end(), intermediatePath);
+    path.insert(path.end(), intermediatePath.begin(), intermediatePath.end());
 
     origin = destination;
     ++destination;
   }
+
+  path.push_back(  CShapePoint( CShapePoint::tViaPointType::ePOI,
+                origin->GetRawPosition(), 
+                origin->GetPositionSnapped2OSM() , 
+                0, 
+                0));
+
+
 
   return path;
 }
@@ -146,13 +89,14 @@ tOSMShapePath COSMRouter::FindOptimalPath( const int64_t originNodeId, const COS
 
   COSMRoutingPointSet openedNodesSet;
   std::set<int64_t> closedNodesSet;
+  int64_t originWayId( start.GetWay()->GetId());
 
 
   if ( !start.GetWay()->IsOneWay() && ( originNodeId != start.GetWay()->GetBeginNode()->getId()  ) )
   {
     double toGoHeuristics = { GeoBase::GeoUtils::Point2PointDistance(*(start.GetWay()->GetBeginNode()), destination.GetPositionSnapped2OSM() ) };
     double score = start.GetDistanceOnSegment();
-    tPtrRoutingPoint beginRoutingPoint( new COSMRoutePoint({},start.GetWay(),start.GetWay()->GetBeginNode(),score,toGoHeuristics) );
+    tPtrRoutingPoint beginRoutingPoint( new COSMRoutePoint({},{},start.GetWay()->GetBeginNode(),score,toGoHeuristics) );
 
     openedNodesSet.AddRoutingPoint( beginRoutingPoint);
   }
@@ -161,7 +105,7 @@ tOSMShapePath COSMRouter::FindOptimalPath( const int64_t originNodeId, const COS
   {
     double toGoHeuristics = { GeoBase::GeoUtils::Point2PointDistance(*(start.GetWay()->GetEndNode()), destination.GetPositionSnapped2OSM() ) };
     double score = start.GetWay()->GetLength() - start.GetDistanceOnSegment();
-    tPtrRoutingPoint endRoutingPoint( new COSMRoutePoint({},start.GetWay(),start.GetWay()->GetEndNode(),score,toGoHeuristics) );
+    tPtrRoutingPoint endRoutingPoint( new COSMRoutePoint({},{},start.GetWay()->GetEndNode(),score,toGoHeuristics) );
 
     openedNodesSet.AddRoutingPoint(endRoutingPoint);
   }
@@ -183,7 +127,9 @@ tOSMShapePath COSMRouter::FindOptimalPath( const int64_t originNodeId, const COS
 
     for( auto& nextHopWay : waysFromNode )
     {
-      if ( nextHopWay->GetId() != routingPoint->GetOriginWay()->GetId() )
+      originWayId = routingPoint->GetOriginWay() ? routingPoint->GetOriginWay()->GetId() : originWayId; 
+
+      if ( nextHopWay->GetId() != originWayId )
       {
         auto nextOSMNode = routingPoint->GetId() != nextHopWay->GetBeginNode()->getId() ? nextHopWay->GetBeginNode() : nextHopWay->GetEndNode();
 
@@ -254,16 +200,16 @@ tOSMShapePath COSMRouter::BuildSolutionPath( tPtrRoutingPoint finalGeoPoint, con
                                  0 ));
   }
 
-  while( currentRoutingSegment )
+  while( currentRoutingSegment && currentRoutingSegment->GetOriginWay() )
   {
     if ( currentRoutingSegment->GetOriginWay()->GetBeginNode()->getId() == originNodeId )
     {
-      ConvertWayFromEnd2Begin( currentRoutingSegment, path);
+      CRoutePathBuilder::ConvertWayFromEnd2Begin( currentRoutingSegment, path);
     }
 
     if ( currentRoutingSegment->GetOriginWay()->GetEndNode()->getId() == originNodeId )
     {
-      ConvertWayFromBegin2End( currentRoutingSegment, path);
+      CRoutePathBuilder::ConvertWayFromBegin2End( currentRoutingSegment, path);
     }
 
     originNodeId = path.begin()->GetOsmNodeId();
@@ -271,34 +217,6 @@ tOSMShapePath COSMRouter::BuildSolutionPath( tPtrRoutingPoint finalGeoPoint, con
   }
 
   return path;
-}
-
-void COSMRouter::ConvertWayFromBegin2End( tPtrRoutingPoint& routingSegment, tOSMShapePath& path )
-{
-  const auto& way = *routingSegment->GetOriginWay();
-
-  for ( auto waysegmentIterator = way.GetWaySegments().rbegin(); waysegmentIterator != way.GetWaySegments().rend(); ++waysegmentIterator)
-  {
-    path.push_front( CShapePoint( CShapePoint::tViaPointType::eSimple, 
-                                 waysegmentIterator->getBeginNode(), 
-                                 waysegmentIterator->getBeginNode(),
-                                 waysegmentIterator->getLength(),
-                                 waysegmentIterator->getHeading() +180 ) );
-  }
-}
-
-void COSMRouter::ConvertWayFromEnd2Begin( tPtrRoutingPoint& routingSegment, tOSMShapePath& path )
-{
-  const auto& way = *routingSegment->GetOriginWay();
-
-  for( auto waysegmentIterator = way.GetWaySegments().begin(); waysegmentIterator != way.GetWaySegments().end() ; ++waysegmentIterator )
-  {
-    path.push_front( CShapePoint( CShapePoint::tViaPointType::eSimple,
-                                  waysegmentIterator->getEndNode(), 
-                                  waysegmentIterator->getEndNode(),
-                                  waysegmentIterator->getLength(),
-                                  waysegmentIterator->getHeading()));
-  }
 }
 
 

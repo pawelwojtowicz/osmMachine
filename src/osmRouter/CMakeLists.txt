@@ -5,6 +5,8 @@ add_library( osmRouter SHARED
   COSMRouter.h
   COSMRoutePoint.cpp
   COSMRoutePoint.h
+  CRoutePathBuilder.cpp
+  CRoutePathBuilder.h
   IOSMRouter.h
   IRoutingUtilityFunction.h
   IExpectedScoreHeuristics.h
