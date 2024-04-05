@@ -11,8 +11,6 @@ public:
   {
   eSimple = 1,
   ePOI = 2,
-  eEntry = 3,
-  eExit = 4
   };
 
   CShapePoint(  tViaPointType type, 

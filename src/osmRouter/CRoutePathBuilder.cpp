@@ -12,7 +12,7 @@ void CRoutePathBuilder::ConvertEntryToBegin( const COSMPosition& originOsmPositi
   
   for ( int i = 0 ; i < originOsmPosition.GetWaySegmentIndex() ; ++i )
   {
-    path.push_front( CShapePoint( CShapePoint::tViaPointType::eEntry,
+    path.push_front( CShapePoint( CShapePoint::tViaPointType::eSimple,
                      waySegments[i].getEndNode(), 
                      waySegments[i].getEndNode(),
                      originOsmPosition.GetWay()->GetId(),
@@ -37,7 +37,7 @@ void CRoutePathBuilder::ConvertEntryToEnd( const COSMPosition& originOsmPosition
   for ( int i = lastSegment ; i > originOsmPosition.GetWaySegmentIndex() ; --i )
   {
 
-    path.push_front( CShapePoint( CShapePoint::tViaPointType::eEntry,
+    path.push_front( CShapePoint( CShapePoint::tViaPointType::eSimple,
                      waySegments[i].getBeginNode(), 
                      waySegments[i].getBeginNode() ,
                      originOsmPosition.GetWay()->GetId(),
@@ -91,7 +91,7 @@ void CRoutePathBuilder::ConvertExitFromBegin( const COSMPosition& destinationOsm
 
   for ( int i = 0 ; i < destinationOsmPosition.GetWaySegmentIndex() ; ++i )
   {
-    path.push_back( CShapePoint( CShapePoint::tViaPointType::eExit,
+    path.push_back( CShapePoint( CShapePoint::tViaPointType::eSimple,
                                   waySegments[i].getBeginNode(), 
                                   waySegments[i].getBeginNode(),
                                   destinationOsmPosition.GetWay()->GetId(),
@@ -99,7 +99,7 @@ void CRoutePathBuilder::ConvertExitFromBegin( const COSMPosition& destinationOsm
                                   waySegments[i].getHeading()));
   }
 
-  path.push_back( CShapePoint( CShapePoint::tViaPointType::eExit,
+  path.push_back( CShapePoint( CShapePoint::tViaPointType::eSimple,
                                 waySegments[destinationOsmPosition.GetWaySegmentIndex()].getBeginNode(), 
                                 waySegments[destinationOsmPosition.GetWaySegmentIndex()].getBeginNode(),
                                 destinationOsmPosition.GetWay()->GetId(),
@@ -115,7 +115,7 @@ void CRoutePathBuilder::ConvertExitFromEnd( const COSMPosition& destinationOsmPo
 
   for ( int i = lastSegment ; i > destinationOsmPosition.GetWaySegmentIndex() ; ++i )
   {
-    path.push_back( CShapePoint( CShapePoint( CShapePoint::tViaPointType::eExit,
+    path.push_back( CShapePoint( CShapePoint( CShapePoint::tViaPointType::eSimple,
                             waySegments[i].getEndNode(),
                             waySegments[i].getEndNode(),
                             destinationOsmPosition.GetWay()->GetId(),
@@ -123,7 +123,7 @@ void CRoutePathBuilder::ConvertExitFromEnd( const COSMPosition& destinationOsmPo
                             GeoBase::GeoUtils::OpositeDirection(waySegments[i].getHeading()))));
   }
 
-  path.push_back( CShapePoint( CShapePoint( CShapePoint::tViaPointType::eExit,
+  path.push_back( CShapePoint( CShapePoint( CShapePoint::tViaPointType::eSimple,
                           waySegments[destinationOsmPosition.GetWaySegmentIndex()].getEndNode(),
                           waySegments[destinationOsmPosition.GetWaySegmentIndex()].getEndNode(),
                           destinationOsmPosition.GetWay()->GetId(),
