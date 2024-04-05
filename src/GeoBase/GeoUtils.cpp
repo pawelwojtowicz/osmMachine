@@ -83,4 +83,12 @@ int GeoUtils::BearingDEG( const CGeoPoint& begin, const CGeoPoint& end )
   return static_cast<int>(BearingRAD( begin, end )* 180/M_PI) % 360 ;
 }
 
+int GeoUtils::OpositeDirection( const int heading)
+{
+  return ( heading + 180 ) % 360;
+}
+
+
+
+
 }

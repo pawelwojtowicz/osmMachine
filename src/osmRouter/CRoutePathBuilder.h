@@ -18,6 +18,8 @@ public:
 
   static void ConvertExitFromBegin( const COSMPosition& destinationOsmPosition , tOSMShapePath& path );
   static void ConvertExitFromEnd( const COSMPosition& destinationOsmPosition ,tOSMShapePath& path );
+
+  static tOSMShapePath BuildSolutionPath( tPtrRoutingPoint finalGeoPoint, const COSMPosition& destination );
 };
 
 }

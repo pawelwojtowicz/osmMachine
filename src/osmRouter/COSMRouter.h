@@ -14,10 +14,7 @@ public:
   virtual tOSMShapePath FindOptimalPath( const std::list<COSMPosition>& viaPoints );
 
 private:
-  virtual tOSMShapePath FindOptimalPath( const int64_t originNodeId, const COSMPosition& start, const COSMPosition& destination);
-
-  tOSMShapePath BuildSolutionPath( tPtrRoutingPoint finalGeoPoint, const COSMPosition& destination );
-
+  tOSMShapePath FindOptimalPath( const int64_t originNodeId, const COSMPosition& start, const COSMPosition& destination);
 
 private:
   double ToGoHeuristics( const GeoBase::CGeoPoint& begin, const GeoBase::CGeoPoint& end);

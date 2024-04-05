@@ -33,7 +33,7 @@ tOSMShapePath COSMRouter::FindOptimalPath( const std::list<COSMPosition>& viaPoi
   {
     tOSMShapePath intermediatePath = FindOptimalPath( originNodeId, *origin, *destination);
 
-    auto pathEnd = intermediatePath.rbegin();
+    auto pathEnd = --intermediatePath.end();
     auto pathBegin = intermediatePath.begin();
 
     if ( pathBegin->GetOsmNodeId() == origin->GetWay()->GetBeginNode()->getId() )
@@ -49,11 +49,14 @@ tOSMShapePath COSMRouter::FindOptimalPath( const std::list<COSMPosition>& viaPoi
       std::cout << "Fck fck fck" << std::endl;
     }
 
-    if (pathEnd->GetOsmNodeId() == destination->GetWay()->GetBeginNode()->getId() )
+    originNodeId = pathEnd->GetOsmNodeId();
+    intermediatePath.erase(pathEnd);
+
+    if (originNodeId == destination->GetWay()->GetBeginNode()->getId() )
     {
       CRoutePathBuilder::ConvertExitFromBegin(*destination, intermediatePath );
     } 
-    else if ( pathEnd->GetOsmNodeId() == destination->GetWay()->GetEndNode()->getId() )
+    else if ( originNodeId == destination->GetWay()->GetEndNode()->getId() )
     {
       CRoutePathBuilder::ConvertExitFromEnd(*destination, intermediatePath);
     } 
@@ -62,7 +65,7 @@ tOSMShapePath COSMRouter::FindOptimalPath( const std::list<COSMPosition>& viaPoi
       std::cout << "Fck fck fck" << std::endl;
     }
 
-    originNodeId = pathEnd->GetOsmNodeId();
+
 
     path.insert(path.end(), intermediatePath.begin(), intermediatePath.end());
 
@@ -75,8 +78,6 @@ tOSMShapePath COSMRouter::FindOptimalPath( const std::list<COSMPosition>& viaPoi
                 origin->GetPositionSnapped2OSM() , 
                 0, 
                 0));
-
-
 
   return path;
 }
@@ -116,7 +117,7 @@ tOSMShapePath COSMRouter::FindOptimalPath( const int64_t originNodeId, const COS
 
     if ( routingPoint->GetId() == destination.GetWay()->GetBeginNode()->getId() || ( !destination.GetWay()->IsOneWay() && (routingPoint->GetId() == destination.GetWay()->GetEndNode()->getId()) ))
     {
-      return BuildSolutionPath(routingPoint, destination );
+      return CRoutePathBuilder::BuildSolutionPath(routingPoint, destination ) ;
     }
 
     openedNodesSet.RemoveRoutingPoint(routingPoint->GetId() );
@@ -157,7 +158,7 @@ tOSMShapePath COSMRouter::FindOptimalPath( const int64_t originNodeId, const COS
   }
 
 
-  return tOSMShapePath();
+  return {};
 }
 
 tWayList COSMRouter::GetRoutingPointNeighbours( const int64_t osmNodeId )
@@ -170,54 +171,5 @@ tWayList COSMRouter::GetRoutingPointNeighbours( const int64_t osmNodeId )
 
   return {};
 }
-
-tOSMShapePath COSMRouter::BuildSolutionPath( tPtrRoutingPoint finalGeoPoint, const COSMPosition& destination )
-{
-  tOSMShapePath path = {};
-  tPtrRoutingPoint currentRoutingSegment(finalGeoPoint);
-
-  int64_t originNodeId(-1);
-
-  if ( currentRoutingSegment->GetOriginWay()->GetBeginNode()->getId() == destination.GetWay()->GetBeginNode()->getId() ||
-       currentRoutingSegment->GetOriginWay()->GetEndNode()->getId() == destination.GetWay()->GetBeginNode()->getId() )
-  {
-    originNodeId = destination.GetWay()->GetBeginNode()->getId();
-    path.push_back(CShapePoint( CShapePoint::tViaPointType::eSimple, 
-                                 destination.GetWay()->GetBeginNode(), 
-                                 destination.GetWay()->GetBeginNode(),
-                                 0,
-                                 0 ));
-  }
-  
-  if ( currentRoutingSegment->GetOriginWay()->GetBeginNode()->getId() == destination.GetWay()->GetEndNode()->getId() ||
-       currentRoutingSegment->GetOriginWay()->GetEndNode()->getId() == destination.GetWay()->GetEndNode()->getId() )
-  {
-    originNodeId = destination.GetWay()->GetEndNode()->getId();
-    path.push_back(CShapePoint( CShapePoint::tViaPointType::eSimple, 
-                                 destination.GetWay()->GetEndNode(), 
-                                 destination.GetWay()->GetEndNode(),
-                                 0,
-                                 0 ));
-  }
-
-  while( currentRoutingSegment && currentRoutingSegment->GetOriginWay() )
-  {
-    if ( currentRoutingSegment->GetOriginWay()->GetBeginNode()->getId() == originNodeId )
-    {
-      CRoutePathBuilder::ConvertWayFromEnd2Begin( currentRoutingSegment, path);
-    }
-
-    if ( currentRoutingSegment->GetOriginWay()->GetEndNode()->getId() == originNodeId )
-    {
-      CRoutePathBuilder::ConvertWayFromBegin2End( currentRoutingSegment, path);
-    }
-
-    originNodeId = path.begin()->GetOsmNodeId();
-    currentRoutingSegment = currentRoutingSegment->GetPreviousRoutingPoint();
-  }
-
-  return path;
-}
-
 
 }

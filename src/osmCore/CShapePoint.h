@@ -24,6 +24,9 @@ public:
 
   const tViaPointType GetType() const;
 
+  const double GetLength() const;
+  const int GetHeading() const;
+
 private:
   tViaPointType m_type;
   int64_t m_osmNodeId;
@@ -33,7 +36,7 @@ private:
 
   double m_length;
 
-  double m_heading;
+  int m_heading;
 };
 
 using tOSMShapePath = std::list<CShapePoint>;

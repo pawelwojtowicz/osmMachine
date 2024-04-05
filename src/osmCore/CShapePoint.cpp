@@ -41,5 +41,16 @@ const CShapePoint::tViaPointType CShapePoint::GetType() const
   return m_type;
 }
 
+const double CShapePoint::GetLength() const
+{
+  return m_length;
+}
+
+const int CShapePoint::GetHeading() const
+{
+  return m_heading;
+}
+
+
 
 }

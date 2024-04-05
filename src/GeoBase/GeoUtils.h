@@ -18,6 +18,8 @@ public:
   static double BearingRAD( const CGeoPoint& begin, const CGeoPoint& end);
   static int BearingDEG( const CGeoPoint& begin, const CGeoPoint& end);
 
+  static int OpositeDirection( const int heading);
+
 };
 
 }

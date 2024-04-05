@@ -44,7 +44,7 @@ int main( int argc, char** argv)
 
     for( const auto& point : path)
     {
-      std::cout << ++i << "|" << std::setprecision (15) << RAD2DEG(point.getOSMPosition().getLon()) << "|"<<  std::setprecision (15)<< RAD2DEG(point.getOSMPosition().getLat()) << "|"<< point.GetOsmNodeId() << "|" << static_cast<int>(point.GetType()) << std::endl; 
+      std::cout << ++i << "|" << std::setprecision (15) << RAD2DEG(point.getOSMPosition().getLon()) << "|"<<  std::setprecision (15)<< RAD2DEG(point.getOSMPosition().getLat()) << "|"<< point.GetOsmNodeId() << "|" << static_cast<int>(point.GetType()) << "|" << point.GetLength()<< std::endl; 
     }
   }
 
