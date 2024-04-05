@@ -3,10 +3,15 @@
 namespace osmMachine
 {
 
-CShapePoint::CShapePoint( tViaPointType type, tOSMNodeShPtr rawPosition, tOSMNodeShPtr snappedPosition, const double length, const double heading )
+CShapePoint::CShapePoint( tViaPointType type, 
+                          tOSMNodeShPtr rawPosition, 
+                          tOSMNodeShPtr snappedPosition, 
+                          const int64_t osmWayId,
+                          const double length, 
+                          const int heading )
 : m_type(type)
 , m_osmNodeId( snappedPosition->getId() )
-, m_osmWayId(0)
+, m_osmWayId(osmWayId)
 , m_rawPosition(*rawPosition)
 , m_snappedPosition(*snappedPosition)
 , m_length (length)
@@ -14,10 +19,15 @@ CShapePoint::CShapePoint( tViaPointType type, tOSMNodeShPtr rawPosition, tOSMNod
 {
 }
 
-CShapePoint::CShapePoint( tViaPointType type, const GeoBase::CGeoPoint& rawPosition, const GeoBase::CGeoPoint& snappedPosition, const double length, const double heading )
+CShapePoint::CShapePoint(  tViaPointType type, 
+                const GeoBase::CGeoPoint& rawPosition, 
+                const GeoBase::CGeoPoint& snappedPosition, 
+                const int64_t osmWayId,
+                const double length, 
+                const int heading )
 : m_type(type)
 , m_osmNodeId( -1 )
-, m_osmWayId(-1)
+, m_osmWayId(osmWayId)
 , m_rawPosition(rawPosition)
 , m_snappedPosition(snappedPosition)
 , m_length (length)

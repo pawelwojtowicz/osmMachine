@@ -65,8 +65,6 @@ tOSMShapePath COSMRouter::FindOptimalPath( const std::list<COSMPosition>& viaPoi
       std::cout << "Fck fck fck" << std::endl;
     }
 
-
-
     path.insert(path.end(), intermediatePath.begin(), intermediatePath.end());
 
     origin = destination;
@@ -75,7 +73,8 @@ tOSMShapePath COSMRouter::FindOptimalPath( const std::list<COSMPosition>& viaPoi
 
   path.push_back(  CShapePoint( CShapePoint::tViaPointType::ePOI,
                 origin->GetRawPosition(), 
-                origin->GetPositionSnapped2OSM() , 
+                origin->GetPositionSnapped2OSM() ,
+                origin->GetWay()->GetId(), 
                 0, 
                 0));
 

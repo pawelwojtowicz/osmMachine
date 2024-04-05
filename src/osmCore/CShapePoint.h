@@ -15,8 +15,19 @@ public:
   eExit = 4
   };
 
-  CShapePoint( tViaPointType type, tOSMNodeShPtr rawPosition, tOSMNodeShPtr snappedPosition, const double length, const double heading );
-  CShapePoint( tViaPointType type, const GeoBase::CGeoPoint& rawPosition, const GeoBase::CGeoPoint& snappedPosition, const double length, const double heading );
+  CShapePoint(  tViaPointType type, 
+                tOSMNodeShPtr rawPosition, 
+                tOSMNodeShPtr snappedPosition, 
+                const int64_t osmWayId, 
+                const double length, 
+                const int heading );
+
+  CShapePoint(  tViaPointType type, 
+                const GeoBase::CGeoPoint& rawPosition, 
+                const GeoBase::CGeoPoint& snappedPosition, 
+                const int64_t osmWayId,
+                const double length, 
+                const int heading );
 
   const int64_t GetOsmNodeId() const;
 
