@@ -113,7 +113,7 @@ void CRoutePathBuilder::ConvertExitFromEnd( const COSMPosition& destinationOsmPo
   const auto& waySegments = destinationOsmPosition.GetWay()->GetWaySegments();
   const int lastSegment = waySegments.size() - 1;
 
-  for ( int i = lastSegment ; i > destinationOsmPosition.GetWaySegmentIndex() ; ++i )
+  for ( int i = lastSegment ; i > destinationOsmPosition.GetWaySegmentIndex() ; --i )
   {
     path.push_back( CShapePoint( CShapePoint( CShapePoint::tViaPointType::eSimple,
                             waySegments[i].getEndNode(),

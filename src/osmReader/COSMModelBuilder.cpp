@@ -54,6 +54,8 @@ bool COSMModelBuilder::ReadOSMData( const std::string& filename , int geoBucketF
     wayFilterSettings.push_back( std::make_pair("highway", "secondary_link"));
     wayFilterSettings.push_back( std::make_pair("highway", "tertiary_link"));
     wayFilterSettings.push_back( std::make_pair("highway", "give_way"));
+    wayFilterSettings.push_back( std::make_pair("highway", "unclassified"));
+    wayFilterSettings.push_back( std::make_pair("highway", "road"));
 
     mapReader->ConfigureWayFilter(wayFilterSettings);
 
